@@ -1,0 +1,11 @@
+[[bin]]
+name = "game_demo"
+path = "examples/game_demo.rs"
+
+[[bin]]
+name = "sprite_demo"
+path = "examples/sprite_demo.rs"
+
+[[bin]]
+name = "physics_demo"
+path = "examples/physics_demo.rs"
