@@ -1,11 +1,19 @@
-[[bin]]
+[package]
+name = "cocos2d-rust"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[example]]
 name = "game_demo"
 path = "examples/game_demo.rs"
 
-[[bin]]
+[[example]]
 name = "sprite_demo"
 path = "examples/sprite_demo.rs"
 
-[[bin]]
+[[example]]
 name = "physics_demo"
 path = "examples/physics_demo.rs"
+

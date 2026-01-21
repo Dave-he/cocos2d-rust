@@ -22,4 +22,4 @@ pub use network::HttpClient;
 pub use physics::{PhysicsWorld, PhysicsBody};
 pub use ui::{Widget, Button, Slider, TextField, Layout};
 pub use particle::ParticleSystem;
-pub use tilemap::TileMap};
+pub use tilemap::TileMap;
