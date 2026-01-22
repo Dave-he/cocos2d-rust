@@ -12,6 +12,17 @@ pub type ScheduleCallback = Rc<dyn Fn(f32)>;
 ///
 /// You should not invoke this manually. If you want to execute a function after
 /// a delay, use `director.get_scheduler().schedule()`.
+impl std::fmt::Debug for Scheduler {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Scheduler")
+            .field("time_scale", &self.time_scale)
+            .field("paused", &self.paused)
+            .field("timers_count", &self.timers.len())
+            .field("callbacks_count", &self.schedule_callbacks.len())
+            .finish()
+    }
+}
+
 pub struct Scheduler {
     timers: HashMap<String, Timer>,
     schedule_callbacks: HashMap<String, ScheduleCallback>,

@@ -8,6 +8,15 @@ use crate::label::Label;
 pub type MenuCallback = Box<dyn Fn(&MenuItem)>;
 
 /// MenuItem is the base class for all menu items
+impl std::fmt::Debug for MenuItem {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("MenuItem")
+            .field("enabled", &self.enabled)
+            .field("selected", &self.selected)
+            .finish()
+    }
+}
+
 pub struct MenuItem {
     node: Node,
     enabled: bool,

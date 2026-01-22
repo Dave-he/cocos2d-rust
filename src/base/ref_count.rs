@@ -9,7 +9,7 @@ pub trait Clonable {
 
 /// Reference count wrapper using Rc with manual reference counting
 /// This is a safer alternative to the C++ Ref class
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Ref {
     reference_count: Cell<u32>,
     #[allow(dead_code)]

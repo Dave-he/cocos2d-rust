@@ -81,7 +81,7 @@ impl Slider {
             self.value = value;
             
             // 触发回调
-            if let Some(callback) = &mut self.on_value_changed {
+            if let Some(ref mut callback) = self.on_value_changed {
                 callback(self, value);
             }
         }

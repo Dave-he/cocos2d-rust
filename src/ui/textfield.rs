@@ -110,7 +110,7 @@ impl TextField {
         self.clear_selection();
 
         // 触发回调
-        if let Some(callback) = &mut self.on_text_changed {
+        if let Some(ref mut callback) = self.on_text_changed {
             callback(self, &text_to_set);
         }
     }
@@ -202,7 +202,7 @@ impl TextField {
 
         self.is_editing = true;
         
-        if let Some(callback) = &mut self.on_editing_began {
+        if let Some(ref mut callback) = self.on_editing_began {
             callback(self);
         }
     }
@@ -216,7 +216,7 @@ impl TextField {
         self.is_editing = false;
         self.clear_selection();
         
-        if let Some(callback) = &mut self.on_editing_ended {
+        if let Some(ref mut callback) = self.on_editing_ended {
             callback(self);
         }
     }
@@ -248,8 +248,9 @@ impl TextField {
         self.cursor_position += text_to_insert.len();
 
         // 触发回调
-        if let Some(callback) = &mut self.on_text_changed {
-            callback(self, &self.text.clone());
+        if let Some(ref mut callback) = self.on_text_changed {
+            let text_clone = self.text.clone();
+            callback(self, &text_clone);
         }
     }
 
@@ -265,8 +266,9 @@ impl TextField {
             self.text.remove(self.cursor_position - 1);
             self.cursor_position -= 1;
 
-            if let Some(callback) = &mut self.on_text_changed {
-                callback(self, &self.text.clone());
+            if let Some(ref mut callback) = self.on_text_changed {
+                let text_clone = self.text.clone();
+                callback(self, &text_clone);
             }
         }
     }
@@ -282,8 +284,9 @@ impl TextField {
         } else if self.cursor_position < self.text.len() {
             self.text.remove(self.cursor_position);
 
-            if let Some(callback) = &mut self.on_text_changed {
-                callback(self, &self.text.clone());
+            if let Some(ref mut callback) = self.on_text_changed {
+                let text_clone = self.text.clone();
+                callback(self, &text_clone);
             }
         }
     }
@@ -339,8 +342,10 @@ impl TextField {
             self.cursor_position = start;
             self.clear_selection();
 
-            if let Some(callback) = &mut self.on_text_changed {
-                callback(self, &self.text.clone());
+            if let Some(callback) = self.on_text_changed.take() {
+                let text_clone = self.text.clone();
+                callback(&*self, &text_clone);
+                self.on_text_changed = Some(callback);
             }
         }
     }

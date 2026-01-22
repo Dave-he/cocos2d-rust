@@ -197,6 +197,16 @@ pub enum EventListenerType {
 }
 
 /// Event listener
+impl std::fmt::Debug for EventListener {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("EventListener")
+            .field("listener_type", &self.listener_type)
+            .field("enabled", &self.enabled)
+            .field("paused", &self.paused)
+            .finish()
+    }
+}
+
 pub struct EventListener {
     listener_type: EventListenerType,
     callback: Box<dyn FnMut(&mut Event)>,

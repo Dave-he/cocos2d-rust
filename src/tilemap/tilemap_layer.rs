@@ -28,12 +28,18 @@ impl TileMapLayer {
 
     pub fn create_with_layer_info(layer_info: LayerInfo, tileset: TileSet) -> TileMapLayer {
         let mut layer = TileMapLayer::new();
+        
+        let tile_width = tileset.get_tile_size().x;
+        let tile_height = tileset.get_tile_size().y;
+        let map_width = layer_info.size.x as u32;
+        let map_height = layer_info.size.y as u32;
+        
         layer.layer_info = Some(layer_info);
         layer.tileset = Some(tileset);
-        layer.tile_width = tileset.get_tile_size().x;
-        layer.tile_height = tileset.get_tile_size().y;
-        layer.map_width = layer_info.size.x as u32;
-        layer.map_height = layer_info.size.y as u32;
+        layer.tile_width = tile_width;
+        layer.tile_height = tile_height;
+        layer.map_width = map_width;
+        layer.map_height = map_height;
         layer
     }
 

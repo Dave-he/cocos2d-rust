@@ -78,11 +78,17 @@ impl AudioEngine {
         source.set_loop_enabled(loop_enabled);
         source.set_volume(volume);
 
-        self.audio_players.insert(self.current_audio_id, Arc::new(Mutex::new(player)));
+        let id = self.current_audio_id;
+        self.audio_players.insert(id, Arc::new(Mutex::new(player)));
         self.audio_sources.insert(file_path.to_string(), Arc::new(Mutex::new(source)));
 
-        player.play();
-        self.current_audio_id
+        // 通过 HashMap 获取并调用 play
+        if let Some(player_arc) = self.audio_players.get(&id) {
+            let mut player = player_arc.lock().unwrap();
+            player.play();
+        }
+        
+        id
     }
 
     pub fn set_loop(audio_id: i32, loop_enabled: bool) {
