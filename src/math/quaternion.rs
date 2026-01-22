@@ -15,6 +15,10 @@ impl Quaternion {
     pub const ZERO: Quaternion = Quaternion { x: 0.0, y: 0.0, z: 0.0, w: 0.0 };
     pub const IDENTITY: Quaternion = Quaternion { x: 0.0, y: 0.0, z: 0.0, w: 1.0 };
 
+    pub fn identity() -> Self {
+        Self::IDENTITY
+    }
+
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Quaternion { x, y, z, w }
     }

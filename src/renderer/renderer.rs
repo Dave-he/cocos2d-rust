@@ -5,7 +5,6 @@ use crate::renderer::command::{RenderCommand, CommandType, Triangles, Quad, Mesh
 use crate::renderer::material::Material;
 use crate::renderer::pipeline::PipelineState;
 
-#[derive(Debug)]
 pub struct Renderer {
     commands: Vec<Box<dyn RenderCommand>>,
     command_queue: Vec<Box<dyn RenderCommand>>,

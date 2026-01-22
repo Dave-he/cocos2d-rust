@@ -36,7 +36,7 @@ impl AudioEngine {
     }
 
     pub fn end() {
-        Self::get_instance().stop_all();
+        AudioEngine::stop_all();
     }
 
     pub fn get_instance() -> &'static mut AudioEngine {

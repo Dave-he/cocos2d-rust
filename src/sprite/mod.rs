@@ -16,6 +16,20 @@ pub struct Sprite {
 }
 
 impl Sprite {
+    /// Creates a new empty sprite
+    pub fn new() -> Sprite {
+        Sprite {
+            node: Node::new(),
+            texture: None,
+            color: Color3B::WHITE,
+            opacity: 255,
+            flipped_x: false,
+            flipped_y: false,
+            blend_func: BlendFunc::ALPHA_PREMULTIPLIED,
+            rect: Rect::ZERO,
+        }
+    }
+
     /// Creates a sprite with a texture
     pub fn with_texture(texture: RefPtr<Texture2D>) -> Sprite {
         let mut sprite = Sprite {

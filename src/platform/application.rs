@@ -63,7 +63,6 @@ pub trait ApplicationDelegate {
 }
 
 /// Application manages the main application lifecycle
-#[derive(Debug)]
 pub struct Application {
     delegate: Option<Box<dyn ApplicationDelegate>>,
     running: bool,

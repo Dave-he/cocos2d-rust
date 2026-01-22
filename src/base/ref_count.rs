@@ -28,6 +28,11 @@ impl Ref {
         }
     }
 
+    /// Pointer equality check
+    pub fn ptr_eq(a: &Ref, b: &Ref) -> bool {
+        std::ptr::eq(a, b)
+    }
+
     /// Retains the ownership.
     /// This increases the Ref's reference count.
     pub fn retain(&self) {
@@ -162,7 +167,7 @@ impl<T> From<Rc<T>> for RefPtr<T> {
 }
 
 impl<T> From<RefPtr<T>> for Rc<T> {
-    fn into(ptr: RefPtr<T>) -> Self {
+    fn from(ptr: RefPtr<T>) -> Self {
         ptr.ptr
     }
 }

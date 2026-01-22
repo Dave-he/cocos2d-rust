@@ -121,7 +121,6 @@ impl HttpResponse {
 
 pub type HttpCallback = Arc<dyn Fn(HttpResponse) + Send + Sync>;
 
-#[derive(Debug)]
 pub struct HttpClient {
     requests: HashMap<i32, HttpRequest>,
     response_callbacks: HashMap<i32, HttpCallback>,

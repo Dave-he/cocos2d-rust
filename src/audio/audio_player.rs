@@ -72,7 +72,7 @@ impl AudioSource {
 #[derive(Debug)]
 pub struct AudioPlayer {
     id: i32,
-    source: Option<Arc<Mutex<AudioSource>>>,
+    pub source: Option<Arc<Mutex<AudioSource>>>,
     state: AudioState,
     volume: f32,
     current_time: Duration,

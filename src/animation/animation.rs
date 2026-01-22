@@ -45,6 +45,19 @@ impl Animation {
         }
     }
 
+    /// 从帧序列创建动画（带名称）
+    pub fn with_sprite_frames(name: String, frames: Vec<Rc<RefCell<SpriteFrame>>>, delay: f32) -> Self {
+        let duration = frames.len() as f32 * delay;
+        Self {
+            name,
+            frames,
+            delay_per_unit: delay,
+            duration,
+            loops: 1,
+            restore_original_frame: false,
+        }
+    }
+
     /// 从帧序列和帧间隔数组创建动画
     pub fn with_frame_delays(
         frames: Vec<Rc<RefCell<SpriteFrame>>>,

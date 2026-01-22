@@ -206,6 +206,7 @@ pub struct Node {
     name: String,
     local_transform: crate::math::Mat4,
     global_transform: crate::math::Mat4,
+    content_size: crate::math::Vec2,
 }
 
 impl Node {
@@ -224,6 +225,7 @@ impl Node {
             name: String::new(),
             local_transform: crate::math::Mat4::IDENTITY,
             global_transform: crate::math::Mat4::IDENTITY,
+            content_size: crate::math::Vec2::ZERO,
         }
     }
 
@@ -342,6 +344,16 @@ impl Node {
     /// Sets the visibility
     pub fn set_visible(&mut self, visible: bool) {
         self.visible = visible;
+    }
+
+    /// Gets the content size
+    pub fn get_content_size(&self) -> crate::math::Vec2 {
+        self.content_size
+    }
+
+    /// Sets the content size
+    pub fn set_content_size(&mut self, size: crate::math::Vec2) {
+        self.content_size = size;
     }
 
     /// Updates the local transform matrix

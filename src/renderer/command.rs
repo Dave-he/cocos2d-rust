@@ -192,7 +192,6 @@ impl RenderCommand for GroupCommand {
     }
 }
 
-#[derive(Debug, Clone)]
 pub struct CallbackCommand {
     command_type: CommandType,
     global_order: f32,

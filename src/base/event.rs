@@ -197,7 +197,6 @@ pub enum EventListenerType {
 }
 
 /// Event listener
-#[derive(Debug)]
 pub struct EventListener {
     listener_type: EventListenerType,
     callback: Box<dyn FnMut(&mut Event)>,

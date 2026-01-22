@@ -104,8 +104,8 @@ impl Rect {
 #[derive(Debug, Clone)]
 pub struct TileMapInfo {
     filename: String,
-    map_size: Vec2,
-    tile_size: Vec2,
+    pub map_size: Vec2,
+    pub tile_size: Vec2,
     orientation: MapOrientation,
     layers: Vec<LayerInfo>,
     tile_sets: Vec<TileSet>,
@@ -123,8 +123,8 @@ pub enum MapOrientation {
 
 #[derive(Debug, Clone)]
 pub struct LayerInfo {
-    name: String,
-    size: Vec2,
+    pub name: String,
+    pub size: Vec2,
     opacity: f32,
     visible: bool,
     tiles: Vec<u32>,

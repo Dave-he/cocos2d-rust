@@ -12,7 +12,6 @@ pub type ScheduleCallback = Rc<dyn Fn(f32)>;
 ///
 /// You should not invoke this manually. If you want to execute a function after
 /// a delay, use `director.get_scheduler().schedule()`.
-#[derive(Debug)]
 pub struct Scheduler {
     timers: HashMap<String, Timer>,
     schedule_callbacks: HashMap<String, ScheduleCallback>,
@@ -22,7 +21,6 @@ pub struct Scheduler {
     update_hash: HashMap<usize, UpdateEntry>,
 }
 
-#[derive(Debug)]
 struct Timer {
     callback: TimerCallback,
     interval: f32,
@@ -31,7 +29,6 @@ struct Timer {
     paused: bool,
 }
 
-#[derive(Debug)]
 struct UpdateEntry {
     callback: Rc<dyn Fn(f32)>,
     paused: bool,

@@ -8,7 +8,6 @@ use crate::label::Label;
 pub type MenuCallback = Box<dyn Fn(&MenuItem)>;
 
 /// MenuItem is the base class for all menu items
-#[derive(Debug)]
 pub struct MenuItem {
     node: Node,
     enabled: bool,

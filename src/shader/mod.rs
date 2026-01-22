@@ -1,4 +1,4 @@
-wancpub mod shader_program;
+pub mod shader_program;
 pub mod shader_cache;
 pub mod built_in_shaders;
 
