@@ -7,4 +7,4 @@ pub mod autorelease_pool;
 
 pub use ref_count::{Ref, Clonable, RefPtr};
 pub use types::{Color3B, Color4B, Color4F, Point, Size, Rect};
-pub use director::Director;
+pub use director::{Director, Scene, Node};

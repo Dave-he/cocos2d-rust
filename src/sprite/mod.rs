@@ -6,7 +6,7 @@ use crate::math::Vec2;
 #[derive(Debug)]
 pub struct Sprite {
     node: Node,
-    texture: Option<Ref<Texture2D>>,
+    texture: Option<RefPtr<Texture2D>>,
     color: Color3B,
     opacity: u8,
     flipped_x: bool,
@@ -17,7 +17,7 @@ pub struct Sprite {
 
 impl Sprite {
     /// Creates a sprite with a texture
-    pub fn with_texture(texture: Ref<Texture2D>) -> Sprite {
+    pub fn with_texture(texture: RefPtr<Texture2D>) -> Sprite {
         let mut sprite = Sprite {
             node: Node::new(),
             texture: Some(texture),
@@ -39,19 +39,19 @@ impl Sprite {
     }
 
     /// Creates a sprite with a rect from a texture
-    pub fn with_texture_rect(texture: Ref<Texture2D>, rect: Rect) -> Sprite {
+    pub fn with_texture_rect(texture: RefPtr<Texture2D>, rect: Rect) -> Sprite {
         let mut sprite = Sprite::with_texture(texture);
         sprite.rect = rect;
         sprite
     }
 
     /// Gets the texture
-    pub fn get_texture(&self) -> Option<&Ref<Texture2D>> {
+    pub fn get_texture(&self) -> Option<&RefPtr<Texture2D>> {
         self.texture.as_ref()
     }
 
     /// Sets the texture
-    pub fn set_texture(&mut self, texture: Ref<Texture2D>) {
+    pub fn set_texture(&mut self, texture: RefPtr<Texture2D>) {
         self.texture = Some(texture);
     }
 
@@ -188,7 +188,7 @@ impl Texture2D {
 /// TextureCache manages all textures
 #[derive(Debug)]
 pub struct TextureCache {
-    textures: std::collections::HashMap<String, Ref<Texture2D>>,
+    textures: std::collections::HashMap<String, RefPtr<Texture2D>>,
 }
 
 impl TextureCache {
@@ -211,7 +211,7 @@ impl TextureCache {
     }
 
     /// Adds a texture from a file
-    pub fn add_image(&mut self, path: &str) -> Option<Ref<Texture2D>> {
+    pub fn add_image(&mut self, path: &str) -> Option<RefPtr<Texture2D>> {
         if let Some(texture) = self.textures.get(path) {
             return Some(texture.clone());
         }
@@ -223,12 +223,12 @@ impl TextureCache {
     }
 
     /// Adds a texture with a key
-    pub fn add_texture(&mut self, key: &str, texture: Ref<Texture2D>) {
+    pub fn add_texture(&mut self, key: &str, texture: RefPtr<Texture2D>) {
         self.textures.insert(key.to_string(), texture);
     }
 
     /// Gets a texture by key
-    pub fn get_texture(&self, key: &str) -> Option<&Ref<Texture2D>> {
+    pub fn get_texture(&self, key: &str) -> Option<&RefPtr<Texture2D>> {
         self.textures.get(key)
     }
 

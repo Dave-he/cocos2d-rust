@@ -1,4 +1,4 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::math::{Vec3, Quaternion};
 use std::f32::consts::PI;
 
@@ -86,13 +86,13 @@ impl Animation3D {
 
 #[derive(Debug)]
 pub struct Animate3D {
-    animation: Ref<Animation3D>,
+    animation: RefPtr<Animation3D>,
     speed: f32,
     current_time: f32,
 }
 
 impl Animate3D {
-    pub fn new(animation: Ref<Animation3D>) -> Animate3D {
+    pub fn new(animation: RefPtr<Animation3D>) -> Animate3D {
         Animate3D {
             animation,
             speed: 1.0,
@@ -155,8 +155,8 @@ impl AnimationClip {
 
 #[derive(Debug)]
 pub struct AnimationComponent {
-    animations: Vec<Ref<Animation3D>>,
-    current_animation: Option<Ref<Animation3D>>,
+    animations: Vec<RefPtr<Animation3D>>,
+    current_animation: Option<RefPtr<Animation3D>>,
     current_time: f32,
     speed: f32,
     playing: bool,
@@ -173,7 +173,7 @@ impl AnimationComponent {
         }
     }
 
-    pub fn add_animation(&mut self, animation: Ref<Animation3D>) {
+    pub fn add_animation(&mut self, animation: RefPtr<Animation3D>) {
         self.animations.push(animation);
     }
 

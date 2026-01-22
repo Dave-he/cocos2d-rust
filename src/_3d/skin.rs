@@ -1,4 +1,4 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::math::{Vec3, Mat4, Quaternion};
 
 #[derive(Debug)]
@@ -10,17 +10,17 @@ pub struct Bone3D {
     position: Vec3,
     rotation: Quaternion,
     scale: Vec3,
-    parent: Option<Ref<Bone3D>>,
-    children: Vec<Ref<Bone3D>>,
+    parent: Option<RefPtr<Bone3D>>,
+    children: Vec<RefPtr<Bone3D>>,
 }
 
 impl Bone3D {
     pub fn new(name: &str) -> Bone3D {
         Bone3D {
             name: name.to_string(),
-            inverse_bind_pose: Mat4::identity(),
-            local_pose: Mat4::identity(),
-            global_pose: Mat4::identity(),
+            inverse_bind_pose: Mat4::IDENTITY,
+            local_pose: Mat4::IDENTITY,
+            global_pose: Mat4::IDENTITY,
             position: Vec3::ZERO,
             rotation: Quaternion::identity(),
             scale: Vec3::new(1.0, 1.0, 1.0),
@@ -73,20 +73,20 @@ impl Bone3D {
         self.scale = scale;
     }
 
-    pub fn add_child(&mut self, child: Ref<Bone3D>) {
+    pub fn add_child(&mut self, child: RefPtr<Bone3D>) {
         self.children.push(child);
     }
 
-    pub fn get_children(&self) -> &Vec<Ref<Bone3D>> {
+    pub fn get_children(&self) -> &Vec<RefPtr<Bone3D>> {
         &self.children
     }
 }
 
 #[derive(Debug)]
 pub struct Skeleton3D {
-    bones: Vec<Ref<Bone3D>>,
+    bones: Vec<RefPtr<Bone3D>>,
     bone_index_by_name: std::collections::HashMap<String, usize>,
-    root_bones: Vec<Ref<Bone3D>>,
+    root_bones: Vec<RefPtr<Bone3D>>,
 }
 
 impl Skeleton3D {
@@ -98,17 +98,17 @@ impl Skeleton3D {
         }
     }
 
-    pub fn add_bone(&mut self, bone: Ref<Bone3D>) {
+    pub fn add_bone(&mut self, bone: RefPtr<Bone3D>) {
         let index = self.bones.len();
         self.bones.push(bone.clone());
         self.bone_index_by_name.insert(bone.get_name().to_string(), index);
     }
 
-    pub fn get_bones(&self) -> &Vec<Ref<Bone3D>> {
+    pub fn get_bones(&self) -> &Vec<RefPtr<Bone3D>> {
         &self.bones
     }
 
-    pub fn get_bone_by_name(&self, name: &str) -> Option<&Ref<Bone3D>> {
+    pub fn get_bone_by_name(&self, name: &str) -> Option<&RefPtr<Bone3D>> {
         if let Some(&index) = self.bone_index_by_name.get(name) {
             self.bones.get(index)
         } else {
@@ -116,15 +116,15 @@ impl Skeleton3D {
         }
     }
 
-    pub fn get_root_bones(&self) -> &Vec<Ref<Bone3D>> {
+    pub fn get_root_bones(&self) -> &Vec<RefPtr<Bone3D>> {
         &self.root_bones
     }
 }
 
 #[derive(Debug)]
 pub struct Skin {
-    mesh: Ref<()>,
-    skeleton: Option<Ref<Skeleton3D>>,
+    mesh: RefPtr<()>,
+    skeleton: Option<RefPtr<Skeleton3D>>,
 }
 
 impl Skin {
@@ -135,11 +135,11 @@ impl Skin {
         }
     }
 
-    pub fn get_skeleton(&self) -> Option<&Ref<Skeleton3D>> {
+    pub fn get_skeleton(&self) -> Option<&RefPtr<Skeleton3D>> {
         self.skeleton.as_ref()
     }
 
-    pub fn set_skeleton(&mut self, skeleton: Ref<Skeleton3D>) {
+    pub fn set_skeleton(&mut self, skeleton: RefPtr<Skeleton3D>) {
         self.skeleton = Some(skeleton);
     }
 }

@@ -1,4 +1,4 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::base::types::Color4F;
 use crate::math::Mat4;
 use crate::renderer::command::{RenderCommand, CommandType, Triangles, Quad, MeshCommand, GroupCommand};
@@ -9,8 +9,8 @@ use crate::renderer::pipeline::PipelineState;
 pub struct Renderer {
     commands: Vec<Box<dyn RenderCommand>>,
     command_queue: Vec<Box<dyn RenderCommand>>,
-    current_material: Option<Ref<Material>>,
-    current_pipeline: Option<Ref<PipelineState>>,
+    current_material: Option<RefPtr<Material>>,
+    current_pipeline: Option<RefPtr<PipelineState>>,
     is_recording: bool,
     frustum_culled: bool,
     view_projection: Mat4,
@@ -25,7 +25,7 @@ impl Renderer {
             current_pipeline: None,
             is_recording: false,
             frustum_culled: false,
-            view_projection: Mat4::identity(),
+            view_projection: Mat4::IDENTITY,
         }
     }
 
@@ -87,11 +87,11 @@ impl Renderer {
         self.view_projection
     }
 
-    pub fn draw_triangles(&mut self, triangles: &Triangles, material: Ref<Material>) {
+    pub fn draw_triangles(&mut self, triangles: &Triangles, material: RefPtr<Material>) {
         self.current_material = Some(material);
     }
 
-    pub fn draw_quad(&mut self, quad: &Quad, material: Ref<Material>) {
+    pub fn draw_quad(&mut self, quad: &Quad, material: RefPtr<Material>) {
         self.current_material = Some(material);
     }
 
@@ -101,11 +101,11 @@ impl Renderer {
     pub fn draw_group(&mut self, group: &GroupCommand) {
     }
 
-    pub fn set_pipeline(&mut self, pipeline: Ref<PipelineState>) {
+    pub fn set_pipeline(&mut self, pipeline: RefPtr<PipelineState>) {
         self.current_pipeline = Some(pipeline);
     }
 
-    pub fn get_pipeline(&self) -> Option<&Ref<PipelineState>> {
+    pub fn get_pipeline(&self) -> Option<&RefPtr<PipelineState>> {
         self.current_pipeline.as_ref()
     }
 

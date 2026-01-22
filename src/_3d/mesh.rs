@@ -1,6 +1,7 @@
 use crate::math::{Vec3, Mat4};
-use crate::base::Ref;
-use crate::renderer::Texture;
+use crate::base::{Ref, RefPtr};
+use crate::renderer::Texture2D;
+use crate::_3d::Bone3D;
 
 #[derive(Debug)]
 pub struct Mesh {
@@ -53,13 +54,13 @@ impl Mesh {
     }
 
     pub fn set_vertex_data(&mut self, data: Vec<f32>) {
-        self.vertex_data = data;
         self.vertex_count = (data.len() / 8) as u32;
+        self.vertex_data = data;
     }
 
     pub fn set_index_data(&mut self, data: Vec<u16>) {
-        self.index_data = data;
         self.index_count = data.len() as u32;
+        self.index_data = data;
     }
 }
 
@@ -184,7 +185,7 @@ impl MeshVertexData {
 
 #[derive(Debug)]
 pub struct MeshSkin {
-    bones: Vec<Ref<Bone3D>>,
+    bones: Vec<RefPtr<Bone3D>>,
     bone_indices: Vec<i32>,
     bone_weights: Vec<f32>,
     bind_pose_inverses: Vec<Mat4>,
@@ -200,11 +201,11 @@ impl MeshSkin {
         }
     }
 
-    pub fn add_bone(&mut self, bone: Ref<Bone3D>) {
+    pub fn add_bone(&mut self, bone: RefPtr<Bone3D>) {
         self.bones.push(bone);
     }
 
-    pub fn get_bones(&self) -> &Vec<Ref<Bone3D>> {
+    pub fn get_bones(&self) -> &Vec<RefPtr<Bone3D>> {
         &self.bones
     }
 
@@ -281,7 +282,7 @@ pub enum VertexAttribType {
 
 #[derive(Debug)]
 pub struct VertexAttribBinding {
-    vertex_buffer: Ref<MeshVertexData>,
+    vertex_buffer: RefPtr<MeshVertexData>,
     attribs: Vec<VertexAttribBindingInfo>,
 }
 

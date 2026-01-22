@@ -1,6 +1,6 @@
 use std::collections::LinkedList;
 use std::rc::Rc;
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 
 /// Autorelease pool manages objects that are autoreleased
 ///
@@ -8,7 +8,7 @@ use crate::base::Ref;
 /// for compatibility with the C++ API and for objects that need delayed cleanup.
 #[derive(Debug)]
 pub struct AutoreleasePool {
-    managed_objects: LinkedList<Ref<Ref>>,
+    managed_objects: LinkedList<RefPtr<Ref>>,
     name: String,
 }
 
@@ -30,12 +30,12 @@ impl AutoreleasePool {
     }
 
     /// Adds an object to the pool
-    pub fn add_object(&mut self, obj: Ref<Ref>) {
+    pub fn add_object(&mut self, obj: RefPtr<Ref>) {
         self.managed_objects.push_back(obj);
     }
 
     /// Removes an object from the pool
-    pub fn remove_object(&mut self, obj: &Ref<Ref>) {
+    pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {
     }
 
     /// Clears the pool

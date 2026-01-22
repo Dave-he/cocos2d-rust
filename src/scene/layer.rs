@@ -1,7 +1,7 @@
-use crate::base::{Director, Scene, Node, Color3B, Color4F};
+use crate::base::{Director, Scene, Node, Color3B, Color4F, Ref, RefPtr};
 use crate::math::Vec2;
 use crate::sprite::Sprite;
-use crate::action::{Action, FiniteTimeAction, Ease, MoveTo, RotateTo, Sequence};
+use crate::action::{Action, FiniteTimeAction};
 
 #[derive(Debug)]
 pub struct Layer {
@@ -31,7 +31,7 @@ impl Layer {
         &mut self.node
     }
 
-    pub fn add_child(&mut self, child: Ref<Node>) {
+    pub fn add_child(&mut self, child: RefPtr<Node>) {
         self.node.add_child(child);
     }
 

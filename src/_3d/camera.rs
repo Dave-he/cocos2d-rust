@@ -39,9 +39,9 @@ impl Camera {
             forward: Vec3::new(0.0, 0.0, -1.0),
             up: Vec3::new(0.0, 1.0, 0.0),
             right: Vec3::new(1.0, 0.0, 0.0),
-            view_matrix: Mat4::identity(),
-            projection_matrix: Mat4::identity(),
-            view_projection_matrix: Mat4::identity(),
+            view_matrix: Mat4::IDENTITY,
+            projection_matrix: Mat4::IDENTITY,
+            view_projection_matrix: Mat4::IDENTITY,
             depth: 0.0,
             rendering_order: 0,
         }

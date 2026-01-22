@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 
 pub trait Texture {
     fn get_name(&self) -> u32;
@@ -217,7 +217,7 @@ impl Texture for Texture2D {
 
 #[derive(Debug)]
 pub struct TextureAtlas {
-    texture: Option<Ref<Texture2D>>,
+    texture: Option<RefPtr<Texture2D>>,
     capacity: u32,
     quads: Vec<TextureQuad>,
     indices: Vec<u16>,
@@ -250,7 +250,7 @@ impl TextureAtlas {
         }
     }
 
-    pub fn init(&mut self, texture: Ref<Texture2D>, capacity: u32) {
+    pub fn init(&mut self, texture: RefPtr<Texture2D>, capacity: u32) {
         self.texture = Some(texture);
         self.capacity = capacity;
         self.quads.resize(capacity as usize, TextureQuad::new());
@@ -282,7 +282,7 @@ impl TextureAtlas {
         self.capacity
     }
 
-    pub fn get_texture(&self) -> Option<&Ref<Texture2D>> {
+    pub fn get_texture(&self) -> Option<&RefPtr<Texture2D>> {
         self.texture.as_ref()
     }
 }

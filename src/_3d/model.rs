@@ -1,11 +1,11 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::math::{Vec3, Mat4};
 use super::mesh::{Mesh, AABB, MeshSkin};
 
 #[derive(Debug)]
 pub struct Sprite3D {
-    mesh: Option<Ref<Mesh>>,
-    skin: Option<Ref<MeshSkin>>,
+    mesh: Option<RefPtr<Mesh>>,
+    skin: Option<RefPtr<MeshSkin>>,
     aabb: AABB,
 }
 
@@ -27,19 +27,19 @@ impl Sprite3D {
     pub fn init(&mut self, file_name: &str) {
     }
 
-    pub fn get_mesh(&self) -> Option<&Ref<Mesh>> {
+    pub fn get_mesh(&self) -> Option<&RefPtr<Mesh>> {
         self.mesh.as_ref()
     }
 
-    pub fn set_mesh(&mut self, mesh: Ref<Mesh>) {
+    pub fn set_mesh(&mut self, mesh: RefPtr<Mesh>) {
         self.mesh = Some(mesh);
     }
 
-    pub fn get_skin(&self) -> Option<&Ref<MeshSkin>> {
+    pub fn get_skin(&self) -> Option<&RefPtr<MeshSkin>> {
         self.skin.as_ref()
     }
 
-    pub fn set_skin(&mut self, skin: Ref<MeshSkin>) {
+    pub fn set_skin(&mut self, skin: RefPtr<MeshSkin>) {
         self.skin = Some(skin);
     }
 
@@ -50,8 +50,8 @@ impl Sprite3D {
 
 #[derive(Debug)]
 pub struct Model {
-    meshes: Vec<Ref<Mesh>>,
-    materials: Vec<Ref<()>>,
+    meshes: Vec<RefPtr<Mesh>>,
+    materials: Vec<RefPtr<()>>,
     aabb: AABB,
 }
 
@@ -64,11 +64,11 @@ impl Model {
         }
     }
 
-    pub fn add_mesh(&mut self, mesh: Ref<Mesh>) {
+    pub fn add_mesh(&mut self, mesh: RefPtr<Mesh>) {
         self.meshes.push(mesh);
     }
 
-    pub fn get_meshes(&self) -> &Vec<Ref<Mesh>> {
+    pub fn get_meshes(&self) -> &Vec<RefPtr<Mesh>> {
         &self.meshes
     }
 

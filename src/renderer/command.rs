@@ -1,6 +1,7 @@
 use crate::math::Mat4;
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::base::types::Color4F;
+use super::{Renderer, Texture2D};
 
 pub trait RenderCommand {
     fn get_command_type(&self) -> CommandType;
@@ -24,7 +25,7 @@ pub struct Triangles {
     pub vertices: Vec<Vertex>,
     pub indices: Vec<u16>,
     pub blend_func: (u32, u32),
-    pub texture: Option<Ref<Texture>>,
+    pub texture: Option<RefPtr<Texture2D>>,
     pub model_matrix: Mat4,
 }
 
@@ -35,7 +36,7 @@ impl Triangles {
             indices: Vec::new(),
             blend_func: (770, 771),
             texture: None,
-            model_matrix: Mat4::identity(),
+            model_matrix: Mat4::IDENTITY,
         }
     }
 
@@ -55,7 +56,7 @@ pub struct Quad {
     pub bl: Vertex,
     pub br: Vertex,
     pub blend_func: (u32, u32),
-    pub texture: Option<Ref<Texture>>,
+    pub texture: Option<RefPtr<Texture2D>>,
     pub model_matrix: Mat4,
 }
 
@@ -68,7 +69,7 @@ impl Quad {
             br: Vertex::default(),
             blend_func: (770, 771),
             texture: None,
-            model_matrix: Mat4::identity(),
+            model_matrix: Mat4::IDENTITY,
         }
     }
 }
@@ -134,7 +135,7 @@ impl MeshCommand {
             material_id: 0,
             mesh_data: Vec::new(),
             indices_data: Vec::new(),
-            transform: Mat4::identity(),
+            transform: Mat4::IDENTITY,
         }
     }
 

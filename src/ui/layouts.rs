@@ -1,4 +1,5 @@
 use super::widget::{Widget, LayoutParameter, WidgetSizeType};
+use crate::base::RefPtr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LayoutType {
@@ -15,7 +16,7 @@ pub struct Layout {
     layout_type: LayoutType,
     clipping_enabled: bool,
     clip_margin: f32,
-    children: Vec<Ref<Widget>>,
+    children: Vec<RefPtr<Widget>>,
 }
 
 impl Layout {
@@ -45,15 +46,15 @@ impl Layout {
         self.clipping_enabled
     }
 
-    pub fn add_child(&mut self, child: Ref<Widget>) {
+    pub fn add_child(&mut self, child: RefPtr<Widget>) {
         self.children.push(child);
     }
 
-    pub fn remove_child(&mut self, child: &Ref<Widget>) {
+    pub fn remove_child(&mut self, child: &RefPtr<Widget>) {
         self.children.retain(|c| c.get_tag() != child.get_tag());
     }
 
-    pub fn get_children(&self) -> &Vec<Ref<Widget>> {
+    pub fn get_children(&self) -> &Vec<RefPtr<Widget>> {
         &self.children
     }
 

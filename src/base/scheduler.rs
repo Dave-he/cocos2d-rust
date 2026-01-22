@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::rc::Rc;
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 
 /// Timer callback function type
 pub type TimerCallback = Rc<dyn Fn(f32)>;

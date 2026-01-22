@@ -1,1 +1,1 @@
-pub use super::types::*;
+pub use super::application::{Platform, KeyboardState};

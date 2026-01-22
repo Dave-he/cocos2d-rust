@@ -123,8 +123,8 @@ impl AudioPlayer {
         self.current_time
     }
 
-    pub fn set_current_time(&mut Duration) {
-        self, time: self.current_time = time;
+    pub fn set_current_time(&mut self, time: Duration) {
+        self.current_time = time;
     }
 
     pub fn get_duration(&self) -> Duration {

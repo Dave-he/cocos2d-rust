@@ -1,4 +1,4 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::base::types::Color3B;
 use crate::math::Vec2;
 
@@ -46,8 +46,8 @@ pub struct Widget {
     pass_through_lb: Vec2,
     pass_through_rb: Vec2,
     layout_parameter: Option<LayoutParameter>,
-    parent: Option<Ref<Widget>>,
-    children: Vec<Ref<Widget>>,
+    parent: Option<RefPtr<Widget>>,
+    children: Vec<RefPtr<Widget>>,
 }
 
 impl Widget {
@@ -152,15 +152,15 @@ impl Widget {
         self.bright_style
     }
 
-    pub fn add_child(&mut self, child: Ref<Widget>) {
+    pub fn add_child(&mut self, child: RefPtr<Widget>) {
         self.children.push(child);
     }
 
-    pub fn remove_child(&mut self, child: &Ref<Widget>) {
+    pub fn remove_child(&mut self, child: &RefPtr<Widget>) {
         self.children.retain(|c| c.get_tag() != child.get_tag());
     }
 
-    pub fn get_children(&self) -> &Vec<Ref<Widget>> {
+    pub fn get_children(&self) -> &Vec<RefPtr<Widget>> {
         &self.children
     }
 

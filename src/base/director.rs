@@ -222,8 +222,8 @@ impl Node {
             visible: true,
             tag: 0,
             name: String::new(),
-            local_transform: crate::math::Mat4::identity(),
-            global_transform: crate::math::Mat4::identity(),
+            local_transform: crate::math::Mat4::IDENTITY,
+            global_transform: crate::math::Mat4::IDENTITY,
         }
     }
 

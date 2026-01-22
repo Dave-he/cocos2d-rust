@@ -1,12 +1,11 @@
-use crate::base::Node;
-use crate::base::Ref;
+use crate::base::{Node, Ref, RefPtr};
 use crate::math::Vec2;
 
 /// Action is the base class for all actions
 #[derive(Debug)]
 pub struct Action {
-    target: Option<Ref<Node>>,
-    original_target: Option<Ref<Node>>,
+    target: Option<RefPtr<Node>>,
+    original_target: Option<RefPtr<Node>>,
     tag: i32,
     flags: u32,
 }
@@ -33,7 +32,7 @@ impl Action {
     }
 
     /// Starts the action with a target
-    pub fn start_with_target(&mut self, target: Ref<Node>) {
+    pub fn start_with_target(&mut self, target: RefPtr<Node>) {
         self.original_target = Some(target.clone());
         self.target = Some(target);
     }
@@ -54,12 +53,12 @@ impl Action {
     }
 
     /// Gets the target
-    pub fn get_target(&self) -> Option<&Ref<Node>> {
+    pub fn get_target(&self) -> Option<&RefPtr<Node>> {
         self.target.as_ref()
     }
 
     /// Gets the original target
-    pub fn get_original_target(&self) -> Option<&Ref<Node>> {
+    pub fn get_original_target(&self) -> Option<&RefPtr<Node>> {
         self.original_target.as_ref()
     }
 
@@ -149,7 +148,7 @@ impl Speed {
 #[derive(Debug)]
 pub struct Follow {
     base: Action,
-    target_node: Ref<Node>,
+    target_node: RefPtr<Node>,
     boundary_set: bool,
     left_boundary: f32,
     right_boundary: f32,
@@ -160,7 +159,7 @@ pub struct Follow {
 
 impl Follow {
     /// Creates a new follow action
-    pub fn new(target: Ref<Node>) -> Follow {
+    pub fn new(target: RefPtr<Node>) -> Follow {
         Follow {
             base: Action::new(),
             target_node: target,
@@ -174,7 +173,7 @@ impl Follow {
     }
 
     /// Creates a follow action with a boundary
-    pub fn new_with_boundary(target: Ref<Node>, left: f32, bottom: f32, right: f32, top: f32) -> Follow {
+    pub fn new_with_boundary(target: RefPtr<Node>, left: f32, bottom: f32, right: f32, top: f32) -> Follow {
         let mut follow = Follow::new(target);
         follow.boundary_set = true;
         follow.left_boundary = left;
@@ -185,7 +184,7 @@ impl Follow {
     }
 
     /// Creates a follow action with a world rect
-    pub fn new_with_world_rect(target: Ref<Node>, rect: (f32, f32, f32, f32)) -> Follow {
+    pub fn new_with_world_rect(target: RefPtr<Node>, rect: (f32, f32, f32, f32)) -> Follow {
         let mut follow = Follow::new(target);
         follow.boundary_set = true;
         follow.world_rect = rect;
@@ -210,10 +209,10 @@ impl Follow {
 /// ActionManager manages all actions
 #[derive(Debug)]
 pub struct ActionManager {
-    action_hash: std::collections::HashMap<i32, Ref<Action>>,
-    current_action: Option<Ref<Action>>,
+    action_hash: std::collections::HashMap<i32, RefPtr<Action>>,
+    current_action: Option<RefPtr<Action>>,
     current_action_removed: bool,
-    target_map: std::collections::HashMap<usize, Vec<Ref<Action>>>,
+    target_map: std::collections::HashMap<usize, Vec<RefPtr<Action>>>,
 }
 
 impl ActionManager {
@@ -239,7 +238,7 @@ impl ActionManager {
     }
 
     /// Adds an action
-    pub fn add_action(&mut self, action: Ref<Action>, target: Ref<Node>, paused: bool) {
+    pub fn add_action(&mut self, action: RefPtr<Action>, target: RefPtr<Node>, paused: bool) {
         let target_id = &target as *const _ as usize;
 
         if let Some(actions) = self.target_map.get_mut(&target_id) {
@@ -250,7 +249,7 @@ impl ActionManager {
     }
 
     /// Removes an action by tag
-    pub fn remove_action_by_tag(&mut self, tag: i32, target: &Ref<Node>) {
+    pub fn remove_action_by_tag(&mut self, tag: i32, target: &RefPtr<Node>) {
         let target_id = target as *const _ as usize;
         if let Some(actions) = self.target_map.get_mut(&target_id) {
             actions.retain(|action| action.get_tag() != tag);
@@ -263,13 +262,13 @@ impl ActionManager {
     }
 
     /// Removes all actions from a target
-    pub fn remove_all_actions_from_target(&mut self, target: &Ref<Node>) {
+    pub fn remove_all_actions_from_target(&mut self, target: &RefPtr<Node>) {
         let target_id = target as *const _ as usize;
         self.target_map.remove(&target_id);
     }
 
     /// Gets an action by tag
-    pub fn get_action_by_tag(&self, tag: i32, target: &Ref<Node>) -> Option<&Ref<Action>> {
+    pub fn get_action_by_tag(&self, tag: i32, target: &RefPtr<Node>) -> Option<&RefPtr<Action>> {
         let target_id = target as *const _ as usize;
         if let Some(actions) = self.target_map.get(&target_id) {
             for action in actions {

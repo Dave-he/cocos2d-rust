@@ -72,17 +72,14 @@ impl Drop for Ref {
 }
 
 /// A smart pointer that wraps Rc<Ref> with automatic reference counting
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct RefPtr<T: ?Sized> {
     ptr: Rc<T>,
 }
 
 impl<T> RefPtr<T> {
     /// Creates a new RefPtr from an Rc<T>
-    pub fn new(value: T) -> RefPtr<T>
-    where
-        T: Ref,
-    {
+    pub fn new(value: T) -> RefPtr<T> {
         RefPtr {
             ptr: Rc::new(value),
         }
@@ -143,12 +140,18 @@ where
 }
 
 // Make RefPtr work with Deref for easier access
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 
 impl<T> Deref for RefPtr<T> {
     type Target = T;
     fn deref(&self) -> &T {
         &self.ptr
+    }
+}
+
+impl<T> DerefMut for RefPtr<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        Rc::get_mut(&mut self.ptr).expect("RefPtr: Cannot get mutable reference, reference count > 1")
     }
 }
 
@@ -159,7 +162,7 @@ impl<T> From<Rc<T>> for RefPtr<T> {
 }
 
 impl<T> From<RefPtr<T>> for Rc<T> {
-    fn from(ptr: RefPtr<T>) -> Self {
+    fn into(ptr: RefPtr<T>) -> Self {
         ptr.ptr
     }
 }

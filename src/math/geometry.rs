@@ -103,6 +103,14 @@ impl Rect {
         self.size.height = height;
     }
 
+    pub fn width(&self) -> f32 {
+        self.size.width
+    }
+
+    pub fn height(&self) -> f32 {
+        self.size.height
+    }
+
     pub fn get_min_x(&self) -> f32 {
         self.origin.x
     }

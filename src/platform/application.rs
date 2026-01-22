@@ -7,6 +7,9 @@ pub enum Platform {
     MacOS,
     iOS,
     Android,
+}
+
+impl Platform {
     /// Gets the current platform
     pub fn get_current_platform() -> Platform {
         #[cfg(target_os = "windows")]

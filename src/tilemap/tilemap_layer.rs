@@ -1,11 +1,11 @@
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::sprite::Sprite;
 use super::tilemap_info::{TileMapInfo, LayerInfo, TileSet, Rect};
 
 #[derive(Debug)]
 pub struct TileMapLayer {
     tileset: Option<TileSet>,
-    tiles: Vec<Ref<Sprite>>,
+    tiles: Vec<RefPtr<Sprite>>,
     layer_info: Option<LayerInfo>,
     tile_width: f32,
     tile_height: f32,
@@ -44,7 +44,7 @@ impl TileMapLayer {
         self.layer_info.as_ref().map(|l| l.name.as_str()).unwrap_or("")
     }
 
-    pub fn get_tile_at(&self, x: u32, y: u32) -> Option<&Ref<Sprite>> {
+    pub fn get_tile_at(&self, x: u32, y: u32) -> Option<&RefPtr<Sprite>> {
         let index = (y * self.map_width + x) as usize;
         self.tiles.get(index)
     }
@@ -86,7 +86,7 @@ impl TileMapLayer {
 #[derive(Debug)]
 pub struct TileMap {
     map_info: Option<TileMapInfo>,
-    layers: Vec<Ref<TileMapLayer>>,
+    layers: Vec<RefPtr<TileMapLayer>>,
 }
 
 impl TileMap {
@@ -114,15 +114,15 @@ impl TileMap {
         self.map_info.as_ref().map(|m| (m.tile_size.x, m.tile_size.y)).unwrap_or((0.0, 0.0))
     }
 
-    pub fn add_layer(&mut self, layer: Ref<TileMapLayer>) {
+    pub fn add_layer(&mut self, layer: RefPtr<TileMapLayer>) {
         self.layers.push(layer);
     }
 
-    pub fn get_layers(&self) -> &Vec<Ref<TileMapLayer>> {
+    pub fn get_layers(&self) -> &Vec<RefPtr<TileMapLayer>> {
         &self.layers
     }
 
-    pub fn get_layer_by_name(&self, name: &str) -> Option<&Ref<TileMapLayer>> {
+    pub fn get_layer_by_name(&self, name: &str) -> Option<&RefPtr<TileMapLayer>> {
         self.layers.iter().find(|l| l.borrow().get_layer_name() == name)
     }
 

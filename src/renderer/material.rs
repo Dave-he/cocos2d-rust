@@ -1,13 +1,13 @@
 use std::collections::HashMap;
-use crate::base::Ref;
+use crate::base::{Ref, RefPtr};
 use crate::base::types::Color4F;
-use crate::math::Vec4;
+use crate::math::{Vec4, Mat4};
 
 #[derive(Debug, Clone)]
 pub struct Material {
     name: String,
-    technique: Option<Ref<Technique>>,
-    techniques: HashMap<String, Ref<Technique>>,
+    technique: Option<RefPtr<Technique>>,
+    techniques: HashMap<String, RefPtr<Technique>>,
     state: MaterialState,
 }
 
@@ -38,19 +38,19 @@ impl Material {
         &self.name
     }
 
-    pub fn set_technique(&mut self, technique: Ref<Technique>) {
+    pub fn set_technique(&mut self, technique: RefPtr<Technique>) {
         self.technique = Some(technique);
     }
 
-    pub fn get_technique(&self) -> Option<&Ref<Technique>> {
+    pub fn get_technique(&self) -> Option<&RefPtr<Technique>> {
         self.technique.as_ref()
     }
 
-    pub fn add_technique(&mut self, name: &str, technique: Ref<Technique>) {
+    pub fn add_technique(&mut self, name: &str, technique: RefPtr<Technique>) {
         self.techniques.insert(name.to_string(), technique);
     }
 
-    pub fn get_technique_by_name(&self, name: &str) -> Option<&Ref<Technique>> {
+    pub fn get_technique_by_name(&self, name: &str) -> Option<&RefPtr<Technique>> {
         self.techniques.get(name)
     }
 
@@ -116,7 +116,7 @@ impl MaterialState {
 #[derive(Debug)]
 pub struct Technique {
     name: String,
-    passes: Vec<Ref<Pass>>,
+    passes: Vec<RefPtr<Pass>>,
     render_states: Vec<RenderState>,
 }
 
@@ -145,11 +145,11 @@ impl Technique {
         &self.name
     }
 
-    pub fn add_pass(&mut self, pass: Ref<Pass>) {
+    pub fn add_pass(&mut self, pass: RefPtr<Pass>) {
         self.passes.push(pass);
     }
 
-    pub fn get_passes(&self) -> &Vec<Ref<Pass>> {
+    pub fn get_passes(&self) -> &Vec<RefPtr<Pass>> {
         &self.passes
     }
 
@@ -165,7 +165,7 @@ impl Technique {
 #[derive(Debug, Clone)]
 pub struct Pass {
     name: String,
-    program: Option<Ref<Program>>,
+    program: Option<RefPtr<Program>>,
     render_state: RenderState,
     uniform_data: HashMap<String, UniformValue>,
 }
@@ -188,11 +188,11 @@ impl Pass {
         &self.name
     }
 
-    pub fn set_program(&mut self, program: Ref<Program>) {
+    pub fn set_program(&mut self, program: RefPtr<Program>) {
         self.program = Some(program);
     }
 
-    pub fn get_program(&self) -> Option<&Ref<Program>> {
+    pub fn get_program(&self) -> Option<&RefPtr<Program>> {
         self.program.as_ref()
     }
 
