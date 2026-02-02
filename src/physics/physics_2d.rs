@@ -1,12 +1,43 @@
 use crate::math::Vec2;
+use std::sync::Arc;
+
+/// Physics material properties
+#[derive(Debug, Clone, Copy)]
+pub struct PhysicsMaterial {
+    /// Density of the material (kg/m²)
+    pub density: f32,
+    /// Restitution (bounciness) - 0.0 to 1.0
+    pub restitution: f32,
+    /// Friction coefficient - 0.0 to 1.0
+    pub friction: f32,
+}
+
+impl PhysicsMaterial {
+    pub const DEFAULT: PhysicsMaterial = PhysicsMaterial {
+        density: 0.1,
+        restitution: 0.5,
+        friction: 0.5,
+    };
+
+    pub fn new(density: f32, restitution: f32, friction: f32) -> Self {
+        PhysicsMaterial {
+            density,
+            restitution: restitution.clamp(0.0, 1.0),
+            friction: friction.clamp(0.0, 1.0),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PhysicsShapeType {
+    UNKNOWN,
     CIRCLE,
     BOX,
     POLYGON,
-    EDGE,
-    CHAIN,
+    EDGE_SEGMENT,
+    EDGE_BOX,
+    EDGE_POLYGON,
+    EDGE_CHAIN,
 }
 
 #[derive(Debug)]
@@ -15,6 +46,11 @@ pub struct PhysicsShape {
     area: f32,
     moment: f32,
     tag: i32,
+    material: PhysicsMaterial,
+    sensor: bool,
+    category_bitmask: u32,
+    collision_bitmask: u32,
+    contact_test_bitmask: u32,
     body: Option<*const PhysicsBody>,
 }
 
@@ -25,8 +61,101 @@ impl PhysicsShape {
             area: 0.0,
             moment: 0.0,
             tag: 0,
+            material: PhysicsMaterial::DEFAULT,
+            sensor: false,
+            category_bitmask: 0xFFFFFFFF,
+            collision_bitmask: 0xFFFFFFFF,
+            contact_test_bitmask: 0x00000000,
             body: None,
         }
+    }
+
+    /// Create a circle shape
+    pub fn create_circle(radius: f32, material: PhysicsMaterial, offset: Vec2) -> Self {
+        let area = std::f32::consts::PI * radius * radius;
+        let moment = material.density * area * radius * radius / 2.0;
+        
+        PhysicsShape {
+            shape_type: PhysicsShapeType::CIRCLE,
+            area,
+            moment,
+            tag: 0,
+            material,
+            sensor: false,
+            category_bitmask: 0xFFFFFFFF,
+            collision_bitmask: 0xFFFFFFFF,
+            contact_test_bitmask: 0x00000000,
+            body: None,
+        }
+    }
+
+    /// Create a box shape
+    pub fn create_box(size: Vec2, material: PhysicsMaterial, offset: Vec2) -> Self {
+        let area = size.x * size.y;
+        let moment = material.density * area * (size.x * size.x + size.y * size.y) / 12.0;
+        
+        PhysicsShape {
+            shape_type: PhysicsShapeType::BOX,
+            area,
+            moment,
+            tag: 0,
+            material,
+            sensor: false,
+            category_bitmask: 0xFFFFFFFF,
+            collision_bitmask: 0xFFFFFFFF,
+            contact_test_bitmask: 0x00000000,
+            body: None,
+        }
+    }
+
+    /// Create a polygon shape
+    pub fn create_polygon(points: &[Vec2], material: PhysicsMaterial, offset: Vec2) -> Self {
+        // Simple area calculation for convex polygon
+        let area = Self::calculate_polygon_area(points);
+        let moment = material.density * area * 100.0; // Simplified moment calculation
+        
+        PhysicsShape {
+            shape_type: PhysicsShapeType::POLYGON,
+            area,
+            moment,
+            tag: 0,
+            material,
+            sensor: false,
+            category_bitmask: 0xFFFFFFFF,
+            collision_bitmask: 0xFFFFFFFF,
+            contact_test_bitmask: 0x00000000,
+            body: None,
+        }
+    }
+
+    /// Create an edge segment shape
+    pub fn create_edge_segment(a: Vec2, b: Vec2, material: PhysicsMaterial, border: f32) -> Self {
+        PhysicsShape {
+            shape_type: PhysicsShapeType::EDGE_SEGMENT,
+            area: 0.0,
+            moment: f32::INFINITY,
+            tag: 0,
+            material,
+            sensor: false,
+            category_bitmask: 0xFFFFFFFF,
+            collision_bitmask: 0xFFFFFFFF,
+            contact_test_bitmask: 0x00000000,
+            body: None,
+        }
+    }
+
+    fn calculate_polygon_area(points: &[Vec2]) -> f32 {
+        if points.len() < 3 {
+            return 0.0;
+        }
+        
+        let mut area = 0.0;
+        for i in 0..points.len() {
+            let j = (i + 1) % points.len();
+            area += points[i].x * points[j].y;
+            area -= points[j].x * points[i].y;
+        }
+        (area / 2.0).abs()
     }
 
     pub fn get_type(&self) -> PhysicsShapeType {
@@ -46,7 +175,47 @@ impl PhysicsShape {
     }
 
     pub fn set_tag(&mut self, tag: i32) {
-        self.tag = tag;
+      self.tag = tag;
+    }
+
+    pub fn get_material(&self) -> PhysicsMaterial {
+        self.material
+    }
+
+    pub fn set_material(&mut self, material: PhysicsMaterial) {
+        self.material = material;
+    }
+
+    pub fn is_sensor(&self) -> bool {
+        self.sensor
+    }
+
+    pub fn set_sensor(&mut self, sensor: bool) {
+        self.sensor = sensor;
+    }
+
+    pub fn get_category_bitmask(&self) -> u32 {
+        self.category_bitmask
+    }
+
+    pub fn set_category_bitmask(&mut self, bitmask: u32) {
+        self.category_bitmask = bitmask;
+    }
+
+    pub fn get_collision_bitmask(&self) -> u32 {
+        self.collision_bitmask
+    }
+
+    pub fn set_collision_bitmask(&mut self, bitmask: u32) {
+        self.collision_bitmask = bitmask;
+    }
+
+    pub fn get_contact_test_bitmask(&self) -> u32 {
+        self.contact_test_bitmask
+    }
+
+    pub fn set_contact_test_bitmask(&mut self, bitmask: u32) {
+        self.contact_test_bitmask = bitmask;
     }
 
     pub fn get_body(&self) -> Option<&PhysicsBody> {
@@ -208,6 +377,39 @@ impl PhysicsBody {
     pub fn set_collision_enabled(&mut self, enabled: bool) {
         self.collision_enabled = enabled;
     }
+
+    /// Apply an impulse to the body
+    pub fn apply_impulse(&mut self, impulse: Vec2, offset: Vec2) {
+        if self.body_type == PhysicsBodyType::DYNAMIC {
+            self.linear_velocity = self.linear_velocity + impulse / self.mass;
+            // Angular impulse calculation
+            let r = offset;
+            let angular_impulse = r.x * impulse.y - r.y * impulse.x;
+            self.angular_velocity += angular_impulse / self.moment;
+        }
+    }
+
+    /// Apply a force to the body
+    pub fn apply_force(&mut self, force: Vec2, offset: Vec2, delta_time: f32) {
+        if self.body_type == PhysicsBodyType::DYNAMIC {
+            let impulse = force * delta_time;
+            self.apply_impulse(impulse, offset);
+        }
+    }
+
+    /// Get the velocity at a point
+    pub fn get_velocity_at_local_point(&self, point: Vec2) -> Vec2 {
+        let r = point - self.position;
+        Vec2::new(
+            self.linear_velocity.x - r.y * self.angular_velocity,
+            self.linear_velocity.y + r.x * self.angular_velocity,
+        )
+    }
+
+    /// Reset forces
+    pub fn reset_forces(&mut self) {
+        // In a real implementation, this would reset accumulated forces
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -268,11 +470,34 @@ impl PhysicsJoint {
     }
 }
 
+/// Ray cast result information
+#[derive(Debug, Clone)]
+pub struct RayCastInfo {
+    pub shape: usize,  // Shape ID
+    pub start: Vec2,
+    pub end: Vec2,
+    pub contact: Vec2,
+    pub normal: Vec2,
+    pub fraction: f32,
+}
+
+/// Query result for rect/point queries
+#[derive(Debug, Clone)]
+pub struct QueryInfo {
+    pub shape: usize,  // Shape ID
+}
+
 #[derive(Debug)]
 pub struct PhysicsWorld {
     gravity: Vec2,
     speed: f32,
     debug_draw_flags: u32,
+    substeps: i32,
+    update_rate: i32,
+    bodies: Vec<PhysicsBody>,
+    shapes: Vec<PhysicsShape>,
+    joints: Vec<PhysicsJoint>,
+    auto_step: bool,
 }
 
 impl PhysicsWorld {
@@ -281,6 +506,12 @@ impl PhysicsWorld {
             gravity: Vec2::new(0.0, -98.0),
             speed: 1.0,
             debug_draw_flags: 0,
+            substeps: 1,
+            update_rate: 1,
+            bodies: Vec::new(),
+            shapes: Vec::new(),
+            joints: Vec::new(),
+            auto_step: true,
         }
     }
 
@@ -300,25 +531,169 @@ impl PhysicsWorld {
         self.speed = speed;
     }
 
+    pub fn get_substeps(&self) -> i32 {
+        self.substeps
+    }
+
+    pub fn set_substeps(&mut self, substeps: i32) {
+        self.substeps = substeps.max(1);
+    }
+
+    pub fn get_update_rate(&self) -> i32 {
+        self.update_rate
+    }
+
+    pub fn set_update_rate(&mut self, rate: i32) {
+        self.update_rate = rate.max(1);
+    }
+
     pub fn add_body(&mut self, body: &PhysicsBody) {
+        // In real implementation, this would add the body to the physics simulation
     }
 
     pub fn remove_body(&mut self, body: &PhysicsBody) {
+        // In real implementation, this would remove the body from the physics simulation
     }
 
     pub fn add_shape(&mut self, shape: &PhysicsShape) {
+        // In real implementation, this would add the shape to the physics simulation
     }
 
     pub fn remove_shape(&mut self, shape: &PhysicsShape) {
+        // In real implementation, this would remove the shape from the physics simulation
     }
 
     pub fn add_joint(&mut self, joint: &PhysicsJoint) {
+        // In real implementation, this would add the joint to the physics simulation
     }
 
     pub fn remove_joint(&mut self, joint: &PhysicsJoint) {
+        // In real implementation, this would remove the joint from the physics simulation
     }
 
+    /// Perform a ray cast in the physics world
+    pub fn ray_cast(&self, start: Vec2, end: Vec2) -> Vec<RayCastInfo> {
+        let mut results = Vec::new();
+        
+        // Simple ray-circle intersection for demonstration
+        // In real implementation, this would use Chipmunk or Box2D
+        for (i, shape) in self.shapes.iter().enumerate() {
+            if shape.get_type() == PhysicsShapeType::CIRCLE {
+                // Simplified ray-circle intersection
+                if let Some(hit) = self.ray_circle_intersect(start, end, Vec2::ZERO, 10.0) {
+                    results.push(RayCastInfo {
+                        shape: i,
+                        start,
+                        end,
+                        contact: hit.0,
+                        normal: hit.1,
+                        fraction: hit.2,
+                    });
+                }
+            }
+        }
+        
+        results
+    }
+
+    fn ray_circle_intersect(&self, start: Vec2, end: Vec2, center: Vec2, radius: f32) 
+        -> Option<(Vec2, Vec2, f32)> {
+        let d = end - start;
+        let f = start - center;
+        
+        let a = d.dot(d);
+        let b = 2.0 * f.dot(d);
+        let c = f.dot(f) - radius * radius;
+        
+        let discriminant = b * b - 4.0 * a * c;
+        
+        if discriminant < 0.0 {
+            return None;
+        }
+        
+        let t = (-b - discriminant.sqrt()) / (2.0 * a);
+        
+        if t >= 0.0 && t <= 1.0 {
+            let contact = start + d * t;
+            let normal = (contact - center).normalize();
+            Some((contact, normal, t))
+        } else {
+            None
+        }
+    }
+
+    /// Query shapes in a rectangle
+    pub fn query_rect(&self, rect_start: Vec2, rect_end: Vec2) -> Vec<QueryInfo> {
+        let mut results = Vec::new();
+        
+        // Simple AABB intersection for demonstration
+        for (i, _shape) in self.shapes.iter().enumerate() {
+            // In real implementation, check if shape intersects with rect
+            results.push(QueryInfo { shape: i });
+        }
+        
+        results
+    }
+
+    /// Query shapes at a point
+    pub fn query_point(&self, point: Vec2) -> Vec<QueryInfo> {
+        let mut results = Vec::new();
+        
+        // Check if point is inside any shape
+        for (i, _shape) in self.shapes.iter().enumerate() {
+            // In real implementation, check if point is inside shape
+            results.push(QueryInfo { shape: i });
+        }
+        
+        results
+    }
+
+    /// Get all bodies in the world
+    pub fn get_all_bodies(&self) -> &[PhysicsBody] {
+        &self.bodies
+    }
+
+    /// Step the physics simulation
     pub fn step(&mut self, delta: f32) {
+        if !self.auto_step {
+            return;
+        }
+
+        let dt = delta * self.speed / self.substeps as f32;
+        
+        for _ in 0..self.substeps {
+            // Apply gravity
+            for body in &mut self.bodies {
+                if body.is_gravity_enabled() && body.get_type() == PhysicsBodyType::DYNAMIC {
+                    let force = self.gravity * body.get_mass();
+                    body.apply_force(force, Vec2::ZERO, dt);
+                }
+            }
+            
+            // Update positions (simplified Euler integration)
+            for body in &mut self.bodies {
+                if body.get_type() == PhysicsBodyType::DYNAMIC && body.is_enabled() {
+                    let pos = body.get_position();
+                    let vel = body.get_velocity();
+                    body.set_position(pos + vel * dt);
+                    
+                    let rot = body.get_rotation();
+                    let ang_vel = body.get_angular_velocity();
+                    body.set_rotation(rot + ang_vel * dt);
+                }
+            }
+            
+            // Collision detection and response would go here
+            // In real implementation, this would use Chipmunk or Box2D
+        }
+    }
+
+    pub fn set_auto_step(&mut self, auto_step: bool) {
+        self.auto_step = auto_step;
+    }
+
+    pub fn is_auto_step(&self) -> bool {
+        self.auto_step
     }
 
     pub fn set_debug_draw_enabled(&mut self, enabled: bool) {

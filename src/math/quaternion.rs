@@ -208,3 +208,103 @@ impl Mul<Vec3> for Quaternion {
         Vec3::new(res.x, res.y, res.z)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    #[test]
+    fn test_quaternion_identity() {
+        let q = Quaternion::identity();
+        assert!(q.is_identity());
+    }
+
+    #[test]
+    fn test_quaternion_new() {
+        let q = Quaternion::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(q.x, 1.0);
+        assert_eq!(q.y, 2.0);
+        assert_eq!(q.z, 3.0);
+        assert_eq!(q.w, 4.0);
+    }
+
+    #[test]
+    fn test_quaternion_from_axis_angle() {
+        let q = Quaternion::from_axis_angle(Vec3::UNIT_Z, std::f32::consts::FRAC_PI_2);
+        
+        // Should create a valid rotation quaternion
+        assert!(!q.is_identity());
+    }
+
+    #[test]
+    fn test_quaternion_is_identity() {
+        assert!(Quaternion::identity().is_identity());
+        assert!(!Quaternion::new(1.0, 0.0, 0.0, 0.0).is_identity());
+    }
+
+    #[test]
+    fn test_quaternion_multiply() {
+        let q1 = Quaternion::identity();
+        let q2 = Quaternion::new(1.0, 0.0, 0.0, 0.0);
+        let result = q1 * q2;
+        assert_eq!(result.x, 1.0);
+    }
+
+    #[test]
+    fn test_quaternion_normalize() {
+        let mut q = Quaternion::new(2.0, 0.0, 0.0, 0.0);
+        q.normalize();
+        // Normalized quaternion should have squared length = 1
+        let len_sq = q.x * q.x + q.y * q.y + q.z * q.z + q.w * q.w;
+        assert!((len_sq - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_quaternion_conjugate() {
+        let q = Quaternion::new(1.0, 2.0, 3.0, 4.0);
+        let conj = q.get_conjugated();
+        assert_eq!(conj.x, -1.0);
+        assert_eq!(conj.y, -2.0);
+        assert_eq!(conj.z, -3.0);
+        assert_eq!(conj.w, 4.0);
+    }
+
+    #[test]
+    fn test_quaternion_rotate_vec3() {
+        let q = Quaternion::from_axis_angle(Vec3::UNIT_Z, std::f32::consts::FRAC_PI_2);
+        let v = Vec3::new(1.0, 0.0, 0.0);
+        let result = q * v;
+        
+        // Should rotate 90 degrees around Z
+        assert!((result.x - 0.0).abs() < EPSILON);
+        assert!((result.y - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_quaternion_lerp() {
+        let q1 = Quaternion::identity();
+        let q2 = Quaternion::new(0.0, 0.0, 0.0, 1.0); // 180 degree rotation
+        let mid = Quaternion::slerp(&q1, &q2, 0.5);
+        
+        // Should be somewhere between
+        assert!(mid.w > 0.0 && mid.w < 1.0);
+    }
+
+    #[test]
+    fn test_quaternion_set() {
+        let mut q = Quaternion::identity();
+        q.set(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(q.x, 1.0);
+    }
+
+    #[test]
+    fn test_quaternion_to_axis_angle() {
+        let q = Quaternion::identity();
+        let (axis, angle) = q.to_axis_angle();
+        
+        // Identity quaternion should have arbitrary axis, zero angle
+        assert!((angle - 0.0).abs() < EPSILON);
+    }
+}

@@ -297,3 +297,198 @@ impl Mul<Vec4> for Mat4 {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    #[test]
+    fn test_mat4_constants() {
+        assert_eq!(Mat4::IDENTITY, Mat4::new(
+            1.0, 0.0, 0.0, 0.0,
+            0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0,
+            0.0, 0.0, 0.0, 1.0
+        ));
+        
+        for &val in &Mat4::ZERO.m {
+            assert_eq!(val, 0.0);
+        }
+    }
+
+    #[test]
+    fn test_mat4_new() {
+        let m = Mat4::new(
+            1.0, 2.0, 3.0, 4.0,
+            5.0, 6.0, 7.0, 8.0,
+            9.0, 10.0, 11.0, 12.0,
+            13.0, 14.0, 15.0, 16.0
+        );
+        assert_eq!(m.m[0], 1.0);
+        assert_eq!(m.m[15], 16.0);
+    }
+
+    #[test]
+    fn test_mat4_from_array() {
+        let arr = [1.0; 16];
+        let m = Mat4::from_array(&arr);
+        assert_eq!(m.m, [1.0; 16]);
+    }
+
+    #[test]
+    fn test_mat4_to_array() {
+        let m = Mat4::IDENTITY;
+        let arr = m.to_array();
+        assert_eq!(arr[0], 1.0);
+        assert_eq!(arr[5], 1.0);
+        assert_eq!(arr[10], 1.0);
+        assert_eq!(arr[15], 1.0);
+    }
+
+    #[test]
+    fn test_mat4_is_identity() {
+        assert!(Mat4::IDENTITY.is_identity());
+        assert!(!Mat4::ZERO.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_set_identity() {
+        let mut m = Mat4::ZERO;
+        m.set_identity();
+        assert!(m.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_set_zero() {
+        let mut m = Mat4::IDENTITY;
+        m.set_zero();
+        for &val in &m.m {
+            assert_eq!(val, 0.0);
+        }
+    }
+
+    #[test]
+    fn test_mat4_multiply() {
+        let mut m = Mat4::IDENTITY;
+        m.multiply(&Mat4::IDENTITY);
+        assert!(m.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_create_look_at() {
+        let eye = Vec3::new(0.0, 0.0, 5.0);
+        let target = Vec3::ZERO;
+        let up = Vec3::UNIT_Y;
+        
+        let m = Mat4::create_look_at(&eye, &target, &up);
+        
+        // Verify it's a valid view matrix
+        assert!(!m.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_create_perspective() {
+        let m = Mat4::create_perspective(
+            60.0,  // field of view
+            16.0 / 9.0,  // aspect ratio
+            0.1,  // z near
+            1000.0  // z far
+        );
+        
+        // Verify perspective matrix properties
+        assert!(m.m[0] > 0.0);  // x scale should be positive
+        assert!(m.m[5] > 0.0);  // y scale should be positive
+        assert!(m.m[10] < 0.0); // z should be negative (OpenGL convention)
+    }
+
+    #[test]
+    fn test_mat4_create_orthographic() {
+        let m = Mat4::create_orthographic(100.0, 100.0, -1.0, 1.0);
+        
+        // Verify orthographic properties
+        assert!(!m.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_create_translation() {
+        let m = Mat4::create_translation(&Vec3::new(10.0, 20.0, 30.0));
+        
+        // Translation matrix should have correct position
+        assert_eq!(m.m[12], 10.0);
+        assert_eq!(m.m[13], 20.0);
+        assert_eq!(m.m[14], 30.0);
+    }
+
+    #[test]
+    fn test_mat4_create_scale() {
+        let m = Mat4::create_scale(&Vec3::new(2.0, 3.0, 4.0));
+        
+        // Scale matrix should have correct scale values
+        assert_eq!(m.m[0], 2.0);
+        assert_eq!(m.m[5], 3.0);
+        assert_eq!(m.m[10], 4.0);
+    }
+
+    #[test]
+    fn test_mat4_create_rotation() {
+        let quat = Quaternion::new(0.0, 0.0, 0.0, 1.0); // Identity quaternion
+        let m = Mat4::create_rotation(&quat);
+        
+        // Rotation from identity should be close to identity
+        assert!(m.is_identity());
+    }
+
+    #[test]
+    fn test_mat4_transform_point() {
+        let m = Mat4::create_translation(&Vec3::new(10.0, 20.0, 30.0));
+        let p = Vec3::new(1.0, 2.0, 3.0);
+        let result = m.transform_point(&p);
+        
+        assert_eq!(result, Vec3::new(11.0, 22.0, 33.0));
+    }
+
+    #[test]
+    fn test_mat4_transform_vector() {
+        let m = Mat4::create_scale(&Vec3::new(2.0, 2.0, 2.0));
+        let v = Vec3::new(1.0, 1.0, 1.0);
+        let result = m.transform_vector(&v);
+        
+        assert_eq!(result, Vec3::new(2.0, 2.0, 2.0));
+    }
+
+    #[test]
+    fn test_mat4_multiply_vec4() {
+        let m = Mat4::IDENTITY;
+        let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        let result = m * v;
+        
+        assert_eq!(result.x, 1.0);
+        assert_eq!(result.y, 2.0);
+        assert_eq!(result.z, 3.0);
+        assert_eq!(result.w, 4.0);
+    }
+
+    #[test]
+    fn test_mat4_multiply_vec3() {
+        let m = Mat4::IDENTITY;
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        let result = m * v;
+        
+        assert_eq!(result, Vec3::new(1.0, 2.0, 3.0));
+    }
+
+    #[test]
+    fn test_mat4_multiply_combined() {
+        let translate = Mat4::create_translation(&Vec3::new(10.0, 0.0, 0.0));
+        let scale = Mat4::create_scale(&Vec3::new(2.0, 2.0, 2.0));
+        
+        let combined = translate * scale;
+        
+        // Should scale first, then translate
+        let v = Vec3::new(1.0, 1.0, 1.0);
+        let result = combined * v;
+        assert_eq!(result, Vec3::new(12.0, 2.0, 2.0));
+    }
+}
