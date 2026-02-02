@@ -1,5 +1,5 @@
 use crate::base::{Ref, RefPtr};
-use crate::math::{Vec3, Quaternion};
+use crate::math::{Quaternion, Vec3};
 use std::f32::consts::PI;
 
 #[derive(Debug)]
@@ -226,7 +226,13 @@ impl AnimationComponent {
         }
     }
 
-    pub fn get_bone_transform(&self, bone_name: &str, position: &mut Vec3, rotation: &mut Quaternion, scale: &mut Vec3) {
+    pub fn get_bone_transform(
+        &self,
+        bone_name: &str,
+        position: &mut Vec3,
+        rotation: &mut Quaternion,
+        scale: &mut Vec3,
+    ) {
         *position = Vec3::ZERO;
         *rotation = Quaternion::identity();
         *scale = Vec3::new(1.0, 1.0, 1.0);

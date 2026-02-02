@@ -2,35 +2,116 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum KeyCode {
     // 字母键
-    A, B, C, D, E, F, G, H, I, J, K, L, M,
-    N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
-    
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V,
+    W,
+    X,
+    Y,
+    Z,
+
     // 数字键
-    Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,
-    
+    Num0,
+    Num1,
+    Num2,
+    Num3,
+    Num4,
+    Num5,
+    Num6,
+    Num7,
+    Num8,
+    Num9,
+
     // 功能键
-    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
-    
+    F1,
+    F2,
+    F3,
+    F4,
+    F5,
+    F6,
+    F7,
+    F8,
+    F9,
+    F10,
+    F11,
+    F12,
+
     // 方向键
-    Left, Right, Up, Down,
-    
+    Left,
+    Right,
+    Up,
+    Down,
+
     // 控制键
-    Escape, Tab, CapsLock, Shift, Control, Alt, Super,
-    Space, Enter, Backspace, Delete,
-    
+    Escape,
+    Tab,
+    CapsLock,
+    Shift,
+    Control,
+    Alt,
+    Super,
+    Space,
+    Enter,
+    Backspace,
+    Delete,
+
     // 编辑键
-    Insert, Home, End, PageUp, PageDown,
-    
+    Insert,
+    Home,
+    End,
+    PageUp,
+    PageDown,
+
     // 符号键
-    Minus, Equals, LeftBracket, RightBracket,
-    Backslash, Semicolon, Quote, Comma, Period, Slash,
+    Minus,
+    Equals,
+    LeftBracket,
+    RightBracket,
+    Backslash,
+    Semicolon,
+    Quote,
+    Comma,
+    Period,
+    Slash,
     Grave,
-    
+
     // 数字键盘
-    KpDivide, KpMultiply, KpMinus, KpPlus, KpEnter,
-    Kp0, Kp1, Kp2, Kp3, Kp4, Kp5, Kp6, Kp7, Kp8, Kp9,
+    KpDivide,
+    KpMultiply,
+    KpMinus,
+    KpPlus,
+    KpEnter,
+    Kp0,
+    Kp1,
+    Kp2,
+    Kp3,
+    Kp4,
+    Kp5,
+    Kp6,
+    Kp7,
+    Kp8,
+    Kp9,
     KpDecimal,
-    
+
     // 其他
     Unknown,
 }
@@ -109,7 +190,7 @@ mod tests {
         let event = KeyboardEvent::new(KeyCode::A, KeyEventType::Pressed)
             .with_modifiers(true, false, false, false)
             .with_character('A');
-        
+
         assert_eq!(event.key_code, KeyCode::A);
         assert_eq!(event.event_type, KeyEventType::Pressed);
         assert!(event.shift);

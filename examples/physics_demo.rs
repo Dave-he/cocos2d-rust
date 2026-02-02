@@ -1,4 +1,4 @@
-use cocos2d_rust::{PhysicsWorld, PhysicsBody, Vec2};
+use cocos2d_rust::{PhysicsBody, PhysicsWorld, Vec2};
 
 fn main() {
     println!("=== Cocos2d-Rust Physics Demo ===\n");

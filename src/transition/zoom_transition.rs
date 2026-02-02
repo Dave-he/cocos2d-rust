@@ -1,7 +1,7 @@
 use super::transition_scene::TransitionScene;
 use crate::Scene;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 缩放过渡
 pub struct ZoomTransition {
@@ -60,11 +60,11 @@ impl ZoomTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         // 总是更新缩放，即使已经完成
         let progress = self.transition.progress();
         self.current_scale = self.start_scale + (self.end_scale - self.start_scale) * progress;
-        
+
         if !self.transition.is_finished() {
             self.apply_scale(self.current_scale);
         }
@@ -99,7 +99,7 @@ mod tests {
     fn test_zoom_transition_creation() {
         let in_scene = create_test_scene();
         let zoom = ZoomTransition::new(1.0, in_scene);
-        
+
         assert_eq!(zoom.start_scale, 0.0);
         assert_eq!(zoom.end_scale, 1.0);
     }
@@ -108,7 +108,7 @@ mod tests {
     fn test_zoom_in() {
         let in_scene = create_test_scene();
         let zoom = ZoomTransition::zoom_in(1.0, in_scene);
-        
+
         assert_eq!(zoom.start_scale, 0.0);
         assert_eq!(zoom.end_scale, 1.0);
     }
@@ -117,7 +117,7 @@ mod tests {
     fn test_zoom_out() {
         let in_scene = create_test_scene();
         let zoom = ZoomTransition::zoom_out(1.0, in_scene);
-        
+
         assert_eq!(zoom.start_scale, 1.0);
         assert_eq!(zoom.end_scale, 0.0);
     }
@@ -126,13 +126,13 @@ mod tests {
     fn test_zoom_transition_update() {
         let in_scene = create_test_scene();
         let mut zoom = ZoomTransition::new(2.0, in_scene);
-        
+
         zoom.start();
         assert_eq!(zoom.current_scale(), 0.0);
-        
+
         zoom.update(1.0); // 50% 进度
         assert!((zoom.current_scale() - 0.5).abs() < 0.01);
-        
+
         zoom.update(1.0); // 100% 进度
         assert!((zoom.current_scale() - 1.0).abs() < 0.01);
         assert!(zoom.is_finished());

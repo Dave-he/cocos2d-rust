@@ -1,20 +1,20 @@
 use super::touch::{Touch, TouchId, TouchPhase};
 use crate::math::Vec2;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::RefCell;
 
 /// 触摸事件监听器
 pub trait TouchListener {
     /// 触摸开始
     fn on_touches_began(&mut self, touches: &[Touch]) -> bool;
-    
+
     /// 触摸移动
     fn on_touches_moved(&mut self, touches: &[Touch]) -> bool;
-    
+
     /// 触摸结束
     fn on_touches_ended(&mut self, touches: &[Touch]) -> bool;
-    
+
     /// 触摸取消
     fn on_touches_cancelled(&mut self, touches: &[Touch]) -> bool;
 
@@ -154,7 +154,7 @@ impl TouchDispatcher {
         // 按优先级分发事件
         for listener in &self.listeners {
             let handled = callback(listener, touches);
-            
+
             // 如果监听器吞没事件，停止分发
             if handled && listener.borrow().swallow_touches() {
                 break;
@@ -273,7 +273,7 @@ mod tests {
     #[test]
     fn test_touch_dispatcher_basic() {
         let mut dispatcher = TouchDispatcher::new();
-        
+
         let listener1 = Rc::new(RefCell::new(TestListener::new(0, false)));
         dispatcher.add_listener(listener1.clone());
 
@@ -287,10 +287,10 @@ mod tests {
     #[test]
     fn test_touch_dispatcher_priority() {
         let mut dispatcher = TouchDispatcher::new();
-        
+
         let listener1 = Rc::new(RefCell::new(TestListener::new(10, false)));
         let listener2 = Rc::new(RefCell::new(TestListener::new(20, false)));
-        
+
         dispatcher.add_listener(listener1.clone());
         dispatcher.add_listener(listener2.clone());
 
@@ -305,10 +305,10 @@ mod tests {
     #[test]
     fn test_touch_dispatcher_swallow() {
         let mut dispatcher = TouchDispatcher::new();
-        
+
         let listener1 = Rc::new(RefCell::new(TestListener::new(20, true))); // 吞没事件
         let listener2 = Rc::new(RefCell::new(TestListener::new(10, false)));
-        
+
         dispatcher.add_listener(listener1.clone());
         dispatcher.add_listener(listener2.clone());
 
@@ -323,7 +323,7 @@ mod tests {
     #[test]
     fn test_touch_lifecycle() {
         let mut dispatcher = TouchDispatcher::new();
-        
+
         let listener = Rc::new(RefCell::new(TestListener::new(0, false)));
         dispatcher.add_listener(listener.clone());
 

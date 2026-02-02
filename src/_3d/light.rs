@@ -1,5 +1,5 @@
-use crate::math::Vec3;
 use crate::base::types::Color3B;
+use crate::math::Vec3;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LightType {
@@ -77,7 +77,13 @@ impl Light {
         }
     }
 
-    pub fn create_spot(position: Vec3, direction: Vec3, color: Color3B, angle: f32, range: f32) -> Light {
+    pub fn create_spot(
+        position: Vec3,
+        direction: Vec3,
+        color: Color3B,
+        angle: f32,
+        range: f32,
+    ) -> Light {
         Light {
             light_type: LightType::SPOT,
             color,

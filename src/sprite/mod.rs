@@ -1,9 +1,9 @@
 use crate::base::{Node, Ref, RefPtr};
-use crate::base::types::{Color3B, Rect, Size};
+use crate::base::types::{Color3B, Rect, Size, BlendFunc};
 use crate::base::types::Color4F;
 use crate::math::Vec2;
 use crate::renderer::command::{Triangles, TrianglesCommand, Vertex};
-use crate::renderer::Renderer;
+use crate::renderer::{Renderer, Texture2D, TextureCache};
 use std::rc::Rc;
 use std::cell::RefCell;
 
@@ -45,21 +45,42 @@ impl Sprite {
             let data = data_clone.borrow();
             
             // Generate Quad/Triangles
-            // For now, let's just make a simple quad based on rect or default size
-            let width = if data.rect.size.width > 0.0 { data.rect.size.width } else { 100.0 };
-            let height = if data.rect.size.height > 0.0 { data.rect.size.height } else { 100.0 };
+            let mut width = 100.0;
+            let mut height = 100.0;
+            
+            if let Some(texture) = &data.texture {
+                if data.rect.size.width <= 0.0 {
+                     width = texture.borrow().get_width() as f32;
+                     height = texture.borrow().get_height() as f32;
+                } else {
+                     width = data.rect.size.width;
+                     height = data.rect.size.height;
+                }
+            } else if data.rect.size.width > 0.0 {
+                 width = data.rect.size.width;
+                 height = data.rect.size.height;
+            }
             
             let x = -width / 2.0;
             let y = -height / 2.0;
             
+            // Texture coordinates
+            let mut bl_uv = [0.0, 1.0];
+            let mut br_uv = [1.0, 1.0];
+            let mut tl_uv = [0.0, 0.0];
+            let mut tr_uv = [1.0, 0.0];
+            
+            // Handle texture rect if needed (simplified for now, full UV calculation would require texture size)
+            // If rect is used, we should map it to UVs
+            
             let mut bl = Vertex::with_position(x, y, 0.0);
-            bl.tex_coord = [0.0, 1.0];
+            bl.tex_coord = bl_uv;
             let mut br = Vertex::with_position(x + width, y, 0.0);
-            br.tex_coord = [1.0, 1.0];
+            br.tex_coord = br_uv;
             let mut tl = Vertex::with_position(x, y + height, 0.0);
-            tl.tex_coord = [0.0, 0.0];
+            tl.tex_coord = tl_uv;
             let mut tr = Vertex::with_position(x + width, y + height, 0.0);
-            tr.tex_coord = [1.0, 0.0];
+            tr.tex_coord = tr_uv;
             
             let color = Color4F::new(
                 data.color.r as f32 / 255.0,
@@ -77,7 +98,9 @@ impl Sprite {
             let indices = vec![0, 1, 2, 2, 1, 3];
             
             let mut cmd = Box::new(TrianglesCommand::new());
-            cmd.init(0.0, vertices, indices, (data.blend_func.src, data.blend_func.dst), *transform);
+            let texture = data.texture.clone();
+            
+            cmd.init(0.0, texture, vertices, indices, (data.blend_func.src, data.blend_func.dst), *transform);
             
             renderer.add_command(cmd);
         }));
@@ -186,122 +209,5 @@ impl Sprite {
     /// Gets mutable node
     pub fn get_node_mut(&mut self) -> &mut RefPtr<Node> {
         &mut self.node
-    }
-}
-
-/// Blend function for rendering
-#[derive(Debug, Clone, Copy, PartialEq)]
-pub struct BlendFunc {
-    pub src: u32,
-    pub dst: u32,
-}
-
-impl BlendFunc {
-    pub const DISABLE: BlendFunc = BlendFunc { src: 0, dst: 0 };
-    pub const ALPHA_NON_PREMULTIPLIED: BlendFunc = BlendFunc { src: 770, dst: 771 };
-    pub const ALPHA_PREMULTIPLIED: BlendFunc = BlendFunc { src: 1, dst: 771 };
-    pub const ADDITIVE: BlendFunc = BlendFunc { src: 1, dst: 1 };
-
-    pub fn new(src: u32, dst: u32) -> Self {
-        BlendFunc { src, dst }
-    }
-}
-
-/// Texture2D represents an OpenGL texture
-#[derive(Debug)]
-pub struct Texture2D {
-    name: u32,
-    width: u32,
-    height: u32,
-    path: String,
-}
-
-impl Texture2D {
-    /// Creates a new texture with the given dimensions
-    pub fn new(width: u32, height: u32) -> Texture2D {
-        Texture2D {
-            name: 0,
-            width,
-            height,
-            path: String::new(),
-        }
-    }
-
-    /// Gets the texture name
-    pub fn get_name(&self) -> u32 {
-        self.name
-    }
-
-    /// Gets the texture width
-    pub fn get_width(&self) -> u32 {
-        self.width
-    }
-
-    /// Gets the texture height
-    pub fn get_height(&self) -> u32 {
-        self.height
-    }
-
-    /// Gets the texture path
-    pub fn get_path(&self) -> &str {
-        &self.path
-    }
-}
-
-/// TextureCache manages all textures
-#[derive(Debug)]
-pub struct TextureCache {
-    textures: std::collections::HashMap<String, RefPtr<Texture2D>>,
-}
-
-impl TextureCache {
-    /// Gets the singleton instance
-    pub fn get_instance() -> &'static mut TextureCache {
-        static mut TEXTURE_CACHE: Option<TextureCache> = None;
-        unsafe {
-            if TEXTURE_CACHE.is_none() {
-                TEXTURE_CACHE = Some(TextureCache::new());
-            }
-            TEXTURE_CACHE.as_mut().unwrap()
-        }
-    }
-
-    /// Creates a new texture cache
-    pub fn new() -> TextureCache {
-        TextureCache {
-            textures: std::collections::HashMap::new(),
-        }
-    }
-
-    /// Adds a texture from a file
-    pub fn add_image(&mut self, path: &str) -> Option<RefPtr<Texture2D>> {
-        if let Some(texture) = self.textures.get(path) {
-            return Some(texture.clone());
-        }
-
-        // In a real implementation, this would load the texture from file
-        let texture = RefPtr::new(Texture2D::new(0, 0));
-        self.textures.insert(path.to_string(), texture.clone());
-        Some(texture)
-    }
-
-    /// Adds a texture with a key
-    pub fn add_texture(&mut self, key: &str, texture: RefPtr<Texture2D>) {
-        self.textures.insert(key.to_string(), texture);
-    }
-
-    /// Gets a texture by key
-    pub fn get_texture(&self, key: &str) -> Option<&RefPtr<Texture2D>> {
-        self.textures.get(key)
-    }
-
-    /// Removes a texture
-    pub fn remove_texture(&mut self, key: &str) {
-        self.textures.remove(key);
-    }
-
-    /// Removes all textures
-    pub fn remove_all_textures(&mut self) {
-        self.textures.clear();
     }
 }

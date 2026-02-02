@@ -1,9 +1,9 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use std::path::PathBuf;
 
-use super::audio_player::{AudioPlayer, AudioSource, AudioBuffer, AudioListener, AudioState};
+use super::audio_player::{AudioBuffer, AudioListener, AudioPlayer, AudioSource, AudioState};
 
 #[derive(Debug)]
 pub struct AudioEngine {
@@ -57,7 +57,10 @@ impl AudioEngine {
     fn preload_internal(&mut self, file_path: &str) {
         let path = PathBuf::from(file_path);
         if path.exists() {
-            self.audio_buffers.insert(file_path.to_string(), Arc::new(Mutex::new(AudioBuffer::new())));
+            self.audio_buffers.insert(
+                file_path.to_string(),
+                Arc::new(Mutex::new(AudioBuffer::new())),
+            );
         }
     }
 
@@ -80,14 +83,15 @@ impl AudioEngine {
 
         let id = self.current_audio_id;
         self.audio_players.insert(id, Arc::new(Mutex::new(player)));
-        self.audio_sources.insert(file_path.to_string(), Arc::new(Mutex::new(source)));
+        self.audio_sources
+            .insert(file_path.to_string(), Arc::new(Mutex::new(source)));
 
         // 通过 HashMap 获取并调用 play
         if let Some(player_arc) = self.audio_players.get(&id) {
             let mut player = player_arc.lock().unwrap();
             player.play();
         }
-        
+
         id
     }
 

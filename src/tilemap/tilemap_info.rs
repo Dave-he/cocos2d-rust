@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::math::Vec2;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct TileSet {
@@ -81,7 +81,12 @@ pub struct Rect {
 
 impl Rect {
     pub fn new(x: f32, y: f32, width: f32, height: f32) -> Rect {
-        Rect { x, y, width, height }
+        Rect {
+            x,
+            y,
+            width,
+            height,
+        }
     }
 
     pub fn get_x(&self) -> f32 {

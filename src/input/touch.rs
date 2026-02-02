@@ -174,7 +174,7 @@ mod tests {
     fn test_touch_update() {
         let mut touch = Touch::new(1, Vec2::new(100.0, 200.0));
         touch.update_location(Vec2::new(150.0, 250.0), TouchPhase::Moved);
-        
+
         assert_eq!(touch.location(), Vec2::new(150.0, 250.0));
         assert_eq!(touch.previous_location(), Vec2::new(100.0, 200.0));
         assert_eq!(touch.delta(), Vec2::new(50.0, 50.0));
@@ -184,14 +184,14 @@ mod tests {
     #[test]
     fn test_touch_pressure() {
         let mut touch = Touch::new(1, Vec2::new(100.0, 200.0));
-        
+
         touch.set_pressure(0.5);
         assert_eq!(touch.pressure(), 0.5);
-        
+
         // 测试压力范围限制
         touch.set_pressure(1.5);
         assert_eq!(touch.pressure(), 1.0);
-        
+
         touch.set_pressure(-0.5);
         assert_eq!(touch.pressure(), 0.0);
     }

@@ -1,9 +1,9 @@
 use crate::base::{Ref, RefPtr};
-use crate::ui::Widget;
 use crate::input::Touch;
 use crate::math::Vec2;
-use std::rc::Rc;
+use crate::ui::Widget;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 滑动条方向
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -82,7 +82,7 @@ impl Slider {
     pub fn set_value(&mut self, mut value: f32) {
         // 限制在范围内
         value = value.clamp(self.min_value, self.max_value);
-        
+
         // 整数模式
         if self.whole_numbers {
             value = value.round();
@@ -90,7 +90,7 @@ impl Slider {
 
         if (self.value - value).abs() > f32::EPSILON {
             self.value = value;
-            
+
             // 触发回调
             if let Some(mut callback) = self.on_value_changed.take() {
                 callback(self, value);
@@ -109,7 +109,7 @@ impl Slider {
         assert!(min < max, "最小值必须小于最大值");
         self.min_value = min;
         self.max_value = max;
-        
+
         // 重新设置当前值以确保在新范围内
         let current = self.value;
         self.set_value(current);
@@ -208,7 +208,7 @@ impl Slider {
     fn value_from_position(&self, position: Vec2) -> f32 {
         let widget_pos = self.widget.get_position();
         let widget_size = self.widget.get_size();
-        
+
         let normalized = match self.direction {
             SliderDirection::Horizontal => {
                 let min_x = widget_pos.x - widget_size.x * 0.5;
@@ -231,10 +231,10 @@ impl Slider {
         let size = self.widget.get_size();
         let half_size = size * 0.5;
 
-        point.x >= pos.x - half_size.x &&
-        point.x <= pos.x + half_size.x &&
-        point.y >= pos.y - half_size.y &&
-        point.y <= pos.y + half_size.y
+        point.x >= pos.x - half_size.x
+            && point.x <= pos.x + half_size.x
+            && point.y >= pos.y - half_size.y
+            && point.y <= pos.y + half_size.y
     }
 
     /// 处理触摸开始
@@ -332,14 +332,14 @@ mod tests {
     #[test]
     fn test_slider_value() {
         let mut slider = Slider::new();
-        
+
         slider.set_value(0.5);
         assert_eq!(slider.value(), 0.5);
-        
+
         // 测试范围限制
         slider.set_value(1.5);
         assert_eq!(slider.value(), 1.0);
-        
+
         slider.set_value(-0.5);
         assert_eq!(slider.value(), 0.0);
     }
@@ -348,7 +348,7 @@ mod tests {
     fn test_slider_range() {
         let mut slider = Slider::new();
         slider.set_range(0.0, 100.0);
-        
+
         slider.set_value(50.0);
         assert_eq!(slider.value(), 50.0);
         assert_eq!(slider.normalized_value(), 0.5);
@@ -359,10 +359,10 @@ mod tests {
         let mut slider = Slider::new();
         slider.set_range(0.0, 10.0);
         slider.set_whole_numbers(true);
-        
+
         slider.set_value(5.7);
         assert_eq!(slider.value(), 6.0);
-        
+
         slider.set_value(3.2);
         assert_eq!(slider.value(), 3.0);
     }
@@ -372,10 +372,10 @@ mod tests {
         let mut slider = Slider::new();
         slider.set_range(0.0, 10.0);
         slider.set_value(5.0);
-        
+
         slider.increment(2.0);
         assert_eq!(slider.value(), 7.0);
-        
+
         slider.decrement(3.0);
         assert_eq!(slider.value(), 4.0);
     }
@@ -384,7 +384,7 @@ mod tests {
     fn test_slider_direction() {
         let mut slider = Slider::new();
         assert_eq!(slider.direction(), SliderDirection::Horizontal);
-        
+
         slider.set_direction(SliderDirection::Vertical);
         assert_eq!(slider.direction(), SliderDirection::Vertical);
     }
@@ -392,10 +392,10 @@ mod tests {
     #[test]
     fn test_slider_interactable() {
         let mut slider = Slider::new();
-        
+
         slider.set_interactable(false);
         assert!(!slider.is_interactable());
-        
+
         let touch = Touch::new(1, Vec2::new(100.0, 100.0));
         assert!(!slider.on_touch_began(&touch));
     }
@@ -404,13 +404,13 @@ mod tests {
     fn test_slider_normalized_value() {
         let mut slider = Slider::new();
         slider.set_range(0.0, 100.0);
-        
+
         slider.set_value(0.0);
         assert_eq!(slider.normalized_value(), 0.0);
-        
+
         slider.set_value(50.0);
         assert!((slider.normalized_value() - 0.5).abs() < f32::EPSILON);
-        
+
         slider.set_value(100.0);
         assert_eq!(slider.normalized_value(), 1.0);
     }
@@ -418,14 +418,14 @@ mod tests {
     #[test]
     fn test_slider_handle_size() {
         let mut slider = Slider::new();
-        
+
         slider.set_handle_size(0.3);
         assert_eq!(slider.handle_size(), 0.3);
-        
+
         // 测试范围限制
         slider.set_handle_size(1.5);
         assert_eq!(slider.handle_size(), 1.0);
-        
+
         slider.set_handle_size(-0.1);
         assert_eq!(slider.handle_size(), 0.01);
     }

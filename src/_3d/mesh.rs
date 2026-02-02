@@ -1,7 +1,7 @@
-use crate::math::{Vec3, Mat4};
-use crate::base::{Ref, RefPtr};
-use crate::renderer::Texture2D;
 use crate::_3d::Bone3D;
+use crate::base::{Ref, RefPtr};
+use crate::math::{Mat4, Vec3};
+use crate::renderer::Texture2D;
 
 #[derive(Debug)]
 pub struct Mesh {
@@ -109,25 +109,43 @@ impl AABB {
 
     pub fn update_min_max(&mut self, points: &[Vec3]) {
         for point in points {
-            if point.x < self.min.x { self.min.x = point.x; }
-            if point.y < self.min.y { self.min.y = point.y; }
-            if point.z < self.min.z { self.min.z = point.z; }
-            if point.x > self.max.x { self.max.x = point.x; }
-            if point.y > self.max.y { self.max.y = point.y; }
-            if point.z > self.max.z { self.max.z = point.z; }
+            if point.x < self.min.x {
+                self.min.x = point.x;
+            }
+            if point.y < self.min.y {
+                self.min.y = point.y;
+            }
+            if point.z < self.min.z {
+                self.min.z = point.z;
+            }
+            if point.x > self.max.x {
+                self.max.x = point.x;
+            }
+            if point.y > self.max.y {
+                self.max.y = point.y;
+            }
+            if point.z > self.max.z {
+                self.max.z = point.z;
+            }
         }
     }
 
     pub fn contains_point(&self, point: &Vec3) -> bool {
-        point.x >= self.min.x && point.x <= self.max.x
-            && point.y >= self.min.y && point.y <= self.max.y
-            && point.z >= self.min.z && point.z <= self.max.z
+        point.x >= self.min.x
+            && point.x <= self.max.x
+            && point.y >= self.min.y
+            && point.y <= self.max.y
+            && point.z >= self.min.z
+            && point.z <= self.max.z
     }
 
     pub fn intersects_aabb(&self, aabb: &AABB) -> bool {
-        self.min.x <= aabb.max.x && self.max.x >= aabb.min.x
-            && self.min.y <= aabb.max.y && self.max.y >= aabb.min.y
-            && self.min.z <= aabb.max.z && self.max.z >= aabb.min.z
+        self.min.x <= aabb.max.x
+            && self.max.x >= aabb.min.x
+            && self.min.y <= aabb.max.y
+            && self.max.y >= aabb.min.y
+            && self.min.z <= aabb.max.z
+            && self.max.z >= aabb.min.z
     }
 }
 

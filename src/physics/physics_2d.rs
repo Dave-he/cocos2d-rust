@@ -300,26 +300,19 @@ impl PhysicsWorld {
         self.speed = speed;
     }
 
-    pub fn add_body(&mut self, body: &PhysicsBody) {
-    }
+    pub fn add_body(&mut self, body: &PhysicsBody) {}
 
-    pub fn remove_body(&mut self, body: &PhysicsBody) {
-    }
+    pub fn remove_body(&mut self, body: &PhysicsBody) {}
 
-    pub fn add_shape(&mut self, shape: &PhysicsShape) {
-    }
+    pub fn add_shape(&mut self, shape: &PhysicsShape) {}
 
-    pub fn remove_shape(&mut self, shape: &PhysicsShape) {
-    }
+    pub fn remove_shape(&mut self, shape: &PhysicsShape) {}
 
-    pub fn add_joint(&mut self, joint: &PhysicsJoint) {
-    }
+    pub fn add_joint(&mut self, joint: &PhysicsJoint) {}
 
-    pub fn remove_joint(&mut self, joint: &PhysicsJoint) {
-    }
+    pub fn remove_joint(&mut self, joint: &PhysicsJoint) {}
 
-    pub fn step(&mut self, delta: f32) {
-    }
+    pub fn step(&mut self, delta: f32) {}
 
     pub fn set_debug_draw_enabled(&mut self, enabled: bool) {
         self.debug_draw_flags = if enabled { 0xFFFFFFFF } else { 0 };
@@ -355,11 +348,19 @@ impl PhysicsContact {
     }
 
     pub fn get_body_a(&self) -> Option<&PhysicsBody> {
-        if self.body_a.is_null() { None } else { Some(unsafe { &*self.body_a }) }
+        if self.body_a.is_null() {
+            None
+        } else {
+            Some(unsafe { &*self.body_a })
+        }
     }
 
     pub fn get_body_b(&self) -> Option<&PhysicsBody> {
-        if self.body_b.is_null() { None } else { Some(unsafe { &*self.body_b }) }
+        if self.body_b.is_null() {
+            None
+        } else {
+            Some(unsafe { &*self.body_b })
+        }
     }
 
     pub fn get_contact_point(&self) -> Vec2 {

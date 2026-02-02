@@ -146,11 +146,9 @@ impl Physics3DWorld {
         self.gravity = gravity;
     }
 
-    pub fn add_body(&mut self, body: &Physics3DBody) {
-    }
+    pub fn add_body(&mut self, body: &Physics3DBody) {}
 
-    pub fn remove_body(&mut self, body: &Physics3DBody) {
-    }
+    pub fn remove_body(&mut self, body: &Physics3DBody) {}
 
     pub fn step(&mut self, delta: f32) {
         self.simulation_time += delta;

@@ -1,9 +1,9 @@
 use crate::base::{Ref, RefPtr};
-use crate::ui::Widget;
 use crate::input::{Touch, TouchPhase};
 use crate::math::Vec2;
-use std::rc::Rc;
+use crate::ui::Widget;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 按钮状态
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -194,10 +194,10 @@ impl Button {
         let size = self.widget.get_size();
         let half_size = size * 0.5;
 
-        point.x >= pos.x - half_size.x &&
-        point.x <= pos.x + half_size.x &&
-        point.y >= pos.y - half_size.y &&
-        point.y <= pos.y + half_size.y
+        point.x >= pos.x - half_size.x
+            && point.x <= pos.x + half_size.x
+            && point.y >= pos.y - half_size.y
+            && point.y <= pos.y + half_size.y
     }
 
     /// 触发点击事件
@@ -237,11 +237,11 @@ mod tests {
     #[test]
     fn test_button_interactable() {
         let mut button = Button::new();
-        
+
         button.set_interactable(false);
         assert!(!button.is_interactable());
         assert_eq!(button.state(), ButtonState::Disabled);
-        
+
         button.set_interactable(true);
         assert!(button.is_interactable());
         assert_eq!(button.state(), ButtonState::Normal);
@@ -298,7 +298,7 @@ mod tests {
     #[test]
     fn test_button_colors() {
         let mut button = Button::new();
-        
+
         let normal = [1.0, 0.0, 0.0, 1.0];
         let highlighted = [0.0, 1.0, 0.0, 1.0];
         let disabled = [0.0, 0.0, 1.0, 0.5];
@@ -308,7 +308,7 @@ mod tests {
         button.set_disabled_color(disabled);
 
         assert_eq!(button.current_color(), normal);
-        
+
         button.set_interactable(false);
         assert_eq!(button.current_color(), disabled);
     }

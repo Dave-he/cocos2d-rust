@@ -1,6 +1,6 @@
+use glow::HasContext;
 use std::collections::HashMap;
 use std::rc::Rc;
-use glow::HasContext;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BufferType {
@@ -280,7 +280,7 @@ impl GraphicsDevice {
         let native = unsafe { self.context.create_program().ok() };
         let id = self.next_id;
         self.next_id += 1;
-        
+
         let program = ShaderProgram {
             id,
             vertex_shader: 0,
@@ -447,7 +447,11 @@ impl GraphicsDevice {
         self.framebuffers.get(&id)
     }
 
-    pub fn get_native_uniform(&self, program_id: u32, location: i32) -> Option<glow::NativeUniformLocation> {
+    pub fn get_native_uniform(
+        &self,
+        program_id: u32,
+        location: i32,
+    ) -> Option<glow::NativeUniformLocation> {
         if let Some(shader) = self.programs.get(&program_id) {
             shader.native_uniforms.get(&location).cloned()
         } else {
@@ -462,7 +466,10 @@ impl GraphicsDevice {
                     let count = self.context.get_active_uniforms(native_program);
                     for i in 0..count {
                         if let Some(info) = self.context.get_active_uniform(native_program, i) {
-                            if let Some(location) = self.context.get_uniform_location(native_program, &info.name) {
+                            if let Some(location) = self
+                                .context
+                                .get_uniform_location(native_program, &info.name)
+                            {
                                 let id = i as i32;
                                 shader.uniforms.insert(info.name, id);
                                 shader.native_uniforms.insert(id, location);

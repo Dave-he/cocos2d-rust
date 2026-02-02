@@ -1,7 +1,7 @@
-use crate::base::{Director, Scene, Node, Color3B, Color4F, Ref, RefPtr};
+use crate::action::{Action, FiniteTimeAction};
+use crate::base::{Color3B, Color4F, Director, Node, Ref, RefPtr, Scene};
 use crate::math::Vec2;
 use crate::sprite::Sprite;
-use crate::action::{Action, FiniteTimeAction};
 
 #[derive(Debug)]
 pub struct Layer {
@@ -43,21 +43,17 @@ impl Layer {
         self.touch_enabled
     }
 
-    pub fn on_enter(&mut self) {
-    }
+    pub fn on_enter(&mut self) {}
 
-    pub fn on_exit(&mut self) {
-    }
+    pub fn on_exit(&mut self) {}
 
     pub fn on_touch_began(&mut self, _location: &Vec2) -> bool {
         false
     }
 
-    pub fn on_touch_moved(&mut self, _location: &Vec2) {
-    }
+    pub fn on_touch_moved(&mut self, _location: &Vec2) {}
 
-    pub fn on_touch_ended(&mut self, _location: &Vec2) {
-    }
+    pub fn on_touch_ended(&mut self, _location: &Vec2) {}
 }
 
 #[derive(Debug)]

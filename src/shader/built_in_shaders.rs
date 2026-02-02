@@ -217,14 +217,8 @@ impl BuiltInShaders {
     /// 获取着色器源码
     pub fn get_shader_source(name: &str) -> Option<(&'static str, &'static str)> {
         match name {
-            "position_color" => Some((
-                Self::POSITION_COLOR_VERT,
-                Self::POSITION_COLOR_FRAG,
-            )),
-            "position_texture" => Some((
-                Self::POSITION_TEXTURE_VERT,
-                Self::POSITION_TEXTURE_FRAG,
-            )),
+            "position_color" => Some((Self::POSITION_COLOR_VERT, Self::POSITION_COLOR_FRAG)),
+            "position_texture" => Some((Self::POSITION_TEXTURE_VERT, Self::POSITION_TEXTURE_FRAG)),
             "position_texture_color" => Some((
                 Self::POSITION_TEXTURE_COLOR_VERT,
                 Self::POSITION_TEXTURE_COLOR_FRAG,
@@ -233,22 +227,10 @@ impl BuiltInShaders {
                 Self::POSITION_TEXTURE_COLOR_VERT,
                 Self::POSITION_TEXTURE_ALPHA_TEST_FRAG,
             )),
-            "label" => Some((
-                Self::LABEL_VERT,
-                Self::LABEL_FRAG,
-            )),
-            "gray_scale" => Some((
-                Self::POSITION_TEXTURE_VERT,
-                Self::GRAY_SCALE_FRAG,
-            )),
-            "sepia" => Some((
-                Self::POSITION_TEXTURE_VERT,
-                Self::SEPIA_FRAG,
-            )),
-            "blur" => Some((
-                Self::POSITION_TEXTURE_VERT,
-                Self::BLUR_FRAG,
-            )),
+            "label" => Some((Self::LABEL_VERT, Self::LABEL_FRAG)),
+            "gray_scale" => Some((Self::POSITION_TEXTURE_VERT, Self::GRAY_SCALE_FRAG)),
+            "sepia" => Some((Self::POSITION_TEXTURE_VERT, Self::SEPIA_FRAG)),
+            "blur" => Some((Self::POSITION_TEXTURE_VERT, Self::BLUR_FRAG)),
             _ => None,
         }
     }
@@ -270,7 +252,7 @@ mod tests {
     fn test_get_shader_source() {
         let source = BuiltInShaders::get_shader_source("position_color");
         assert!(source.is_some());
-        
+
         let (vert, frag) = source.unwrap();
         assert!(!vert.is_empty());
         assert!(!frag.is_empty());

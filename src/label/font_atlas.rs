@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use crate::renderer::Texture2D;
 use crate::base::{Ref, RefPtr};
 use crate::math::Vec2;
+use crate::renderer::Texture2D;
+use std::collections::HashMap;
 
 /// Font letter definition
 #[derive(Debug, Clone)]

@@ -1,10 +1,12 @@
 use std::cell::{Cell, RefCell};
-use std::rc::Rc;
 use std::fmt;
+use std::rc::Rc;
 
 /// Clonable trait for objects that can be cloned
 pub trait Clonable {
-    fn clone(&self) -> RefPtr<Self> where Self: Sized;
+    fn clone(&self) -> RefPtr<Self>
+    where
+        Self: Sized;
 }
 
 /// Reference count wrapper using Rc with manual reference counting

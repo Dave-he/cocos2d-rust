@@ -1,5 +1,5 @@
-use crate::base::{Ref, Node, RefPtr};
 use crate::base::types::Color3B;
+use crate::base::{Node, Ref, RefPtr};
 use crate::math::Vec2;
 use crate::renderer::Texture2D;
 
@@ -105,7 +105,13 @@ impl Label {
     }
 
     /// Creates a label with char map
-    pub fn create_with_char_map(text: &str, char_map_file: &str, item_width: i32, item_height: i32, start_char: char) -> Label {
+    pub fn create_with_char_map(
+        text: &str,
+        char_map_file: &str,
+        item_width: i32,
+        item_height: i32,
+        start_char: char,
+    ) -> Label {
         let mut label = Label::new();
         label.set_string(text);
         label

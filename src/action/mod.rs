@@ -173,7 +173,13 @@ impl Follow {
     }
 
     /// Creates a follow action with a boundary
-    pub fn new_with_boundary(target: RefPtr<Node>, left: f32, bottom: f32, right: f32, top: f32) -> Follow {
+    pub fn new_with_boundary(
+        target: RefPtr<Node>,
+        left: f32,
+        bottom: f32,
+        right: f32,
+        top: f32,
+    ) -> Follow {
         let mut follow = Follow::new(target);
         follow.boundary_set = true;
         follow.left_boundary = left;
@@ -199,7 +205,12 @@ impl Follow {
     /// Gets the boundary
     pub fn get_boundary(&self) -> (f32, f32, f32, f32) {
         if self.boundary_set {
-            (self.left_boundary, self.bottom_boundary, self.right_boundary, self.top_boundary)
+            (
+                self.left_boundary,
+                self.bottom_boundary,
+                self.right_boundary,
+                self.top_boundary,
+            )
         } else {
             self.world_rect
         }

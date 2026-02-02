@@ -1,6 +1,6 @@
+use super::menu_item::MenuItem;
 use crate::base::{Node, Ref, RefPtr};
 use crate::math::Vec2;
-use super::menu_item::MenuItem;
 
 /// Menu state
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -86,7 +86,7 @@ impl Menu {
     /// Aligns items vertically with padding
     pub fn align_items_vertically_with_padding(&mut self, padding: f32) {
         let mut height = -(self.items.len() as f32 - 1.0) * padding / 2.0;
-        
+
         for item in &self.items {
             let item_height = item.borrow().get_node().borrow().get_content_size().y;
             height -= item_height / 2.0;
@@ -96,7 +96,10 @@ impl Menu {
         for item in &mut self.items {
             let item_height = item.borrow().get_node().borrow().get_content_size().y;
             pos_y += item_height / 2.0;
-            item.borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(0.0, pos_y));
+            item.borrow_mut()
+                .get_node_mut()
+                .borrow_mut()
+                .set_position(Vec2::new(0.0, pos_y));
             pos_y += item_height / 2.0 + padding;
         }
     }
@@ -109,7 +112,7 @@ impl Menu {
     /// Aligns items horizontally with padding
     pub fn align_items_horizontally_with_padding(&mut self, padding: f32) {
         let mut width = -(self.items.len() as f32 - 1.0) * padding / 2.0;
-        
+
         for item in &self.items {
             let item_width = item.borrow().get_node().borrow().get_content_size().x;
             width -= item_width / 2.0;
@@ -119,7 +122,10 @@ impl Menu {
         for item in &mut self.items {
             let item_width = item.borrow().get_node().borrow().get_content_size().x;
             pos_x += item_width / 2.0;
-            item.borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, 0.0));
+            item.borrow_mut()
+                .get_node_mut()
+                .borrow_mut()
+                .set_position(Vec2::new(pos_x, 0.0));
             pos_x += item_width / 2.0 + padding;
         }
     }
@@ -144,7 +150,12 @@ impl Menu {
                     break;
                 }
 
-                let item_height = self.items[tmp].borrow().get_node().borrow().get_content_size().y;
+                let item_height = self.items[tmp]
+                    .borrow()
+                    .get_node()
+                    .borrow()
+                    .get_content_size()
+                    .y;
                 row_height = row_height.max(item_height);
                 tmp += 1;
             }
@@ -170,7 +181,12 @@ impl Menu {
                     break;
                 }
 
-                let item_height = self.items[tmp].borrow().get_node().borrow().get_content_size().y;
+                let item_height = self.items[tmp]
+                    .borrow()
+                    .get_node()
+                    .borrow()
+                    .get_content_size()
+                    .y;
                 row_height = row_height.max(item_height);
                 tmp += 1;
             }
@@ -184,7 +200,11 @@ impl Menu {
                 }
 
                 let pos_x = 0.0; // Center horizontally for now
-                self.items[index].borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, pos_y));
+                self.items[index]
+                    .borrow_mut()
+                    .get_node_mut()
+                    .borrow_mut()
+                    .set_position(Vec2::new(pos_x, pos_y));
             }
 
             pos_y -= row_height / 2.0;
@@ -212,7 +232,12 @@ impl Menu {
                     break;
                 }
 
-                let item_width = self.items[tmp].borrow().get_node().borrow().get_content_size().x;
+                let item_width = self.items[tmp]
+                    .borrow()
+                    .get_node()
+                    .borrow()
+                    .get_content_size()
+                    .x;
                 column_width = column_width.max(item_width);
                 tmp += 1;
             }
@@ -238,7 +263,12 @@ impl Menu {
                     break;
                 }
 
-                let item_width = self.items[tmp].borrow().get_node().borrow().get_content_size().x;
+                let item_width = self.items[tmp]
+                    .borrow()
+                    .get_node()
+                    .borrow()
+                    .get_content_size()
+                    .x;
                 column_width = column_width.max(item_width);
                 tmp += 1;
             }
@@ -252,7 +282,11 @@ impl Menu {
                 }
 
                 let pos_y = 0.0; // Center vertically for now
-                self.items[index].borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, pos_y));
+                self.items[index]
+                    .borrow_mut()
+                    .get_node_mut()
+                    .borrow_mut()
+                    .set_position(Vec2::new(pos_x, pos_y));
             }
 
             pos_x += column_width / 2.0;

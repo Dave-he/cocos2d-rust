@@ -1,5 +1,5 @@
-use std::collections::LinkedList;
 use crate::base::{Ref, RefPtr};
+use std::collections::LinkedList;
 
 /// Autorelease pool manages objects that are autoreleased
 ///
@@ -34,8 +34,7 @@ impl AutoreleasePool {
     }
 
     /// Removes an object from the pool
-    pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {
-    }
+    pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {}
 
     /// Clears the pool
     pub fn clear(&mut self) {
@@ -88,8 +87,7 @@ impl PoolManager {
 
     /// Pops the current pool
     pub fn pop_pool(&mut self) {
-        if let Some(pool) = self.pools.pop_back() {
-        }
+        if let Some(pool) = self.pools.pop_back() {}
     }
 
     /// Clears all pools

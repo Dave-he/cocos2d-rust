@@ -1,7 +1,7 @@
-use crate::math::Mat4;
-use crate::base::{Ref, RefPtr};
-use crate::base::types::Color4F;
 use super::{Renderer, Texture2D};
+use crate::base::types::Color4F;
+use crate::base::{Ref, RefPtr};
+use crate::math::Mat4;
 use crate::renderer::material::Material;
 
 pub trait RenderCommand {
@@ -112,8 +112,17 @@ impl TrianglesCommand {
         }
     }
 
-    pub fn init(&mut self, global_order: f32, vertices: Vec<Vertex>, indices: Vec<u16>, blend_func: (u32, u32), model_matrix: Mat4) {
+    pub fn init(
+        &mut self,
+        global_order: f32,
+        texture: Option<RefPtr<Texture2D>>,
+        vertices: Vec<Vertex>,
+        indices: Vec<u16>,
+        blend_func: (u32, u32),
+        model_matrix: Mat4,
+    ) {
         self.global_order = global_order;
+        self.triangles.texture = texture;
         self.triangles.vertices = vertices;
         self.triangles.indices = indices;
         self.triangles.blend_func = blend_func;
@@ -182,7 +191,13 @@ impl MeshCommand {
         }
     }
 
-    pub fn init(&mut self, material_id: u32, mesh_data: Vec<f32>, indices_data: Vec<u16>, transform: Mat4) {
+    pub fn init(
+        &mut self,
+        material_id: u32,
+        mesh_data: Vec<f32>,
+        indices_data: Vec<u16>,
+        transform: Mat4,
+    ) {
         self.material_id = material_id;
         self.mesh_data = mesh_data;
         self.indices_data = indices_data;

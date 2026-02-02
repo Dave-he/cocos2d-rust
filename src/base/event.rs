@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::rc::Rc;
 use crate::base::RefPtr;
 use crate::math::Vec2;
+use std::collections::HashMap;
+use std::rc::Rc;
 
 /// Event types supported by the engine
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -216,7 +216,10 @@ pub struct EventListener {
 }
 
 impl EventListener {
-    pub fn new(listener_type: EventListenerType, callback: Box<dyn FnMut(&mut Event)>) -> EventListener {
+    pub fn new(
+        listener_type: EventListenerType,
+        callback: Box<dyn FnMut(&mut Event)>,
+    ) -> EventListener {
         EventListener {
             listener_type,
             callback,

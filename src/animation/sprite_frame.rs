@@ -1,7 +1,7 @@
 use crate::math::Rect;
 use crate::renderer::Texture2D;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 精灵帧
 /// 代表精灵图集（Sprite Sheet）中的一帧
@@ -175,11 +175,11 @@ mod tests {
     #[test]
     fn test_sprite_frame_properties() {
         let mut frame = SpriteFrame::new("test");
-        
+
         frame.set_rect(Rect::new(0.0, 0.0, 100.0, 100.0));
         assert_eq!(frame.width(), 100.0);
         assert_eq!(frame.height(), 100.0);
-        
+
         frame.set_rotated(true);
         assert_eq!(frame.width(), 100.0); // 旋转后宽高互换
         assert_eq!(frame.height(), 100.0);
@@ -188,10 +188,10 @@ mod tests {
     #[test]
     fn test_sprite_frame_offset() {
         let mut frame = SpriteFrame::new("test");
-        
+
         frame.set_offset(10.0, 20.0);
         assert_eq!(frame.offset(), (10.0, 20.0));
-        
+
         frame.set_original_size(200.0, 300.0);
         assert_eq!(frame.original_size(), (200.0, 300.0));
     }
@@ -200,17 +200,14 @@ mod tests {
     fn test_sprite_frame_rotated() {
         let frame = SpriteFrame::new("test");
         assert!(!frame.is_rotated());
-        
+
         let rect = Rect::new(0.0, 0.0, 50.0, 100.0);
-        let mut frame = SpriteFrame::from_texture(
-            "test",
-            Rc::new(RefCell::new(Texture2D::new())),
-            rect,
-        );
-        
+        let mut frame =
+            SpriteFrame::from_texture("test", Rc::new(RefCell::new(Texture2D::new())), rect);
+
         assert_eq!(frame.width(), 50.0);
         assert_eq!(frame.height(), 100.0);
-        
+
         frame.set_rotated(true);
         assert_eq!(frame.width(), 100.0);
         assert_eq!(frame.height(), 50.0);

@@ -1,5 +1,5 @@
-pub mod opengl;
 pub mod device;
+pub mod opengl;
 
-pub use opengl::OpenGLBackend;
 pub use device::GraphicsDevice;
+pub use opengl::OpenGLBackend;

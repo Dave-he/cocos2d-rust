@@ -1,4 +1,4 @@
-use cocos2d_rust::{Director, Scene, Layer, Color4F, Vec2};
+use cocos2d_rust::{Color4F, Director, Layer, Scene, Vec2};
 
 #[derive(Debug)]
 struct GameLayer {

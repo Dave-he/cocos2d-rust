@@ -1,15 +1,15 @@
-pub mod widget;
-pub mod layouts;
 pub mod button;
-pub mod textfield;
-pub mod slider;
-pub mod scroll;
+pub mod layouts;
 pub mod rich_text;
+pub mod scroll;
+pub mod slider;
+pub mod textfield;
+pub mod widget;
 
-pub use widget::Widget;
-pub use layouts::{Layout, LinearLayout, RelativeLayout, GridLayout};
 pub use button::Button;
-pub use textfield::TextField;
+pub use layouts::{GridLayout, Layout, LinearLayout, RelativeLayout};
+pub use rich_text::{RichElement, RichElementType, RichText};
+pub use scroll::{ListView, ListViewGravity, PageView, ScrollDirection, ScrollView};
 pub use slider::Slider;
-pub use scroll::{ScrollView, ListView, PageView, ScrollDirection, ListViewGravity};
-pub use rich_text::{RichText, RichElement, RichElementType};
+pub use textfield::TextField;
+pub use widget::Widget;

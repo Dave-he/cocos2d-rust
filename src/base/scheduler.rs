@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use std::rc::Rc;
 #[allow(unused_imports)]
 use crate::base::{Ref, RefPtr};
+use std::collections::HashMap;
+use std::rc::Rc;
 
 /// Timer callback function type
 pub type TimerCallback = Rc<dyn Fn(f32)>;
@@ -148,6 +148,5 @@ impl Scheduler {
     }
 
     /// Performs a function in the main thread
-    pub fn perform_function_in_main_thread(&self, _func: Box<dyn Fn()>) {
-    }
+    pub fn perform_function_in_main_thread(&self, _func: Box<dyn Fn()>) {}
 }

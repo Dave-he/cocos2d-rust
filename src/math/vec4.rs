@@ -1,5 +1,5 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::f32;
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec4 {
@@ -10,19 +10,54 @@ pub struct Vec4 {
 }
 
 impl Vec4 {
-    pub const ZERO: Vec4 = Vec4 { x: 0.0, y: 0.0, z: 0.0, w: 0.0 };
-    pub const ONE: Vec4 = Vec4 { x: 1.0, y: 1.0, z: 1.0, w: 1.0 };
-    pub const UNIT_X: Vec4 = Vec4 { x: 1.0, y: 0.0, z: 0.0, w: 0.0 };
-    pub const UNIT_Y: Vec4 = Vec4 { x: 0.0, y: 1.0, z: 0.0, w: 0.0 };
-    pub const UNIT_Z: Vec4 = Vec4 { x: 0.0, y: 0.0, z: 1.0, w: 0.0 };
-    pub const UNIT_W: Vec4 = Vec4 { x: 0.0, y: 0.0, z: 0.0, w: 1.0 };
+    pub const ZERO: Vec4 = Vec4 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        w: 0.0,
+    };
+    pub const ONE: Vec4 = Vec4 {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+        w: 1.0,
+    };
+    pub const UNIT_X: Vec4 = Vec4 {
+        x: 1.0,
+        y: 0.0,
+        z: 0.0,
+        w: 0.0,
+    };
+    pub const UNIT_Y: Vec4 = Vec4 {
+        x: 0.0,
+        y: 1.0,
+        z: 0.0,
+        w: 0.0,
+    };
+    pub const UNIT_Z: Vec4 = Vec4 {
+        x: 0.0,
+        y: 0.0,
+        z: 1.0,
+        w: 0.0,
+    };
+    pub const UNIT_W: Vec4 = Vec4 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        w: 1.0,
+    };
 
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Vec4 { x, y, z, w }
     }
-    
+
     pub fn from_array(array: &[f32; 4]) -> Self {
-        Vec4 { x: array[0], y: array[1], z: array[2], w: array[3] }
+        Vec4 {
+            x: array[0],
+            y: array[1],
+            z: array[2],
+            w: array[3],
+        }
     }
 
     pub fn from_color(color: u32) -> Self {
@@ -66,7 +101,10 @@ impl Vec4 {
     }
 
     pub fn distance_squared(&self, v: &Vec4) -> f32 {
-        (self.x - v.x).powi(2) + (self.y - v.y).powi(2) + (self.z - v.z).powi(2) + (self.w - v.w).powi(2)
+        (self.x - v.x).powi(2)
+            + (self.y - v.y).powi(2)
+            + (self.z - v.z).powi(2)
+            + (self.w - v.w).powi(2)
     }
 
     pub fn dot(&self, v: &Vec4) -> f32 {
@@ -133,7 +171,12 @@ impl Vec4 {
 impl Add for Vec4 {
     type Output = Vec4;
     fn add(self, other: Vec4) -> Vec4 {
-        Vec4 { x: self.x + other.x, y: self.y + other.y, z: self.z + other.z, w: self.w + other.w }
+        Vec4 {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+            w: self.w + other.w,
+        }
     }
 }
 
@@ -149,7 +192,12 @@ impl AddAssign for Vec4 {
 impl Sub for Vec4 {
     type Output = Vec4;
     fn sub(self, other: Vec4) -> Vec4 {
-        Vec4 { x: self.x - other.x, y: self.y - other.y, z: self.z - other.z, w: self.w - other.w }
+        Vec4 {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+            w: self.w - other.w,
+        }
     }
 }
 
@@ -165,14 +213,24 @@ impl SubAssign for Vec4 {
 impl Neg for Vec4 {
     type Output = Vec4;
     fn neg(self) -> Vec4 {
-        Vec4 { x: -self.x, y: -self.y, z: -self.z, w: -self.w }
+        Vec4 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: -self.w,
+        }
     }
 }
 
 impl Mul<f32> for Vec4 {
     type Output = Vec4;
     fn mul(self, scalar: f32) -> Vec4 {
-        Vec4 { x: self.x * scalar, y: self.y * scalar, z: self.z * scalar, w: self.w * scalar }
+        Vec4 {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+            w: self.w * scalar,
+        }
     }
 }
 
@@ -188,7 +246,12 @@ impl MulAssign<f32> for Vec4 {
 impl Div<f32> for Vec4 {
     type Output = Vec4;
     fn div(self, scalar: f32) -> Vec4 {
-        Vec4 { x: self.x / scalar, y: self.y / scalar, z: self.z / scalar, w: self.w / scalar }
+        Vec4 {
+            x: self.x / scalar,
+            y: self.y / scalar,
+            z: self.z / scalar,
+            w: self.w / scalar,
+        }
     }
 }
 
