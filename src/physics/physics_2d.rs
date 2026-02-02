@@ -601,9 +601,9 @@ impl PhysicsWorld {
         let d = end - start;
         let f = start - center;
         
-        let a = d.dot(d);
-        let b = 2.0 * f.dot(d);
-        let c = f.dot(f) - radius * radius;
+        let a = d.dot(&d);
+        let b = 2.0 * f.dot(&d);
+        let c = f.dot(&f) - radius * radius;
         
         let discriminant = b * b - 4.0 * a * c;
         
@@ -615,8 +615,9 @@ impl PhysicsWorld {
         
         if t >= 0.0 && t <= 1.0 {
             let contact = start + d * t;
-            let normal = (contact - center).normalize();
-            Some((contact, normal, t))
+            let mut normal_vec = contact - center;
+            normal_vec.normalize();
+            Some((contact, normal_vec, t))
         } else {
             None
         }

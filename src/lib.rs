@@ -5,7 +5,7 @@ pub mod sprite;
 pub mod scene;
 pub mod action;
 pub mod renderer;
-// pub mod audio; // 临时禁用（依赖问题）
+pub mod audio; // 恢复
 pub mod network;
 pub mod physics;
 pub mod ui;
@@ -23,7 +23,7 @@ pub mod transition;
 pub use base::{Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect};
 pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
-// pub use audio::AudioEngine; // 临时禁用
+pub use audio::AudioEngine; // 恢复
 pub use network::network::HttpClient;
 pub use physics::{PhysicsWorld, PhysicsBody};
 pub use ui::{Widget, Button, Slider, TextField, Layout};

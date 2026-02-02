@@ -187,3 +187,147 @@ impl Rect {
         *self = self.union_with_rect(rect);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    // Size tests
+    #[test]
+    fn test_size_new() {
+        let s = Size::new(100.0, 200.0);
+        assert_eq!(s.width, 100.0);
+        assert_eq!(s.height, 200.0);
+    }
+
+    #[test]
+    fn test_size_constants() {
+        assert_eq!(Size::ZERO.width, 0.0);
+        assert_eq!(Size::ZERO.height, 0.0);
+    }
+
+    #[test]
+    fn test_size_from_vec2() {
+        let v = Vec2::new(50.0, 100.0);
+        let s = Size::from_vec2(v);
+        assert_eq!(s.width, 50.0);
+        assert_eq!(s.height, 100.0);
+    }
+
+    #[test]
+    fn test_size_to_vec2() {
+        let s = Size::new(100.0, 200.0);
+        let v = s.to_vec2();
+        assert_eq!(v.x, 100.0);
+        assert_eq!(v.y, 200.0);
+    }
+
+    #[test]
+    fn test_size_equals() {
+        let s1 = Size::new(100.0, 200.0);
+        let s2 = Size::new(100.0, 200.0);
+        let s3 = Size::new(50.0, 200.0);
+        assert!(s1.equals(&s2));
+        assert!(!s1.equals(&s3));
+    }
+
+    #[test]
+    fn test_size_add() {
+        let s1 = Size::new(100.0, 200.0);
+        let s2 = Size::new(50.0, 50.0);
+        let result = s1 + s2;
+        assert_eq!(result.width, 150.0);
+        assert_eq!(result.height, 250.0);
+    }
+
+    #[test]
+    fn test_size_sub() {
+        let s1 = Size::new(100.0, 200.0);
+        let s2 = Size::new(30.0, 50.0);
+        let result = s1 - s2;
+        assert_eq!(result.width, 70.0);
+        assert_eq!(result.height, 150.0);
+    }
+
+    // Rect tests
+    #[test]
+    fn test_rect_new() {
+        let r = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(r.x, 10.0);
+        assert_eq!(r.y, 20.0);
+        assert_eq!(r.width, 100.0);
+        assert_eq!(r.height, 200.0);
+    }
+
+    #[test]
+    fn test_rect_constants() {
+        assert_eq!(Rect::ZERO.x, 0.0);
+        assert_eq!(Rect::ZERO.y, 0.0);
+        assert_eq!(Rect::ZERO.width, 0.0);
+        assert_eq!(Rect::ZERO.height, 0.0);
+    }
+
+    #[test]
+    fn test_rect_bounds() {
+        let r = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(r.get_min_x(), 10.0);
+        assert_eq!(r.get_max_x(), 110.0);
+        assert_eq!(r.get_min_y(), 20.0);
+        assert_eq!(r.get_max_y(), 220.0);
+        assert_eq!(r.get_mid_x(), 60.0);
+        assert_eq!(r.get_mid_y(), 120.0);
+    }
+
+    #[test]
+    fn test_rect_contains_point() {
+        let r = Rect::new(0.0, 0.0, 100.0, 100.0);
+        assert!(r.contains(&Vec2::new(50.0, 50.0)));
+        assert!(r.contains(&Vec2::new(0.0, 0.0)));
+        assert!(!r.contains(&Vec2::new(100.0, 100.0))); // on edge, depends on implementation
+        assert!(!r.contains(&Vec2::new(150.0, 50.0)));
+    }
+
+    #[test]
+    fn test_rect_intersects() {
+        let r1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        let r3 = Rect::new(200.0, 200.0, 50.0, 50.0);
+        
+        assert!(r1.intersects(&r2));
+        assert!(!r1.intersects(&r3));
+    }
+
+    #[test]
+    fn test_rect_union() {
+        let r1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        let union = r1.union_with_rect(&r2);
+        
+        assert_eq!(union.x, 0.0);
+        assert_eq!(union.y, 0.0);
+        assert_eq!(union.width, 150.0);
+        assert_eq!(union.height, 150.0);
+    }
+
+    #[test]
+    fn test_rect_merge() {
+        let mut r1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        r1.merge(&r2);
+        
+        assert_eq!(r1.width, 150.0);
+        assert_eq!(r1.height, 150.0);
+    }
+
+    #[test]
+    fn test_rect_intersects_circle() {
+        let r = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let center = Vec2::new(50.0, 50.0);
+        let center_outside = Vec2::new(150.0, 150.0);
+        
+        assert!(r.intersects_circle(&center, 10.0));
+        assert!(!r.intersects_circle(&center_outside, 5.0));
+    }
+}

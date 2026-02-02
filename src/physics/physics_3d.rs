@@ -341,7 +341,7 @@ impl Physics3DConstraint {
     }
 
     pub fn create_point_to_point(body_a: &Physics3DBody, body_b: &Physics3DBody, 
-                                  pivot_in_a: Vec3, pivot_in_b: Vec3) -> Self {
+                                  _pivot_in_a: Vec3, _pivot_in_b: Vec3) -> Self {
         Physics3DConstraint {
             constraint_type: Physics3DConstraintType::POINT_TO_POINT,
             body_a: Some(body_a as *const Physics3DBody),
@@ -352,8 +352,8 @@ impl Physics3DConstraint {
     }
 
     pub fn create_hinge(body_a: &Physics3DBody, body_b: &Physics3DBody,
-                       pivot_in_a: Vec3, pivot_in_b: Vec3,
-                       axis_in_a: Vec3, axis_in_b: Vec3) -> Self {
+                       _pivot_in_a: Vec3, _pivot_in_b: Vec3,
+                       _axis_in_a: Vec3, _axis_in_b: Vec3) -> Self {
         Physics3DConstraint {
             constraint_type: Physics3DConstraintType::HINGE,
             body_a: Some(body_a as *const Physics3DBody),
@@ -422,6 +422,15 @@ impl Physics3DConstraint {
     }
 }
 
+/// Ray cast result for 3D physics
+#[derive(Debug, Clone)]
+pub struct RayCastResult {
+    pub body: usize,  // Body ID
+    pub hit_point: Vec3,
+    pub hit_normal: Vec3,
+    pub hit_fraction: f32,
+}
+
 #[derive(Debug)]
 pub struct Physics3DWorld {
     gravity: Vec3,
@@ -440,7 +449,7 @@ impl Physics3DWorld {
             simulation_time: 0.0,
             debug_draw: false,
             substeps: 1,
-            bodies:ec::new(),
+            bodies: Vec::new(),
             shapes: Vec::new(),
             constraints: Vec::new(),
         }
@@ -466,24 +475,24 @@ impl Physics3DWorld {
         self.substeps = substeps.max(1);
     }
 
-    pub fn add_body(&mut self, body: &Physics3DBody) {
+    pub fn add_body(&mut self, _body: &Physics3DBody) {
         // In real implementation, add to physics engine
     }
 
-    pub fn remove_body(&mut self, body: &Physics3DBody) {
+    pub fn remove_body(&mut self, _body: &Physics3DBody) {
         // In real implementation, remove from physics engine
     }
 
-    pub fn add_constraint(&mut self, constraint: &Physics3DConstraint) {
+    pub fn add_constraint(&mut self, _constraint: &Physics3DConstraint) {
         // In real implementation, add to physics engine
     }
 
-    pub fn remove_constraint(&mut self, constraint: &Physics3DConstraint) {
+    pub fn remove_constraint(&mut self, _constraint: &Physics3DConstraint) {
         // In real implementation, remove from physics engine
     }
 
     /// Perform ray cast in 3D world
-    pub fn ray_cast(&self, from: Vec3, to: Vec3) -> Option<RayCastResult> {
+    pub fn ray_cast(&self, _from: Vec3, _to: Vec3) -> Option<RayCastResult> {
         // Simplified ray casting implementation
         // In real implementation, use Bullet physics
         None
@@ -552,58 +561,7 @@ impl Physics3DWorld {
     }
 }
 
-/// Ray cast result for 3D physics
-#[derive(Debug, Clone)]
-pub struct RayCastResult {
-    pub body: usize,  // Body ID
-    pub hit_point: Vec3,
-    pub hit_normal: Vec3,
-    pub hit_fraction: f32,
-}
-
-#[derive(Debug)]
-pub struct Physics3DWorld {
-    gravity: Vec3,
-    simulation_time: f32,
-    debug_draw: bool,
-}
-
-impl Physics3DWorld {
-    pub fn new() -> Physics3DWorld {
-        Physics3DWorld {
-            gravity: Vec3::new(0.0, -9.8, 0.0),
-            simulation_time: 0.0,
-            debug_draw: false,
-        }
-    }
-
-    pub fn get_gravity(&self) -> Vec3 {
-        self.gravity
-    }
-
-    pub fn set_gravity(&mut self, gravity: Vec3) {
-        self.gravity = gravity;
-    }
-
-    pub fn add_body(&mut self, body: &Physics3DBody) {
-    }
-
-    pub fn remove_body(&mut self, body: &Physics3DBody) {
-    }
-
-    pub fn step(&mut self, delta: f32) {
-        self.simulation_time += delta;
-    }
-
-    pub fn set_debug_draw_enabled(&mut self, enabled: bool) {
-        self.debug_draw = enabled;
-    }
-
-    pub fn is_debug_draw_enabled(&self) -> bool {
-        self.debug_draw
-    }
-}
-
+// Navigation Mesh support (NavMesh)
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NavMeshQueryResult {
     FAILURE,
