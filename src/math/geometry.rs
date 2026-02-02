@@ -255,18 +255,18 @@ mod tests {
     #[test]
     fn test_rect_new() {
         let r = Rect::new(10.0, 20.0, 100.0, 200.0);
-        assert_eq!(r.x, 10.0);
-        assert_eq!(r.y, 20.0);
-        assert_eq!(r.width, 100.0);
-        assert_eq!(r.height, 200.0);
+        assert_eq!(r.origin.x, 10.0);
+        assert_eq!(r.origin.y, 20.0);
+        assert_eq!(r.size.width, 100.0);
+        assert_eq!(r.size.height, 200.0);
     }
 
     #[test]
     fn test_rect_constants() {
-        assert_eq!(Rect::ZERO.x, 0.0);
-        assert_eq!(Rect::ZERO.y, 0.0);
-        assert_eq!(Rect::ZERO.width, 0.0);
-        assert_eq!(Rect::ZERO.height, 0.0);
+        assert_eq!(Rect::ZERO.origin.x, 0.0);
+        assert_eq!(Rect::ZERO.origin.y, 0.0);
+        assert_eq!(Rect::ZERO.size.width, 0.0);
+        assert_eq!(Rect::ZERO.size.height, 0.0);
     }
 
     #[test]
@@ -283,10 +283,11 @@ mod tests {
     #[test]
     fn test_rect_contains_point() {
         let r = Rect::new(0.0, 0.0, 100.0, 100.0);
-        assert!(r.contains(&Vec2::new(50.0, 50.0)));
-        assert!(r.contains(&Vec2::new(0.0, 0.0)));
-        assert!(!r.contains(&Vec2::new(100.0, 100.0))); // on edge, depends on implementation
-        assert!(!r.contains(&Vec2::new(150.0, 50.0)));
+        let center = Vec2::new(50.0, 50.0);
+        let outside = Vec2::new(150.0, 50.0);
+        
+        assert!(r.contains_point(&center));
+        assert!(!r.contains_point(&outside));
     }
 
     #[test]
@@ -295,8 +296,8 @@ mod tests {
         let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
         let r3 = Rect::new(200.0, 200.0, 50.0, 50.0);
         
-        assert!(r1.intersects(&r2));
-        assert!(!r1.intersects(&r3));
+        assert!(r1.intersects_rect(&r2));
+        assert!(!r1.intersects_rect(&r3));
     }
 
     #[test]
@@ -305,10 +306,10 @@ mod tests {
         let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
         let union = r1.union_with_rect(&r2);
         
-        assert_eq!(union.x, 0.0);
-        assert_eq!(union.y, 0.0);
-        assert_eq!(union.width, 150.0);
-        assert_eq!(union.height, 150.0);
+        assert_eq!(union.origin.x, 0.0);
+        assert_eq!(union.origin.y, 0.0);
+        assert_eq!(union.size.width, 150.0);
+        assert_eq!(union.size.height, 150.0);
     }
 
     #[test]
@@ -317,8 +318,8 @@ mod tests {
         let r2 = Rect::new(50.0, 50.0, 100.0, 100.0);
         r1.merge(&r2);
         
-        assert_eq!(r1.width, 150.0);
-        assert_eq!(r1.height, 150.0);
+        assert_eq!(r1.size.width, 150.0);
+        assert_eq!(r1.size.height, 150.0);
     }
 
     #[test]

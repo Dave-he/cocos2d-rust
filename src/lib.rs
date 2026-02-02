@@ -21,11 +21,18 @@ pub mod shader;
 pub mod transition;
 
 pub use base::{Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect};
+pub use math::{Vec2, Vec3, Vec4, Mat4, Quaternion};
 pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
 pub use audio::AudioEngine; // 恢复
 pub use network::network::HttpClient;
-pub use physics::{PhysicsWorld, PhysicsBody};
+pub use physics::{
+    PhysicsWorld, PhysicsBody, PhysicsShape, PhysicsJoint, PhysicsContact,
+    PhysicsBodyType, PhysicsShapeType, JointType, PhysicsMaterial,
+    RayCastInfo, QueryInfo,
+    Physics3DWorld, Physics3DBody, Physics3DShape, Physics3DConstraint,
+    Physics3DConstraintType,
+};
 pub use ui::{Widget, Button, Slider, TextField, Layout};
 pub use particle::ParticleSystem;
 pub use tilemap::tilemap_layer::TileMap;

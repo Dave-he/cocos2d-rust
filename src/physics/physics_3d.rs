@@ -193,7 +193,7 @@ impl Physics3DBody {
     pub fn apply_impulse(&mut self, impulse: Vec3, rel_pos: Vec3) {
         if self.body_type == Physics3DBodyType::DYNAMIC {
             self.apply_central_impulse(impulse);
-            let torque_impulse = rel_pos.cross(impulse);
+            let torque_impulse = rel_pos.cross(&impulse);
             self.angular_velocity = self.angular_velocity + torque_impulse;
         }
     }
@@ -536,7 +536,8 @@ impl Physics3DWorld {
                     let ang_vel = body.get_angular_velocity();
                     if ang_vel.length() > 0.0001 {
                         let angle = ang_vel.length() * dt;
-                        let axis = ang_vel.normalize();
+                        let mut axis = ang_vel;
+                        axis.normalize();
                         let delta_rot = Quaternion::from_axis_angle(axis, angle);
                         let rot = body.get_rotation();
                         body.set_rotation(delta_rot * rot);
@@ -589,5 +590,139 @@ impl NavMeshPath {
 
     pub fn get_length(&self) -> f32 {
         self.length
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_physics_3d_material() {
+        let material = Physics3DMaterial::new(0.5, 0.3);
+        assert_eq!(material.friction, 0.5);
+        assert_eq!(material.restitution, 0.3);
+        assert_eq!(material.rolling_friction, 0.0);
+        assert_eq!(material.spinning_friction, 0.0);
+    }
+
+    #[test]
+    fn test_physics_3d_shape_creation() {
+        let box_shape = Physics3DShape::create_box(Vec3::new(2.0, 3.0, 4.0));
+        assert_eq!(box_shape.get_type(), Physics3DShapeType::BOX);
+
+        let sphere = Physics3DShape::create_sphere(1.5);
+        assert_eq!(sphere.get_type(), Physics3DShapeType::SPHERE);
+
+        let capsule = Physics3DShape::create_capsule(0.5, 2.0);
+        assert_eq!(capsule.get_type(), Physics3DShapeType::CAPSULE);
+
+        let cylinder = Physics3DShape::create_cylinder(1.0, 3.0);
+        assert_eq!(cylinder.get_type(), Physics3DShapeType::CYLINDER);
+
+        let cone = Physics3DShape::create_cone(1.0, 2.0);
+        assert_eq!(cone.get_type(), Physics3DShapeType::CONE);
+    }
+
+    #[test]
+    fn test_physics_3d_body_types() {
+        let static_body = Physics3DBody::create_static();
+        assert_eq!(static_body.get_type(), Physics3DBodyType::STATIC);
+        assert_eq!(static_body.get_mass(), 0.0);
+        assert!(!static_body.is_gravity_enabled());
+
+        let dynamic_body = Physics3DBody::create_dynamic(50.0);
+        assert_eq!(dynamic_body.get_type(), Physics3DBodyType::DYNAMIC);
+        assert_eq!(dynamic_body.get_mass(), 50.0);
+        assert!(dynamic_body.is_gravity_enabled());
+    }
+
+    #[test]
+    fn test_physics_3d_body_velocity() {
+        let mut body = Physics3DBody::new();
+        
+        body.set_linear_velocity(Vec3::new(1.0, 2.0, 3.0));
+        assert_eq!(body.get_linear_velocity(), Vec3::new(1.0, 2.0, 3.0));
+
+        body.set_angular_velocity(Vec3::new(0.1, 0.2, 0.3));
+        assert_eq!(body.get_angular_velocity(), Vec3::new(0.1, 0.2, 0.3));
+    }
+
+    #[test]
+    fn test_physics_3d_body_damping() {
+        let mut body = Physics3DBody::new();
+        
+        assert_eq!(body.get_linear_damping(), 0.0);
+        assert_eq!(body.get_angular_damping(), 0.0);
+
+        body.set_linear_damping(0.1);
+        body.set_angular_damping(0.05);
+
+        assert_eq!(body.get_linear_damping(), 0.1);
+        assert_eq!(body.get_angular_damping(), 0.05);
+    }
+
+    #[test]
+    fn test_physics_3d_body_impulse() {
+        let mut body = Physics3DBody::create_dynamic(10.0);
+        body.set_linear_velocity(Vec3::ZERO);
+
+        let impulse = Vec3::new(50.0, 0.0, 0.0);
+        body.apply_central_impulse(impulse);
+
+        // After impulse, velocity should be impulse / mass
+        assert_eq!(body.get_linear_velocity(), Vec3::new(5.0, 0.0, 0.0));
+    }
+
+    #[test]
+    fn test_physics_3d_world() {
+        let mut world = Physics3DWorld::new();
+        
+        assert_eq!(world.get_gravity(), Vec3::new(0.0, -9.8, 0.0));
+        
+        world.set_gravity(Vec3::new(0.0, -10.0, 0.0));
+        assert_eq!(world.get_gravity(), Vec3::new(0.0, -10.0, 0.0));
+
+        assert_eq!(world.get_substeps(), 1);
+        world.set_substeps(4);
+        assert_eq!(world.get_substeps(), 4);
+
+        assert!(!world.is_debug_draw_enabled());
+        world.set_debug_draw_enabled(true);
+        assert!(world.is_debug_draw_enabled());
+    }
+
+    #[test]
+    fn test_physics_3d_constraint_types() {
+        let body_a = Physics3DBody::new();
+        let body_b = Physics3DBody::new();
+
+        let p2p = Physics3DConstraint::create_point_to_point(&body_a, &body_b, Vec3::ZERO, Vec3::ZERO);
+        assert_eq!(p2p.get_type(), Physics3DConstraintType::POINT_TO_POINT);
+        assert!(p2p.is_enabled());
+
+        let hinge = Physics3DConstraint::create_hinge(&body_a, &body_b, 
+            Vec3::ZERO, Vec3::ZERO, Vec3::UNIT_Y, Vec3::UNIT_Y);
+        assert_eq!(hinge.get_type(), Physics3DConstraintType::HINGE);
+
+        let slider = Physics3DConstraint::create_slider(&body_a, &body_b);
+        assert_eq!(slider.get_type(), Physics3DConstraintType::SLIDER);
+    }
+
+    #[test]
+    fn test_physics_3d_constraint_breaking_impulse() {
+        let mut constraint = Physics3DConstraint::new(Physics3DConstraintType::FIXED);
+        
+        assert_eq!(constraint.get_breaking_impulse(), f32::INFINITY);
+        
+        constraint.set_breaking_impulse(100.0);
+        assert_eq!(constraint.get_breaking_impulse(), 100.0);
+    }
+
+    #[test]
+    fn test_nav_mesh_path() {
+        let path = NavMeshPath::new();
+        assert_eq!(path.get_corners().len(), 0);
+        assert_eq!(path.get_length(), 0.0);
     }
 }

@@ -130,7 +130,7 @@ fn demo_3d_physics() {
     let _hinge = Physics3DConstraint::create_hinge(
         &body_a, &body_b, 
         Vec3::ZERO, Vec3::ZERO,
-        Vec3::UP, Vec3::UP
+        Vec3::UNIT_Y, Vec3::UNIT_Y
     );
     println!("✓ Hinge constraint created");
 

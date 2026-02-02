@@ -746,3 +746,142 @@ impl PhysicsContact {
         self.contact_normal
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_physics_material() {
+        let material = PhysicsMaterial::new(1.0, 0.8, 0.5);
+        assert_eq!(material.density, 1.0);
+        assert_eq!(material.restitution, 0.8);
+        assert_eq!(material.friction, 0.5);
+
+        // Test clamping
+        let material2 = PhysicsMaterial::new(1.0, 1.5, -0.5);
+        assert_eq!(material2.restitution, 1.0);
+        assert_eq!(material2.friction, 0.0);
+    }
+
+    #[test]
+    fn test_physics_shape_creation() {
+        // Test circle shape
+        let circle = PhysicsShape::create_circle(10.0, PhysicsMaterial::DEFAULT, Vec2::ZERO);
+        assert_eq!(circle.get_type(), PhysicsShapeType::CIRCLE);
+        assert!(circle.get_area() > 0.0);
+
+        // Test box shape
+        let box_shape = PhysicsShape::create_box(Vec2::new(20.0, 30.0), PhysicsMaterial::DEFAULT, Vec2::ZERO);
+        assert_eq!(box_shape.get_type(), PhysicsShapeType::BOX);
+        assert_eq!(box_shape.get_area(), 600.0);
+
+        // Test polygon shape
+        let points = vec![
+            Vec2::new(0.0, 0.0),
+            Vec2::new(10.0, 0.0),
+            Vec2::new(10.0, 10.0),
+            Vec2::new(0.0, 10.0),
+        ];
+        let polygon = PhysicsShape::create_polygon(&points, PhysicsMaterial::DEFAULT, Vec2::ZERO);
+        assert_eq!(polygon.get_type(), PhysicsShapeType::POLYGON);
+        assert_eq!(polygon.get_area(), 100.0);
+    }
+
+    #[test]
+    fn test_physics_body_types() {
+        let static_body = PhysicsBody::create_static_body();
+        assert_eq!(static_body.get_type(), PhysicsBodyType::STATIC);
+        assert!(!static_body.is_gravity_enabled());
+
+        let dynamic_body = PhysicsBody::create_dynamic_body(10.0, 5.0);
+        assert_eq!(dynamic_body.get_type(), PhysicsBodyType::DYNAMIC);
+        assert_eq!(dynamic_body.get_mass(), 10.0);
+        assert_eq!(dynamic_body.get_moment(), 5.0);
+        assert!(dynamic_body.is_gravity_enabled());
+    }
+
+    #[test]
+    fn test_physics_body_velocity() {
+        let mut body = PhysicsBody::new();
+        
+        body.set_velocity(Vec2::new(10.0, 20.0));
+        assert_eq!(body.get_velocity(), Vec2::new(10.0, 20.0));
+
+        body.set_angular_velocity(1.5);
+        assert_eq!(body.get_angular_velocity(), 1.5);
+    }
+
+    #[test]
+    fn test_physics_body_impulse() {
+        let mut body = PhysicsBody::create_dynamic_body(10.0, 10.0);
+        body.set_velocity(Vec2::ZERO);
+
+        let impulse = Vec2::new(100.0, 0.0);
+        body.apply_impulse(impulse, Vec2::ZERO);
+
+        // After impulse, velocity should be impulse / mass
+        assert_eq!(body.get_velocity(), Vec2::new(10.0, 0.0));
+    }
+
+    #[test]
+    fn test_physics_world() {
+        let mut world = PhysicsWorld::new();
+        
+        assert_eq!(world.get_gravity(), Vec2::new(0.0, -98.0));
+        
+        world.set_gravity(Vec2::new(0.0, -9.8));
+        assert_eq!(world.get_gravity(), Vec2::new(0.0, -9.8));
+
+        assert_eq!(world.get_speed(), 1.0);
+        world.set_speed(2.0);
+        assert_eq!(world.get_speed(), 2.0);
+
+        assert_eq!(world.get_substeps(), 1);
+        world.set_substeps(4);
+        assert_eq!(world.get_substeps(), 4);
+    }
+
+    #[test]
+    fn test_physics_joint() {
+        let joint = PhysicsJoint::new(JointType::DISTANCE);
+        assert_eq!(joint.get_type(), JointType::DISTANCE);
+        assert!(joint.is_enabled());
+        assert!(!joint.get_collide_connected());
+    }
+
+    #[test]
+    fn test_physics_contact() {
+        let contact = PhysicsContact::new();
+        assert_eq!(contact.get_contact_id(), 0);
+        assert_eq!(contact.get_contact_point(), Vec2::ZERO);
+        assert_eq!(contact.get_contact_normal(), Vec2::ZERO);
+    }
+
+    #[test]
+    fn test_shape_bitmasks() {
+        let mut shape = PhysicsShape::new(PhysicsShapeType::CIRCLE);
+        
+        assert_eq!(shape.get_category_bitmask(), 0xFFFFFFFF);
+        assert_eq!(shape.get_collision_bitmask(), 0xFFFFFFFF);
+        assert_eq!(shape.get_contact_test_bitmask(), 0x00000000);
+
+        shape.set_category_bitmask(0x0001);
+        shape.set_collision_bitmask(0x0002);
+        shape.set_contact_test_bitmask(0x0004);
+
+        assert_eq!(shape.get_category_bitmask(), 0x0001);
+        assert_eq!(shape.get_collision_bitmask(), 0x0002);
+        assert_eq!(shape.get_contact_test_bitmask(), 0x0004);
+    }
+
+    #[test]
+    fn test_shape_sensor() {
+        let mut shape = PhysicsShape::new(PhysicsShapeType::CIRCLE);
+        
+        assert!(!shape.is_sensor());
+        
+        shape.set_sensor(true);
+        assert!(shape.is_sensor());
+    }
+}

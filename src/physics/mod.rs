@@ -6,4 +6,8 @@ pub use physics_2d::{
     PhysicsBodyType, PhysicsShapeType, JointType, PhysicsMaterial,
     RayCastInfo, QueryInfo,
 };
-pub use physics_3d::{Physics3DWorld, Physics3DShape, Physics3DBody, Physics3DShapeType};
+pub use physics_3d::{
+    Physics3DWorld, Physics3DShape, Physics3DBody, Physics3DBodyType, Physics3DShapeType,
+    Physics3DConstraint, Physics3DConstraintType, Physics3DMaterial,
+    RayCastResult,
+};
