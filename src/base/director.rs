@@ -1,8 +1,11 @@
 use std::cell::RefCell;
-use std::rc::Rc;
 use crate::base::{Size, Ref, RefPtr};
 use crate::base::scheduler::Scheduler;
-use crate::base::event::{EventDispatcher, EventType};
+use crate::base::event::EventDispatcher;
+
+use crate::renderer::Renderer;
+use std::rc::Rc;
+use glow::Context;
 
 /// Director is the main object that runs the scene.
 ///
@@ -14,6 +17,7 @@ pub struct Director {
     next_scene: Option<RefPtr<Scene>>,
     scheduler: RefPtr<Scheduler>,
     event_dispatcher: RefPtr<EventDispatcher>,
+    renderer: RefPtr<Renderer>,
     delta_time: f32,
     total_time: f32,
     last_update_time: std::time::Instant,
@@ -40,12 +44,21 @@ impl Director {
             next_scene: None,
             scheduler: RefPtr::new(Scheduler::new()),
             event_dispatcher: RefPtr::new(EventDispatcher::new()),
+            renderer: RefPtr::new(Renderer::new()),
             delta_time: 0.0,
             total_time: 0.0,
             last_update_time: std::time::Instant::now(),
             is_paused: false,
             is_cleanup: false,
         }
+    }
+
+    pub fn set_gl_context(&mut self, context: Rc<Context>) {
+        self.renderer.borrow_mut().init_backend(context);
+    }
+
+    pub fn get_renderer(&self) -> &RefPtr<Renderer> {
+        &self.renderer
     }
 
     /// Gets the running scene
@@ -109,7 +122,7 @@ impl Director {
 
         if !self.is_paused {
             // Update the scheduler
-            self.scheduler.update(self.delta_time);
+            self.scheduler.borrow_mut().update(self.delta_time);
         }
 
         // Process scene transitions
@@ -118,6 +131,9 @@ impl Director {
         }
 
         // Render the current scene
+        self.running_scene.borrow().visit(&mut self.renderer.borrow_mut(), &crate::math::Mat4::IDENTITY, 0);
+        self.renderer.borrow_mut().render();
+        log::info!("Director loop running. Delta: {}", self.delta_time);
     }
 
     /// Pauses the game
@@ -189,10 +205,16 @@ impl Scene {
             child.borrow_mut().update(delta_time);
         }
     }
+
+    pub fn visit(&self, renderer: &mut Renderer, parent_transform: &crate::math::Mat4, parent_flags: u32) {
+        for child in &self.children {
+            child.borrow_mut().visit(renderer, parent_transform, parent_flags);
+        }
+    }
 }
 
 /// Base node type for all scene elements
-#[derive(Debug)]
+// #[derive(Debug)] // Manual implementation below
 pub struct Node {
     base: Ref,
     parent: Option<RefPtr<Node>>,
@@ -207,6 +229,26 @@ pub struct Node {
     local_transform: crate::math::Mat4,
     global_transform: crate::math::Mat4,
     content_size: crate::math::Vec2,
+    on_draw: Option<Box<dyn Fn(&mut Renderer, &crate::math::Mat4)>>,
+}
+
+impl std::fmt::Debug for Node {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Node")
+            .field("base", &self.base)
+            .field("parent", &self.parent)
+            .field("children", &self.children)
+            .field("position", &self.position)
+            .field("rotation", &self.rotation)
+            .field("scale_x", &self.scale_x)
+            .field("scale_y", &self.scale_y)
+            .field("visible", &self.visible)
+            .field("tag", &self.tag)
+            .field("name", &self.name)
+            .field("content_size", &self.content_size)
+            .field("on_draw", &"Fn(...)")
+            .finish()
+    }
 }
 
 impl Node {
@@ -226,6 +268,34 @@ impl Node {
             local_transform: crate::math::Mat4::IDENTITY,
             global_transform: crate::math::Mat4::IDENTITY,
             content_size: crate::math::Vec2::ZERO,
+            on_draw: None,
+        }
+    }
+
+    pub fn set_on_draw(&mut self, callback: Box<dyn Fn(&mut Renderer, &crate::math::Mat4)>) {
+        self.on_draw = Some(callback);
+    }
+
+    pub fn visit(&mut self, renderer: &mut Renderer, parent_transform: &crate::math::Mat4, _parent_flags: u32) {
+        if !self.visible {
+            return;
+        }
+
+        // Update local transform if needed (simplified)
+        // self.update_local_transform(); // Already done in setters usually
+
+        // Update global transform
+        // global_transform = parent_transform * local_transform
+        self.global_transform = *parent_transform * self.local_transform;
+
+        // Visit children (simplified: just iterate, no z-order sorting yet)
+        for child in &self.children {
+            child.borrow_mut().visit(renderer, &self.global_transform, _parent_flags);
+        }
+
+        // Draw self
+        if let Some(callback) = &self.on_draw {
+            callback(renderer, &self.global_transform);
         }
     }
 
@@ -246,7 +316,7 @@ impl Node {
 
     /// Adds a child node
     pub fn add_child(&mut self, child: RefPtr<Node>) {
-        child.borrow_mut().set_parent(self.base.clone());
+        // child.borrow_mut().set_parent(self.base.clone());
         self.children.push(child);
     }
 
@@ -358,7 +428,7 @@ impl Node {
 
     /// Updates the local transform matrix
     fn update_local_transform(&mut self) {
-        self.local_transform = crate::math::Mat4::create_translation(self.position.x, self.position.y, 0.0);
+        self.local_transform = crate::math::Mat4::create_translation(&crate::math::Vec3::new(self.position.x, self.position.y, 0.0));
     }
 
     /// Updates the node
@@ -366,7 +436,7 @@ impl Node {
     }
 
     /// Gets a unique ID for the node
-    fn get_id(&self) -> usize {
+    pub fn get_id(&self) -> usize {
         let ptr = &self.base as *const Ref as *const u8 as usize;
         ptr
     }

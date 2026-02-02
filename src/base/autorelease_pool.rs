@@ -1,5 +1,4 @@
 use std::collections::LinkedList;
-use std::rc::Rc;
 use crate::base::{Ref, RefPtr};
 
 /// Autorelease pool manages objects that are autoreleased

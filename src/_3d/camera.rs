@@ -122,9 +122,9 @@ impl Camera {
     }
 
     pub fn look_at(&mut self, target: Vec3, up: Vec3) {
-        self.forward = (target - self.position).normalize();
-        self.right = self.forward.cross(up).normalize();
-        self.up = self.right.cross(self.forward).normalize();
+        self.forward = (target - self.position).get_normalized();
+        self.right = self.forward.cross(&up).get_normalized();
+        self.up = self.right.cross(&self.forward).get_normalized();
         self.update_matrices();
     }
 

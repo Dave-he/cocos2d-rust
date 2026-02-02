@@ -12,7 +12,7 @@ pub enum MenuState {
 /// Menu is a container for menu items
 #[derive(Debug)]
 pub struct Menu {
-    node: Node,
+    node: RefPtr<Node>,
     items: Vec<RefPtr<MenuItem>>,
     selected_item: Option<RefPtr<MenuItem>>,
     state: MenuState,
@@ -23,7 +23,7 @@ impl Menu {
     /// Creates a new menu
     pub fn new() -> Menu {
         Menu {
-            node: Node::new(),
+            node: RefPtr::new(Node::new()),
             items: Vec::new(),
             selected_item: None,
             state: MenuState::WAITING,
@@ -48,7 +48,7 @@ impl Menu {
 
     /// Removes a menu item
     pub fn remove_item(&mut self, item: &RefPtr<MenuItem>) {
-        self.items.retain(|i| !Ref::ptr_eq(i, item));
+        self.items.retain(|i| !RefPtr::ptr_eq(i, item));
         self.update_item_positions();
     }
 
@@ -88,15 +88,15 @@ impl Menu {
         let mut height = -(self.items.len() as f32 - 1.0) * padding / 2.0;
         
         for item in &self.items {
-            let item_height = item.get_node().get_content_size().y;
+            let item_height = item.borrow().get_node().borrow().get_content_size().y;
             height -= item_height / 2.0;
         }
 
         let mut pos_y = height;
         for item in &mut self.items {
-            let item_height = item.get_node().get_content_size().y;
+            let item_height = item.borrow().get_node().borrow().get_content_size().y;
             pos_y += item_height / 2.0;
-            item.get_node_mut().set_position(Vec2::new(0.0, pos_y));
+            item.borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(0.0, pos_y));
             pos_y += item_height / 2.0 + padding;
         }
     }
@@ -111,15 +111,15 @@ impl Menu {
         let mut width = -(self.items.len() as f32 - 1.0) * padding / 2.0;
         
         for item in &self.items {
-            let item_width = item.get_node().get_content_size().x;
+            let item_width = item.borrow().get_node().borrow().get_content_size().x;
             width -= item_width / 2.0;
         }
 
         let mut pos_x = width;
         for item in &mut self.items {
-            let item_width = item.get_node().get_content_size().x;
+            let item_width = item.borrow().get_node().borrow().get_content_size().x;
             pos_x += item_width / 2.0;
-            item.get_node_mut().set_position(Vec2::new(pos_x, 0.0));
+            item.borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, 0.0));
             pos_x += item_width / 2.0 + padding;
         }
     }
@@ -128,7 +128,7 @@ impl Menu {
     pub fn align_items_in_columns(&mut self, columns: &[usize]) {
         let mut height = 0.0;
         let mut row = 0;
-        let mut row_height = 0.0;
+        let mut row_height: f32 = 0.0;
         let mut row_columns = 0;
         let mut tmp = 0;
 
@@ -144,7 +144,7 @@ impl Menu {
                     break;
                 }
 
-                let item_height = self.items[tmp].get_node().get_content_size().y;
+                let item_height = self.items[tmp].borrow().get_node().borrow().get_content_size().y;
                 row_height = row_height.max(item_height);
                 tmp += 1;
             }
@@ -170,7 +170,7 @@ impl Menu {
                     break;
                 }
 
-                let item_height = self.items[tmp].get_node().get_content_size().y;
+                let item_height = self.items[tmp].borrow().get_node().borrow().get_content_size().y;
                 row_height = row_height.max(item_height);
                 tmp += 1;
             }
@@ -184,7 +184,7 @@ impl Menu {
                 }
 
                 let pos_x = 0.0; // Center horizontally for now
-                self.items[index].get_node_mut().set_position(Vec2::new(pos_x, pos_y));
+                self.items[index].borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, pos_y));
             }
 
             pos_y -= row_height / 2.0;
@@ -196,7 +196,7 @@ impl Menu {
     pub fn align_items_in_rows(&mut self, rows: &[usize]) {
         let mut width = 0.0;
         let mut column = 0;
-        let mut column_width = 0.0;
+        let mut column_width: f32 = 0.0;
         let mut column_rows = 0;
         let mut tmp = 0;
 
@@ -212,7 +212,7 @@ impl Menu {
                     break;
                 }
 
-                let item_width = self.items[tmp].get_node().get_content_size().x;
+                let item_width = self.items[tmp].borrow().get_node().borrow().get_content_size().x;
                 column_width = column_width.max(item_width);
                 tmp += 1;
             }
@@ -238,7 +238,7 @@ impl Menu {
                     break;
                 }
 
-                let item_width = self.items[tmp].get_node().get_content_size().x;
+                let item_width = self.items[tmp].borrow().get_node().borrow().get_content_size().x;
                 column_width = column_width.max(item_width);
                 tmp += 1;
             }
@@ -252,7 +252,7 @@ impl Menu {
                 }
 
                 let pos_y = 0.0; // Center vertically for now
-                self.items[index].get_node_mut().set_position(Vec2::new(pos_x, pos_y));
+                self.items[index].borrow_mut().get_node_mut().borrow_mut().set_position(Vec2::new(pos_x, pos_y));
             }
 
             pos_x += column_width / 2.0;
@@ -267,12 +267,12 @@ impl Menu {
     }
 
     /// Gets the node
-    pub fn get_node(&self) -> &Node {
+    pub fn get_node(&self) -> &RefPtr<Node> {
         &self.node
     }
 
     /// Gets the node mutably
-    pub fn get_node_mut(&mut self) -> &mut Node {
+    pub fn get_node_mut(&mut self) -> &mut RefPtr<Node> {
         &mut self.node
     }
 }

@@ -19,7 +19,7 @@ pub type PageTurnCallback = Box<dyn FnMut(&PageView, usize, PageViewEventType)>;
 /// - 页面切换动画
 /// - 页面指示器支持
 /// - 触摸翻页
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct PageView {
     scroll_view: ScrollView,
     pages: Vec<Node>,
@@ -29,6 +29,16 @@ pub struct PageView {
     indicator_position: Vec2,
     indicator_spacing: f32,
     event_callback: Option<PageTurnCallback>,
+}
+
+impl std::fmt::Debug for PageView {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("PageView")
+            .field("scroll_view", &self.scroll_view)
+            .field("current_page_index", &self.current_page_index)
+            .field("indicator_enabled", &self.indicator_enabled)
+            .finish()
+    }
 }
 
 impl PageView {
@@ -255,8 +265,9 @@ impl PageView {
     
     /// 触发翻页事件
     fn trigger_event(&mut self, index: usize, event_type: PageViewEventType) {
-        if let Some(ref mut callback) = self.event_callback {
+        if let Some(mut callback) = self.event_callback.take() {
             callback(self, index, event_type);
+            self.event_callback = Some(callback);
         }
     }
     

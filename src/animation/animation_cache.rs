@@ -85,7 +85,7 @@ impl AnimationCache {
                         let delay = if let Some(plist::Value::Real(d)) = anim_dict.get("delayPerUnit") {
                             *d as f32
                         } else if let Some(plist::Value::Integer(d)) = anim_dict.get("delayPerUnit") {
-                            *d as f32
+                            d.as_unsigned().unwrap_or(0) as f32
                         } else {
                             0.1 // 默认延迟
                         };
@@ -153,9 +153,13 @@ impl AnimationCache {
 
     /// 获取共享实例（单例模式）
     pub fn shared() -> &'static RefCell<AnimationCache> {
-        use std::sync::OnceLock;
-        static INSTANCE: OnceLock<RefCell<AnimationCache>> = OnceLock::new();
-        INSTANCE.get_or_init(|| RefCell::new(AnimationCache::new()))
+        static mut INSTANCE: Option<RefCell<AnimationCache>> = None;
+        unsafe {
+            if INSTANCE.is_none() {
+                INSTANCE = Some(RefCell::new(AnimationCache::new()));
+            }
+            INSTANCE.as_ref().unwrap()
+        }
     }
 
     /// 预加载常用动画

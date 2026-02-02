@@ -38,7 +38,7 @@ pub type ScrollEventCallback = Box<dyn FnMut(&ScrollView, ScrollViewEventType)>;
 /// - 边界反弹效果
 /// - 滚动条显示
 /// - 滚动事件回调
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct ScrollView {
     widget: Widget,
     inner_container: Node,
@@ -76,6 +76,16 @@ pub struct ScrollView {
     
     // 事件回调
     event_callback: Option<ScrollEventCallback>,
+}
+
+impl std::fmt::Debug for ScrollView {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ScrollView")
+            .field("widget", &self.widget)
+            .field("direction", &self.direction)
+            .field("content_size", &self.content_size)
+            .finish()
+    }
 }
 
 impl ScrollView {
@@ -311,8 +321,9 @@ impl ScrollView {
     
     /// 触发滚动事件
     fn trigger_event(&mut self, event_type: ScrollViewEventType) {
-        if let Some(ref mut callback) = self.event_callback {
+        if let Some(mut callback) = self.event_callback.take() {
             callback(self, event_type);
+            self.event_callback = Some(callback);
         }
     }
     

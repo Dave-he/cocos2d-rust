@@ -1,6 +1,5 @@
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::f32;
-use crate::math::Vec2; // Assuming we might interact with Vec2, though not strictly required by header logic yet.
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3 {

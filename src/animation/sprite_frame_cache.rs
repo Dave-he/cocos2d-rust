@@ -147,7 +147,7 @@ impl SpriteFrameCache {
                         // 创建精灵帧
                         let frame = SpriteFrame::with_details(
                             frame_name.clone(),
-                            Rc::new(RefCell::new(crate::renderer::Texture::new())),
+                            Rc::new(RefCell::new(crate::renderer::Texture2D::new())),
                             rect,
                             rotated,
                             original_size,
@@ -200,9 +200,13 @@ impl SpriteFrameCache {
 
     /// 获取共享实例（单例模式）
     pub fn shared() -> &'static RefCell<SpriteFrameCache> {
-        use std::sync::OnceLock;
-        static INSTANCE: OnceLock<RefCell<SpriteFrameCache>> = OnceLock::new();
-        INSTANCE.get_or_init(|| RefCell::new(SpriteFrameCache::new()))
+        static mut INSTANCE: Option<RefCell<SpriteFrameCache>> = None;
+        unsafe {
+            if INSTANCE.is_none() {
+                INSTANCE = Some(RefCell::new(SpriteFrameCache::new()));
+            }
+            INSTANCE.as_ref().unwrap()
+        }
     }
 }
 

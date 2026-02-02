@@ -279,7 +279,12 @@ impl Label {
 
     /// Gets the string number of lines
     pub fn get_string_num_lines(&self) -> usize {
-        self.text.lines().count()
+        if self.text.is_empty() {
+            return 0;
+        }
+        // 计算换行符数量 + 1
+        // 注意：末尾的 \n 也应该算作一行
+        self.text.matches('\n').count() + 1
     }
 
     /// Sets max line width

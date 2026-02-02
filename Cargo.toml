@@ -4,8 +4,17 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+env_logger = "0.11.8"
+glow = "0.13"
+glutin = "0.31"
+glutin-winit = "0.4"
+image = "0.25.9"
+log = "0.4.29"
 plist = "1.7"
 rand = "0.8"
+# 使用 0.5 版本以匹配 winit 和 glutin 的依赖
+raw-window-handle = "0.5"
+winit = "0.29"
 
 [[example]]
 name = "game_demo"

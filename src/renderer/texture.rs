@@ -154,6 +154,10 @@ impl Texture2D {
         self.name
     }
 
+    pub fn set_name(&mut self, name: u32) {
+        self.name = name;
+    }
+
     pub fn get_width(&self) -> u32 {
         self.width
     }

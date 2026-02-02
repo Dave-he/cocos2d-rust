@@ -1,4 +1,4 @@
-use std::ops::{Mul, MulAssign, Add, AddAssign, Sub, SubAssign, Neg};
+use std::ops::{Mul, MulAssign, Add, Sub};
 use std::f32;
 use crate::math::{Vec3, Vec4, Quaternion};
 
@@ -37,6 +37,10 @@ impl Mat4 {
     
     pub fn from_array(mat: &[f32; 16]) -> Self {
         Mat4 { m: *mat }
+    }
+
+    pub fn to_array(&self) -> [f32; 16] {
+        self.m
     }
 
     pub fn is_identity(&self) -> bool {

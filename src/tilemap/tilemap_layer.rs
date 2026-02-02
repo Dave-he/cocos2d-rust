@@ -68,7 +68,7 @@ impl TileMapLayer {
     pub fn remove_tile_at(&mut self, x: u32, y: u32) {
         let index = (y * self.map_width + x) as usize;
         if index < self.tiles.len() {
-            self.tiles[index] = Ref::new(Sprite::new());
+            self.tiles[index] = RefPtr::new(Sprite::new());
         }
     }
 

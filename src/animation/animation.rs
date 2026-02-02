@@ -311,7 +311,7 @@ mod tests {
         
         let anim = Animation::with_frame_delays(frames, delays).unwrap();
         assert_eq!(anim.frame_count(), 3);
-        assert_eq!(anim.duration(), 0.45);
+        assert!((anim.duration() - 0.45).abs() < 0.0001); // 使用浮点容差
     }
 
     #[test]

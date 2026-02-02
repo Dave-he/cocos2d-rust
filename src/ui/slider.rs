@@ -47,6 +47,17 @@ pub struct Slider {
     on_value_changed: Option<ValueChangedCallback>,
 }
 
+impl std::fmt::Debug for Slider {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Slider")
+            .field("widget", &self.widget)
+            .field("value", &self.value)
+            .field("min_value", &self.min_value)
+            .field("max_value", &self.max_value)
+            .finish()
+    }
+}
+
 impl Slider {
     /// 创建新滑动条
     pub fn new() -> Self {
@@ -81,8 +92,9 @@ impl Slider {
             self.value = value;
             
             // 触发回调
-            if let Some(ref mut callback) = self.on_value_changed {
+            if let Some(mut callback) = self.on_value_changed.take() {
                 callback(self, value);
+                self.on_value_changed = Some(callback);
             }
         }
     }

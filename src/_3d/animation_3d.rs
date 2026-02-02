@@ -179,7 +179,7 @@ impl AnimationComponent {
 
     pub fn play(&mut self, animation_name: &str) {
         for anim in &self.animations {
-            if anim.get_name() == animation_name {
+            if anim.borrow().get_name() == animation_name {
                 self.current_animation = Some(anim.clone());
                 self.current_time = 0.0;
                 self.playing = true;
@@ -220,7 +220,7 @@ impl AnimationComponent {
         self.current_time += delta * self.speed;
 
         if let Some(anim) = &self.current_animation {
-            if self.current_time >= anim.get_duration() {
+            if self.current_time >= anim.borrow().get_duration() {
                 self.current_time = 0.0;
             }
         }

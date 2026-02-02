@@ -90,7 +90,7 @@ struct RichElementNode {
 /// - 超链接点击
 /// - 自定义字体、颜色、大小
 /// - 自动换行和对齐
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct RichText {
     node: Node,
     elements: Vec<RichElement>,
@@ -114,6 +114,17 @@ pub struct RichText {
     
     // 回调
     url_click_callback: Option<Box<dyn FnMut(&str)>>,
+}
+
+impl std::fmt::Debug for RichText {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("RichText")
+            .field("node", &self.node)
+            .field("elements", &self.elements)
+            .field("element_nodes", &self.element_nodes)
+            .field("font_name", &self.font_name)
+            .finish()
+    }
 }
 
 impl RichText {

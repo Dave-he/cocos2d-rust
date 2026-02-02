@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::RefCell;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::Vec2;
 
 /// Event types supported by the engine
@@ -255,7 +254,7 @@ impl EventListener {
 /// Event dispatcher
 #[derive(Debug)]
 pub struct EventDispatcher {
-    listeners: Vec<RefPtr<RefCell<EventListener>>>,
+    listeners: Vec<RefPtr<EventListener>>,
     listeners_map: HashMap<EventListenerType, Vec<usize>>,
     to_removed_listeners: Vec<usize>,
     in_update: bool,
@@ -272,7 +271,7 @@ impl EventDispatcher {
     }
 
     /// Adds an event listener
-    pub fn add_listener(&mut self, listener: RefPtr<RefCell<EventListener>>) {
+    pub fn add_listener(&mut self, listener: RefPtr<EventListener>) {
         let index = self.listeners.len();
         self.listeners.push(listener.clone());
 

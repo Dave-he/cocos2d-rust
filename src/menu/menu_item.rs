@@ -18,7 +18,7 @@ impl std::fmt::Debug for MenuItem {
 }
 
 pub struct MenuItem {
-    node: Node,
+    node: RefPtr<Node>,
     enabled: bool,
     selected: bool,
     callback: Option<MenuCallback>,
@@ -28,7 +28,7 @@ impl MenuItem {
     /// Creates a new menu item
     pub fn new() -> MenuItem {
         MenuItem {
-            node: Node::new(),
+            node: RefPtr::new(Node::new()),
             enabled: true,
             selected: false,
             callback: None,
@@ -82,12 +82,12 @@ impl MenuItem {
     }
 
     /// Gets the node
-    pub fn get_node(&self) -> &Node {
+    pub fn get_node(&self) -> &RefPtr<Node> {
         &self.node
     }
 
     /// Gets the node mutably
-    pub fn get_node_mut(&mut self) -> &mut Node {
+    pub fn get_node_mut(&mut self) -> &mut RefPtr<Node> {
         &mut self.node
     }
 }
@@ -137,7 +137,7 @@ impl MenuItemLabel {
 
     /// Sets the string
     pub fn set_string(&mut self, text: &str) {
-        self.label.set_string(text);
+        self.label.borrow_mut().set_string(text);
     }
 
     /// Sets disabled color

@@ -1,4 +1,4 @@
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 use std::fmt;
 
@@ -76,35 +76,40 @@ impl Drop for Ref {
     }
 }
 
-/// A smart pointer that wraps Rc<Ref> with automatic reference counting
+/// A smart pointer that wraps Rc<RefCell<T>> with automatic reference counting
 #[derive(Debug)]
 pub struct RefPtr<T: ?Sized> {
-    ptr: Rc<T>,
+    ptr: Rc<RefCell<T>>,
 }
 
 impl<T> RefPtr<T> {
-    /// Creates a new RefPtr from an Rc<T>
+    /// Creates a new RefPtr from an Rc<RefCell<T>> or value
     pub fn new(value: T) -> RefPtr<T> {
         RefPtr {
-            ptr: Rc::new(value),
+            ptr: Rc::new(RefCell::new(value)),
         }
     }
 
+    /// Pointer equality check
+    pub fn ptr_eq(a: &RefPtr<T>, b: &RefPtr<T>) -> bool {
+        Rc::ptr_eq(&a.ptr, &b.ptr)
+    }
+
     /// Gets a reference to the underlying value
-    pub fn borrow(&self) -> &T {
-        &self.ptr
+    pub fn borrow(&self) -> std::cell::Ref<T> {
+        self.ptr.borrow()
     }
 
     /// Gets a mutable reference to the underlying value
-    pub fn borrow_mut(&mut self) -> &mut T {
-        Rc::get_mut(&mut self.ptr).unwrap()
+    pub fn borrow_mut(&self) -> std::cell::RefMut<T> {
+        self.ptr.borrow_mut()
     }
 
     /// Gets the reference count
     pub fn get_reference_count(&self) -> u32 {
         // For Rc, we can't directly get the reference count from outside
         // But we can track it internally if needed
-        1 // Placeholder
+        Rc::strong_count(&self.ptr) as u32
     }
 
     /// Retains the reference count
@@ -131,7 +136,12 @@ where
     T: PartialEq,
 {
     fn eq(&self, other: &RefPtr<T>) -> bool {
-        Rc::ptr_eq(&self.ptr, &other.ptr) || *self.ptr == *other.ptr
+        // Check pointer equality first
+        if Rc::ptr_eq(&self.ptr, &other.ptr) {
+            return true;
+        }
+        // Then check value equality
+        *self.ptr.borrow() == *other.ptr.borrow()
     }
 }
 
@@ -140,33 +150,37 @@ where
     T: fmt::Display,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "RefPtr({})", self.ptr)
+        write!(f, "RefPtr({})", self.ptr.borrow())
     }
 }
 
-// Make RefPtr work with Deref for easier access
+// Make RefPtr work with Deref for easier access?
+// We CANNOT implement Deref<Target=T> because we can't return &T from RefCell.
+// We can implement Deref<Target=RefCell<T>>? No, usage expects T methods.
+// Users must use borrow() or borrow_mut().
+
+/*
 use std::ops::{Deref, DerefMut};
 
 impl<T> Deref for RefPtr<T> {
     type Target = T;
     fn deref(&self) -> &T {
-        &self.ptr
+        // Impossible with RefCell
+        unsafe { &*self.ptr.as_ptr() } // This is UNSAFE and violates aliasing rules if mutable borrow exists
     }
 }
+*/
 
-impl<T> DerefMut for RefPtr<T> {
-    fn deref_mut(&mut self) -> &mut T {
-        Rc::get_mut(&mut self.ptr).expect("RefPtr: Cannot get mutable reference, reference count > 1")
-    }
-}
+// Remove From<Rc<T>> as it is not compatible with Rc<RefCell<T>> easily unless we wrap
+// But we can add From<Rc<RefCell<T>>>
 
-impl<T> From<Rc<T>> for RefPtr<T> {
-    fn from(ptr: Rc<T>) -> Self {
+impl<T> From<Rc<RefCell<T>>> for RefPtr<T> {
+    fn from(ptr: Rc<RefCell<T>>) -> Self {
         RefPtr { ptr }
     }
 }
 
-impl<T> From<RefPtr<T>> for Rc<T> {
+impl<T> From<RefPtr<T>> for Rc<RefCell<T>> {
     fn from(ptr: RefPtr<T>) -> Self {
         ptr.ptr
     }

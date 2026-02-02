@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Sub};
 use crate::math::Vec2;
 
 /// Color type for 3 components (RGB)

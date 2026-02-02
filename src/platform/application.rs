@@ -1,31 +1,23 @@
-/// Platform types
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Platform {
-    Unknown,
-    Windows,
-    Linux,
-    MacOS,
-    iOS,
-    Android,
-}
+use winit::{
+    event::{Event, WindowEvent},
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
+};
+use glutin::{
+    config::{ConfigTemplateBuilder, GlConfig},
+    context::{ContextAttributesBuilder, GlProfile, NotCurrentGlContext},
+    display::GetGlDisplay,
+    prelude::*,
+    surface::{SurfaceAttributesBuilder, WindowSurface, GlSurface},
+};
+use glutin_winit::DisplayBuilder;
+use raw_window_handle::HasRawWindowHandle;
+use std::num::NonZeroU32;
+use std::rc::Rc;
+use std::ffi::CString;
 
-impl Platform {
-    /// Gets the current platform
-    pub fn get_current_platform() -> Platform {
-        #[cfg(target_os = "windows")]
-        return Platform::Windows;
-        #[cfg(target_os = "linux")]
-        return Platform::Linux;
-        #[cfg(target_os = "macos")]
-        return Platform::MacOS;
-        #[cfg(target_os = "ios")]
-        return Platform::iOS;
-        #[cfg(target_os = "android")]
-        return Platform::Android;
-        #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos", target_os = "ios", target_os = "android")))]
-        return Platform::Unknown;
-    }
-}
+use crate::base::Director;
+use crate::backend::opengl::OpenGLBackend;
 
 /// Keyboard state
 #[derive(Debug, Clone)]
@@ -53,20 +45,47 @@ impl KeyboardState {
     }
 }
 
+
+/// Platform types
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(non_camel_case_types)]
+pub enum Platform {
+    Unknown,
+    Windows,
+    Linux,
+    MacOS,
+    iOS,
+    Android,
+}
+
+impl Platform {
+    /// Gets the current platform
+    pub fn get_current_platform() -> Platform {
+        #[cfg(target_os = "windows")]
+        return Platform::Windows;
+        #[cfg(target_os = "linux")]
+        return Platform::Linux;
+        #[cfg(target_os = "macos")]
+        return Platform::MacOS;
+        #[cfg(target_os = "ios")]
+        return Platform::iOS;
+        #[cfg(target_os = "android")]
+        return Platform::Android;
+        #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos", target_os = "ios", target_os = "android")))]
+        return Platform::Unknown;
+    }
+}
+
 /// Application delegate for platform-specific initialization
 pub trait ApplicationDelegate {
     fn application_did_finish_launching(&mut self) -> bool;
     fn application_did_enter_background(&mut self);
     fn application_will_enter_foreground(&mut self);
-    fn application_will_resign_active(&mut self);
-    fn application_did_become_active(&mut self);
 }
 
 /// Application manages the main application lifecycle
 pub struct Application {
     delegate: Option<Box<dyn ApplicationDelegate>>,
-    running: bool,
-    paused: bool,
 }
 
 impl Application {
@@ -74,15 +93,7 @@ impl Application {
     pub fn new() -> Application {
         Application {
             delegate: None,
-            running: false,
-            paused: false,
         }
-    }
-
-    /// Runs the application
-    pub fn run(&mut self) {
-        self.running = true;
-        self.paused = false;
     }
 
     /// Sets the application delegate
@@ -90,76 +101,122 @@ impl Application {
         self.delegate = Some(delegate);
     }
 
-    /// Gets the application delegate
-    pub fn get_delegate(&mut self) -> Option<&mut Box<dyn ApplicationDelegate>> {
-        self.delegate.as_mut()
-    }
+    /// Runs the application
+    pub fn run(&mut self) {
+        let event_loop = EventLoop::new().unwrap();
+        let window_builder = WindowBuilder::new()
+            .with_title("Cocos2d-Rust")
+            .with_inner_size(winit::dpi::LogicalSize::new(960.0, 640.0));
 
-    /// Gets the application instance
-    pub fn get_instance() -> &'static mut Application {
-        static mut APPLICATION: Option<Application> = None;
-        unsafe {
-            if APPLICATION.is_none() {
-                APPLICATION = Some(Application::new());
+        let template = ConfigTemplateBuilder::new()
+            .with_alpha_size(8)
+            .with_transparency(true);
+
+        let display_builder = DisplayBuilder::new()
+            .with_window_builder(Some(window_builder));
+
+        let (window, gl_config) = display_builder
+            .build(&event_loop, template, |configs| {
+                configs
+                    .reduce(|accum, config| {
+                        if config.num_samples() > accum.num_samples() {
+                            config
+                        } else {
+                            accum
+                        }
+                    })
+                    .unwrap()
+            })
+            .unwrap();
+
+        let window = window.unwrap();
+        
+        let raw_window_handle = window.raw_window_handle();
+        let gl_display = gl_config.display();
+
+        let context_attributes = ContextAttributesBuilder::new()
+            .with_profile(GlProfile::Core)
+            .build(Some(raw_window_handle));
+
+        let not_current_gl_context = unsafe {
+            gl_display
+                .create_context(&gl_config, &context_attributes)
+                .expect("failed to create context")
+        };
+
+        let attrs = window.inner_size();
+        let width = NonZeroU32::new(attrs.width).unwrap_or(NonZeroU32::new(1).unwrap());
+        let height = NonZeroU32::new(attrs.height).unwrap_or(NonZeroU32::new(1).unwrap());
+        let surface_attributes = SurfaceAttributesBuilder::<WindowSurface>::new().build(
+            raw_window_handle,
+            width,
+            height,
+        );
+
+        let gl_surface = unsafe {
+            gl_display
+                .create_window_surface(&gl_config, &surface_attributes)
+                .unwrap()
+        };
+
+        let gl_context = not_current_gl_context.make_current(&gl_surface).unwrap();
+
+        // Initialize glow
+        let glow_context = unsafe {
+            glow::Context::from_loader_function(|s| {
+                gl_display.get_proc_address(&CString::new(s).unwrap())
+            })
+        };
+        let glow_context = Rc::new(glow_context);
+
+        // Initialize Director with context
+        let mut director = Director::get_instance();
+        director.borrow_mut().set_gl_context(glow_context.clone());
+
+        // Notify delegate
+        if let Some(delegate) = &mut self.delegate {
+            if !delegate.application_did_finish_launching() {
+                return;
             }
-            APPLICATION.as_mut().unwrap()
         }
+        
+        event_loop.run(move |event, target| {
+            target.set_control_flow(ControlFlow::Poll);
+
+            match event {
+                Event::WindowEvent { event, .. } => match event {
+                    WindowEvent::CloseRequested => target.exit(),
+                    WindowEvent::Resized(size) => {
+                        if size.width != 0 && size.height != 0 {
+                            gl_surface.resize(
+                                &gl_context,
+                                NonZeroU32::new(size.width).unwrap(),
+                                NonZeroU32::new(size.height).unwrap(),
+                            );
+                            // director.update_view_port(...)
+                        }
+                    },
+                    WindowEvent::RedrawRequested => {
+                        // Main Loop
+                        director.borrow_mut().main_loop();
+                        
+                        // Swap buffers
+                        gl_surface.swap_buffers(&gl_context).unwrap();
+                        
+                        // Request next frame
+                        window.request_redraw();
+                    },
+                    _ => (),
+                },
+                Event::AboutToWait => {
+                    window.request_redraw();
+                },
+                _ => (),
+            }
+        }).unwrap();
     }
 
-    /// Checks if the application is running
-    pub fn is_running(&self) -> bool {
-        self.running
-    }
-
-    /// Stops the application
-    pub fn stop(&mut self) {
-        self.running = false;
-    }
-
-    /// Pauses the application
-    pub fn pause(&mut self) {
-        self.paused = true;
-    }
-
-    /// Resumes the application
-    pub fn resume(&mut self) {
-        self.paused = false;
-    }
-
-    /// Gets the application name
-    pub fn get_application_name() -> String {
-        "cocos2d-rust".to_string()
-    }
-
-    /// Gets the application version
-    pub fn get_application_version() -> String {
-        "1.0.0".to_string()
-    }
-
-    /// Gets the current language
-    pub fn get_current_language() -> String {
-        "en".to_string()
-    }
-
-    /// Opens a URL
-    pub fn open_url(url: &str) -> bool {
-        // In a real implementation, this would use platform-specific APIs
-        println!("Opening URL: {}", url);
-        true
-    }
-
-    /// Gets the target platform
     pub fn get_target_platform() -> Platform {
         Platform::get_current_platform()
-    }
-
-    /// Gets the bundle identifier
-    pub fn get_bundle_identifier() -> String {
-        "org.cocos2d-rust".to_string()
-    }
-
-    /// Gets the resource path
-    pub fn get_resource_path() -> String {
-        "./Resources".to_string()
     }
 }

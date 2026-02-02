@@ -91,6 +91,8 @@ impl Animate {
         // 检查是否完成所有循环
         if loops > 0 && self.elapsed >= duration * loops as f32 {
             self.done = true;
+            // 更新最终的循环计数
+            self.executed_loops = loops;
             
             // 恢复原始帧
             if animation.restore_original_frame() {
@@ -105,10 +107,10 @@ impl Animate {
         let loop_time = self.elapsed % duration;
         let new_frame_index = animation.get_frame_index_at_time(loop_time);
         
-        // 更新循环计数
-        let new_loop = (self.elapsed / duration) as u32;
-        if new_loop > self.executed_loops {
-            self.executed_loops = new_loop;
+        // 更新循环计数 - 应该向上取整以表示"已完成的循环"
+        let current_loop = (self.elapsed / duration).ceil() as u32;
+        if current_loop > self.executed_loops {
+            self.executed_loops = current_loop;
         }
 
         self.current_frame_index = new_frame_index;

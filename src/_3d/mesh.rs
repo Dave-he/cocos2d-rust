@@ -296,7 +296,7 @@ pub struct VertexAttribBindingInfo {
 impl VertexAttribBinding {
     pub fn new() -> VertexAttribBinding {
         VertexAttribBinding {
-            vertex_buffer: Ref::new(MeshVertexData::new()),
+            vertex_buffer: RefPtr::new(MeshVertexData::new()),
             attribs: Vec::new(),
         }
     }

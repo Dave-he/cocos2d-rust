@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::rc::Rc;
+#[allow(unused_imports)]
 use crate::base::{Ref, RefPtr};
 
 /// Timer callback function type

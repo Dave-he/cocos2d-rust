@@ -4,6 +4,11 @@ use crate::math::Mat4;
 use crate::renderer::command::{RenderCommand, CommandType, Triangles, Quad, MeshCommand, GroupCommand};
 use crate::renderer::material::Material;
 use crate::renderer::pipeline::PipelineState;
+use crate::backend::opengl::OpenGLBackend;
+use std::rc::Rc;
+use glow::Context;
+use crate::platform::Image;
+use crate::renderer::texture::{Texture2D, PixelFormat};
 
 pub struct Renderer {
     commands: Vec<Box<dyn RenderCommand>>,
@@ -13,6 +18,10 @@ pub struct Renderer {
     is_recording: bool,
     frustum_culled: bool,
     view_projection: Mat4,
+    backend: Option<OpenGLBackend>,
+    default_program: u32,
+    dynamic_vbo: u32,
+    dynamic_ibo: u32,
 }
 
 impl Renderer {
@@ -25,13 +34,85 @@ impl Renderer {
             is_recording: false,
             frustum_culled: false,
             view_projection: Mat4::IDENTITY,
+            backend: None,
+            default_program: 0,
+            dynamic_vbo: 0,
+            dynamic_ibo: 0,
         }
     }
 
-    pub fn init(&mut self) {
-        self.commands.clear();
-        self.command_queue.clear();
+    pub fn init_backend(&mut self, context: Rc<Context>) {
+        let mut backend = OpenGLBackend::new(context);
+        backend.init();
+        
+        // Create default resources
+        self.default_program = self.create_default_shader(&mut backend);
+        let vbo = backend.create_buffer();
+        self.dynamic_vbo = vbo.get_id();
+        let ibo = backend.create_buffer();
+        self.dynamic_ibo = ibo.get_id();
+
+        self.backend = Some(backend);
     }
+
+    fn create_default_shader(&self, backend: &mut OpenGLBackend) -> u32 {
+        let vs_source = r#"#version 410 core
+        layout (location = 0) in vec3 a_position;
+        layout (location = 1) in vec2 a_texCoord;
+        layout (location = 2) in vec4 a_color;
+        
+        out vec2 v_texCoord;
+        out vec4 v_color;
+        
+        uniform mat4 u_MVPMatrix;
+        
+        void main() {
+            gl_Position = u_MVPMatrix * vec4(a_position, 1.0);
+            v_texCoord = a_texCoord;
+            v_color = a_color;
+        }
+        "#;
+        
+        let fs_source = r#"#version 410 core
+        in vec2 v_texCoord;
+        in vec4 v_color;
+        out vec4 FragColor;
+        
+        // uniform sampler2D u_texture;
+        
+        void main() {
+            // For now, ignore texture and just use color
+            FragColor = v_color; 
+        }
+        "#;
+
+        let vs = backend.create_shader(glow::VERTEX_SHADER);
+        backend.shader_source(vs, vs_source);
+        if !backend.compile_shader(vs) {
+            log::error!("Failed to compile default vertex shader");
+            return 0;
+        }
+
+        let fs = backend.create_shader(glow::FRAGMENT_SHADER);
+        backend.shader_source(fs, fs_source);
+        if !backend.compile_shader(fs) {
+            log::error!("Failed to compile default fragment shader");
+            return 0;
+        }
+
+        let prog = backend.create_program();
+        let prog_id = prog.get_id();
+
+        backend.attach_shader(prog_id, vs);
+        backend.attach_shader(prog_id, fs);
+        if !backend.link_program(prog_id) {
+            log::error!("Failed to link default program");
+            return 0;
+        }
+        
+        prog_id
+    }
+
 
     pub fn start_frame(&mut self) {
         self.commands.clear();
@@ -57,6 +138,12 @@ impl Renderer {
     }
 
     pub fn render(&mut self) {
+        if let Some(backend) = &mut self.backend {
+            backend.set_viewport(0, 0, 960, 640); // Hardcoded for now
+            backend.clear_color(0.2, 0.3, 0.3, 1.0);
+            backend.clear(glow::COLOR_BUFFER_BIT | glow::DEPTH_BUFFER_BIT);
+        }
+
         self.start_frame();
 
         // Sort commands by global order
@@ -65,7 +152,8 @@ impl Renderer {
         });
 
         // Execute all commands
-        for command in &self.command_queue {
+        let commands = std::mem::take(&mut self.command_queue);
+        for command in commands {
             command.execute(self);
         }
 
@@ -86,8 +174,65 @@ impl Renderer {
         self.view_projection
     }
 
-    pub fn draw_triangles(&mut self, triangles: &Triangles, material: RefPtr<Material>) {
-        self.current_material = Some(material);
+    pub fn draw_triangles(&mut self, triangles: &Triangles) {
+        // Simple immediate mode drawing for now
+        if let Some(backend) = &mut self.backend {
+            if self.default_program == 0 {
+                return;
+            }
+
+            backend.use_program(self.default_program);
+
+            // Set MVP matrix (Identity for now, or view_projection)
+            // Need to locate uniform first. 
+            let mvp_loc = backend.get_program_uniform_location(self.default_program, "u_MVPMatrix");
+            backend.set_uniform_matrix4fv(mvp_loc, false, &self.view_projection);
+            
+            // Bind buffers
+            backend.bind_buffer(crate::backend::device::BufferType::VERTEX, self.dynamic_vbo);
+            
+            let vert_bytes = unsafe {
+                std::slice::from_raw_parts(
+                    triangles.vertices.as_ptr() as *const u8,
+                    triangles.vertices.len() * std::mem::size_of::<crate::renderer::command::Vertex>()
+                )
+            };
+            backend.buffer_data(
+                crate::backend::device::BufferType::VERTEX, 
+                vert_bytes.len(), 
+                vert_bytes, 
+                crate::backend::device::BufferUsage::DYNAMIC
+            );
+
+            // Enable attributes
+            // Pos
+            backend.enable_vertex_attrib_array(0);
+            backend.vertex_attrib_pointer(0, 3, glow::FLOAT, false, 36, 0);
+            // Tex
+            backend.enable_vertex_attrib_array(1);
+            backend.vertex_attrib_pointer(1, 2, glow::FLOAT, false, 36, 12);
+            // Color
+            backend.enable_vertex_attrib_array(2);
+            backend.vertex_attrib_pointer(2, 4, glow::FLOAT, false, 36, 20);
+
+            // Indices
+            backend.bind_buffer(crate::backend::device::BufferType::INDEX, self.dynamic_ibo);
+            let idx_bytes = unsafe {
+                std::slice::from_raw_parts(
+                    triangles.indices.as_ptr() as *const u8,
+                    triangles.indices.len() * 2
+                )
+            };
+            backend.buffer_data(
+                crate::backend::device::BufferType::INDEX,
+                idx_bytes.len(),
+                idx_bytes,
+                crate::backend::device::BufferUsage::DYNAMIC
+            );
+
+            // Draw
+            backend.draw_elements(glow::TRIANGLES, triangles.indices.len() as i32, glow::UNSIGNED_SHORT, 0);
+        }
     }
 
     pub fn draw_quad(&mut self, quad: &Quad, material: RefPtr<Material>) {
@@ -143,6 +288,64 @@ impl Renderer {
 
     pub fn get_gamma_squared(&self) -> f32 {
         1.0
+    }
+    pub fn create_texture_from_image(&mut self, image: &Image) -> Option<Texture2D> {
+        if let Some(backend) = &mut self.backend {
+            let texture_obj = backend.create_texture();
+            
+            // Map Image format to PixelFormat/GL format
+            // For now assume RGBA8888
+            let pixel_format = PixelFormat::RGBA8888;
+            
+            backend.bind_texture(glow::TEXTURE_2D, texture_obj.get_id());
+            
+            // Upload data
+            backend.set_texture_params(
+                glow::LINEAR, 
+                glow::LINEAR, 
+                glow::CLAMP_TO_EDGE, 
+                glow::CLAMP_TO_EDGE
+            );
+            
+            backend.tex_image_2d(
+                glow::TEXTURE_2D,
+                0,
+                glow::RGBA as i32,
+                image.get_width(),
+                image.get_height(),
+                0,
+                glow::RGBA,
+                Some(image.get_data())
+            );
+            
+            let mut texture = Texture2D::new();
+            texture.set_name(texture_obj.get_id());
+            texture.update(
+                image.get_data(), 
+                image.get_width(), 
+                image.get_height(), 
+                pixel_format
+            );
+            
+            Some(texture)
+        } else {
+            None
+        }
+    }
+}
+
+impl std::fmt::Debug for Renderer {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Renderer")
+            .field("commands_count", &self.commands.len())
+            .field("command_queue_count", &self.command_queue.len())
+            .field("current_material", &self.current_material)
+            .field("current_pipeline", &self.current_pipeline)
+            .field("is_recording", &self.is_recording)
+            .field("frustum_culled", &self.frustum_culled)
+            .field("view_projection", &self.view_projection)
+            .field("backend", &self.backend)
+            .finish()
     }
 }
 

@@ -239,7 +239,7 @@ impl ActionManager {
 
     /// Adds an action
     pub fn add_action(&mut self, action: RefPtr<Action>, target: RefPtr<Node>, paused: bool) {
-        let target_id = &target as *const _ as usize;
+        let target_id = target.borrow().get_id();
 
         if let Some(actions) = self.target_map.get_mut(&target_id) {
             actions.push(action);
@@ -250,9 +250,9 @@ impl ActionManager {
 
     /// Removes an action by tag
     pub fn remove_action_by_tag(&mut self, tag: i32, target: &RefPtr<Node>) {
-        let target_id = target as *const _ as usize;
+        let target_id = target.borrow().get_id(); // Assumes Node has get_id
         if let Some(actions) = self.target_map.get_mut(&target_id) {
-            actions.retain(|action| action.get_tag() != tag);
+            actions.retain(|action| action.borrow().get_tag() != tag);
         }
     }
 
@@ -263,16 +263,16 @@ impl ActionManager {
 
     /// Removes all actions from a target
     pub fn remove_all_actions_from_target(&mut self, target: &RefPtr<Node>) {
-        let target_id = target as *const _ as usize;
+        let target_id = target.borrow().get_id();
         self.target_map.remove(&target_id);
     }
 
     /// Gets an action by tag
     pub fn get_action_by_tag(&self, tag: i32, target: &RefPtr<Node>) -> Option<&RefPtr<Action>> {
-        let target_id = target as *const _ as usize;
+        let target_id = target.borrow().get_id();
         if let Some(actions) = self.target_map.get(&target_id) {
             for action in actions {
-                if action.get_tag() == tag {
+                if action.borrow().get_tag() == tag {
                     return Some(action);
                 }
             }

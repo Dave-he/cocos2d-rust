@@ -5,7 +5,7 @@ use crate::action::{Action, FiniteTimeAction};
 
 #[derive(Debug)]
 pub struct Layer {
-    node: Node,
+    node: RefPtr<Node>,
     touch_enabled: bool,
     keyboard_enabled: bool,
 }
@@ -13,7 +13,7 @@ pub struct Layer {
 impl Layer {
     pub fn new() -> Layer {
         Layer {
-            node: Node::new(),
+            node: RefPtr::new(Node::new()),
             touch_enabled: false,
             keyboard_enabled: false,
         }
@@ -23,16 +23,16 @@ impl Layer {
         Layer::new()
     }
 
-    pub fn get_node(&self) -> &Node {
+    pub fn get_node(&self) -> &RefPtr<Node> {
         &self.node
     }
 
-    pub fn get_node_mut(&mut self) -> &mut Node {
+    pub fn get_node_mut(&mut self) -> &mut RefPtr<Node> {
         &mut self.node
     }
 
     pub fn add_child(&mut self, child: RefPtr<Node>) {
-        self.node.add_child(child);
+        self.node.borrow_mut().add_child(child);
     }
 
     pub fn set_touch_enabled(&mut self, enabled: bool) {

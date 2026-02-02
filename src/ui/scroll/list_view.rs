@@ -31,7 +31,7 @@ pub type ListItemCallback = Box<dyn FnMut(&ListView, usize, ListViewEventType)>;
 /// - 列表项自动排列
 /// - 列表项选择回调
 /// - 动态添加/删除列表项
-#[derive(Debug)]
+// #[derive(Debug)]
 pub struct ListView {
     scroll_view: ScrollView,
     items: Vec<Node>,
@@ -39,6 +39,17 @@ pub struct ListView {
     item_spacing: f32,
     selected_index: Option<usize>,
     event_callback: Option<ListItemCallback>,
+}
+
+impl std::fmt::Debug for ListView {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("ListView")
+            .field("scroll_view", &self.scroll_view)
+            .field("item_gravity", &self.item_gravity)
+            .field("item_spacing", &self.item_spacing)
+            .field("selected_index", &self.selected_index)
+            .finish()
+    }
 }
 
 impl ListView {
@@ -202,6 +213,7 @@ impl ListView {
         match direction {
             ScrollDirection::VERTICAL => {
                 let mut current_y = 0.0;
+                let count = self.items.len();
                 for (i, item) in self.items.iter_mut().enumerate() {
                     let item_size = item.get_content_size();
                     
@@ -225,7 +237,7 @@ impl ListView {
                     item.set_position(Vec2::new(x, current_y));
                     
                     current_y -= item_size.y / 2.0;
-                    if i < self.items.len() - 1 {
+                    if i < count - 1 {
                         current_y -= self.item_spacing;
                     }
                     
@@ -239,6 +251,7 @@ impl ListView {
             
             ScrollDirection::HORIZONTAL => {
                 let mut current_x = 0.0;
+                let count = self.items.len();
                 for (i, item) in self.items.iter_mut().enumerate() {
                     let item_size = item.get_content_size();
                     
@@ -262,7 +275,7 @@ impl ListView {
                     item.set_position(Vec2::new(current_x, y));
                     
                     current_x += item_size.x / 2.0;
-                    if i < self.items.len() - 1 {
+                    if i < count - 1 {
                         current_x += self.item_spacing;
                     }
                     
@@ -280,8 +293,9 @@ impl ListView {
     
     /// 触发列表项事件
     fn trigger_event(&mut self, index: usize, event_type: ListViewEventType) {
-        if let Some(ref mut callback) = self.event_callback {
+        if let Some(mut callback) = self.event_callback.take() {
             callback(self, index, event_type);
+            self.event_callback = Some(callback);
         }
     }
     

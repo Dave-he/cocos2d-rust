@@ -157,7 +157,7 @@ impl Widget {
     }
 
     pub fn remove_child(&mut self, child: &RefPtr<Widget>) {
-        self.children.retain(|c| c.get_tag() != child.get_tag());
+        self.children.retain(|c| c.borrow().get_tag() != child.borrow().get_tag());
     }
 
     pub fn get_children(&self) -> &Vec<RefPtr<Widget>> {

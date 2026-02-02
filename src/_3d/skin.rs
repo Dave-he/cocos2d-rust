@@ -101,7 +101,7 @@ impl Skeleton3D {
     pub fn add_bone(&mut self, bone: RefPtr<Bone3D>) {
         let index = self.bones.len();
         self.bones.push(bone.clone());
-        self.bone_index_by_name.insert(bone.get_name().to_string(), index);
+        self.bone_index_by_name.insert(bone.borrow().get_name().to_string(), index);
     }
 
     pub fn get_bones(&self) -> &Vec<RefPtr<Bone3D>> {
@@ -130,7 +130,7 @@ pub struct Skin {
 impl Skin {
     pub fn new() -> Skin {
         Skin {
-            mesh: Ref::new(()),
+            mesh: RefPtr::new(()),
             skeleton: None,
         }
     }

@@ -30,6 +30,7 @@ pub enum TextInputType {
 pub type TextChangedCallback = Box<dyn FnMut(&TextField, &str)>;
 
 /// 文本输入框组件
+// #[derive(Debug)]
 pub struct TextField {
     /// 基础 Widget
     widget: Widget,
@@ -67,6 +68,17 @@ pub struct TextField {
     on_editing_began: Option<Box<dyn FnMut(&TextField)>>,
     /// 编辑结束回调
     on_editing_ended: Option<Box<dyn FnMut(&TextField)>>,
+}
+
+impl std::fmt::Debug for TextField {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TextField")
+            .field("widget", &self.widget)
+            .field("text", &self.text)
+            .field("placeholder", &self.placeholder)
+            .field("max_length", &self.max_length)
+            .finish()
+    }
 }
 
 impl TextField {
@@ -110,8 +122,9 @@ impl TextField {
         self.clear_selection();
 
         // 触发回调
-        if let Some(ref mut callback) = self.on_text_changed {
+        if let Some(mut callback) = self.on_text_changed.take() {
             callback(self, &text_to_set);
+            self.on_text_changed = Some(callback);
         }
     }
 
@@ -202,8 +215,9 @@ impl TextField {
 
         self.is_editing = true;
         
-        if let Some(ref mut callback) = self.on_editing_began {
+        if let Some(mut callback) = self.on_editing_began.take() {
             callback(self);
+            self.on_editing_began = Some(callback);
         }
     }
 
@@ -216,8 +230,9 @@ impl TextField {
         self.is_editing = false;
         self.clear_selection();
         
-        if let Some(ref mut callback) = self.on_editing_ended {
+        if let Some(mut callback) = self.on_editing_ended.take() {
             callback(self);
+            self.on_editing_ended = Some(callback);
         }
     }
 
@@ -248,9 +263,10 @@ impl TextField {
         self.cursor_position += text_to_insert.len();
 
         // 触发回调
-        if let Some(ref mut callback) = self.on_text_changed {
+        if let Some(mut callback) = self.on_text_changed.take() {
             let text_clone = self.text.clone();
             callback(self, &text_clone);
+            self.on_text_changed = Some(callback);
         }
     }
 
@@ -266,9 +282,10 @@ impl TextField {
             self.text.remove(self.cursor_position - 1);
             self.cursor_position -= 1;
 
-            if let Some(ref mut callback) = self.on_text_changed {
+            if let Some(mut callback) = self.on_text_changed.take() {
                 let text_clone = self.text.clone();
                 callback(self, &text_clone);
+                self.on_text_changed = Some(callback);
             }
         }
     }
@@ -284,9 +301,10 @@ impl TextField {
         } else if self.cursor_position < self.text.len() {
             self.text.remove(self.cursor_position);
 
-            if let Some(ref mut callback) = self.on_text_changed {
+            if let Some(mut callback) = self.on_text_changed.take() {
                 let text_clone = self.text.clone();
                 callback(self, &text_clone);
+                self.on_text_changed = Some(callback);
             }
         }
     }
@@ -342,7 +360,7 @@ impl TextField {
             self.cursor_position = start;
             self.clear_selection();
 
-            if let Some(callback) = self.on_text_changed.take() {
+            if let Some(mut callback) = self.on_text_changed.take() {
                 let text_clone = self.text.clone();
                 callback(&*self, &text_clone);
                 self.on_text_changed = Some(callback);

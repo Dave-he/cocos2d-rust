@@ -2,6 +2,7 @@ use crate::math::Mat4;
 use crate::base::{Ref, RefPtr};
 use crate::base::types::Color4F;
 use super::{Renderer, Texture2D};
+use crate::renderer::material::Material;
 
 pub trait RenderCommand {
     fn get_command_type(&self) -> CommandType;
@@ -20,61 +21,8 @@ pub enum CommandType {
     Callback,
 }
 
-#[derive(Debug, Clone)]
-pub struct Triangles {
-    pub vertices: Vec<Vertex>,
-    pub indices: Vec<u16>,
-    pub blend_func: (u32, u32),
-    pub texture: Option<RefPtr<Texture2D>>,
-    pub model_matrix: Mat4,
-}
-
-impl Triangles {
-    pub fn new() -> Triangles {
-        Triangles {
-            vertices: Vec::new(),
-            indices: Vec::new(),
-            blend_func: (770, 771),
-            texture: None,
-            model_matrix: Mat4::IDENTITY,
-        }
-    }
-
-    pub fn get_vertex_count(&self) -> usize {
-        self.vertices.len()
-    }
-
-    pub fn get_index_count(&self) -> usize {
-        self.indices.len()
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct Quad {
-    pub tl: Vertex,
-    pub tr: Vertex,
-    pub bl: Vertex,
-    pub br: Vertex,
-    pub blend_func: (u32, u32),
-    pub texture: Option<RefPtr<Texture2D>>,
-    pub model_matrix: Mat4,
-}
-
-impl Quad {
-    pub fn new() -> Quad {
-        Quad {
-            tl: Vertex::default(),
-            tr: Vertex::default(),
-            bl: Vertex::default(),
-            br: Vertex::default(),
-            blend_func: (770, 771),
-            texture: None,
-            model_matrix: Mat4::IDENTITY,
-        }
-    }
-}
-
 #[derive(Debug, Clone, Copy)]
+#[repr(C)]
 pub struct Vertex {
     pub position: [f32; 3],
     pub tex_coord: [f32; 2],
@@ -113,6 +61,101 @@ impl Vertex {
             position: [0.0, 0.0, 0.0],
             tex_coord: [0.0, 0.0],
             color,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Triangles {
+    pub vertices: Vec<Vertex>,
+    pub indices: Vec<u16>,
+    pub blend_func: (u32, u32),
+    pub texture: Option<RefPtr<Texture2D>>,
+    pub model_matrix: Mat4,
+}
+
+impl Triangles {
+    pub fn new() -> Triangles {
+        Triangles {
+            vertices: Vec::new(),
+            indices: Vec::new(),
+            blend_func: (770, 771),
+            texture: None,
+            model_matrix: Mat4::IDENTITY,
+        }
+    }
+
+    pub fn get_vertex_count(&self) -> usize {
+        self.vertices.len()
+    }
+
+    pub fn get_index_count(&self) -> usize {
+        self.indices.len()
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct TrianglesCommand {
+    command_type: CommandType,
+    global_order: f32,
+    triangles: Triangles,
+    material: Option<RefPtr<Material>>,
+}
+
+impl TrianglesCommand {
+    pub fn new() -> TrianglesCommand {
+        TrianglesCommand {
+            command_type: CommandType::Triangles,
+            global_order: 0.0,
+            triangles: Triangles::new(),
+            material: None,
+        }
+    }
+
+    pub fn init(&mut self, global_order: f32, vertices: Vec<Vertex>, indices: Vec<u16>, blend_func: (u32, u32), model_matrix: Mat4) {
+        self.global_order = global_order;
+        self.triangles.vertices = vertices;
+        self.triangles.indices = indices;
+        self.triangles.blend_func = blend_func;
+        self.triangles.model_matrix = model_matrix;
+    }
+}
+
+impl RenderCommand for TrianglesCommand {
+    fn get_command_type(&self) -> CommandType {
+        self.command_type
+    }
+
+    fn get_global_order(&self) -> f32 {
+        self.global_order
+    }
+
+    fn execute(&self, renderer: &mut Renderer) {
+        renderer.draw_triangles(&self.triangles);
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Quad {
+    pub tl: Vertex,
+    pub tr: Vertex,
+    pub bl: Vertex,
+    pub br: Vertex,
+    pub blend_func: (u32, u32),
+    pub texture: Option<RefPtr<Texture2D>>,
+    pub model_matrix: Mat4,
+}
+
+impl Quad {
+    pub fn new() -> Quad {
+        Quad {
+            tl: Vertex::default(),
+            tr: Vertex::default(),
+            bl: Vertex::default(),
+            br: Vertex::default(),
+            blend_func: (770, 771),
+            texture: None,
+            model_matrix: Mat4::IDENTITY,
         }
     }
 }
@@ -226,12 +269,22 @@ impl RenderCommand for CallbackCommand {
     }
 }
 
-#[derive(Debug, Clone)]
+// #[derive(Debug, Clone)]
 pub struct CustomCommand {
     command_type: CommandType,
     global_order: f32,
     depth: f32,
     callback: Box<dyn Fn(&mut Renderer)>,
+}
+
+impl std::fmt::Debug for CustomCommand {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("CustomCommand")
+            .field("command_type", &self.command_type)
+            .field("global_order", &self.global_order)
+            .field("depth", &self.depth)
+            .finish()
+    }
 }
 
 impl CustomCommand {

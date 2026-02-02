@@ -33,7 +33,7 @@ impl RenderTexture {
     /// 创建新的渲染纹理
     pub fn new(width: u32, height: u32) -> Self {
         Self {
-            texture: Rc::new(RefCell::new(Texture::new())),
+            texture: Rc::new(RefCell::new(Texture2D::new())),
             framebuffer_id: 0,
             depth_buffer_id: 0,
             stencil_buffer_id: 0,

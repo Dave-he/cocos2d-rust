@@ -202,8 +202,9 @@ impl Button {
 
     /// 触发点击事件
     fn trigger_click(&mut self) {
-        if let Some(ref mut callback) = self.on_click {
+        if let Some(mut callback) = self.on_click.take() {
             callback(self);
+            self.on_click = Some(callback);
         }
     }
 

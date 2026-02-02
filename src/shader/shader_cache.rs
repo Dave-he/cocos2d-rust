@@ -138,9 +138,13 @@ impl ShaderCache {
 
     /// 获取共享实例（单例模式）
     pub fn shared() -> &'static RefCell<ShaderCache> {
-        use std::sync::OnceLock;
-        static INSTANCE: OnceLock<RefCell<ShaderCache>> = OnceLock::new();
-        INSTANCE.get_or_init(|| RefCell::new(ShaderCache::new()))
+        static mut INSTANCE: Option<RefCell<ShaderCache>> = None;
+        unsafe {
+            if INSTANCE.is_none() {
+                INSTANCE = Some(RefCell::new(ShaderCache::new()));
+            }
+            INSTANCE.as_ref().unwrap()
+        }
     }
 
     /// 预加载内置着色器

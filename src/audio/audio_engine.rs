@@ -197,7 +197,7 @@ impl AudioEngine {
         Self::get_instance().volume
     }
 
-    pub fn set_volume(volume: f32) {
+    pub fn set_global_volume(volume: f32) {
         let engine = Self::get_instance();
         engine.volume = volume.clamp(0.0, 1.0);
     }

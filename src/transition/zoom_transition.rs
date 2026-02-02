@@ -61,9 +61,11 @@ impl ZoomTransition {
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
         
+        // 总是更新缩放，即使已经完成
+        let progress = self.transition.progress();
+        self.current_scale = self.start_scale + (self.end_scale - self.start_scale) * progress;
+        
         if !self.transition.is_finished() {
-            let progress = self.transition.progress();
-            self.current_scale = self.start_scale + (self.end_scale - self.start_scale) * progress;
             self.apply_scale(self.current_scale);
         }
     }

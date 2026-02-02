@@ -47,12 +47,13 @@ impl FlipTransition {
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
         
+        // 总是更新角度，即使已经完成（需要显示最终状态）
+        let progress = self.transition.progress();
+        
+        // 计算翻转角度（0 到 180 度）
+        self.flip_angle = progress * 180.0;
+        
         if !self.transition.is_finished() {
-            let progress = self.transition.progress();
-            
-            // 计算翻转角度（0 到 180 度）
-            self.flip_angle = progress * 180.0;
-            
             self.apply_flip(self.flip_angle);
         }
     }
@@ -103,10 +104,12 @@ mod tests {
         flip.start();
         
         flip.update(1.0); // 50% 进度
-        assert!((flip.flip_angle - 90.0).abs() < 0.01);
+        println!("After first update: flip_angle = {}", flip.flip_angle);
+        assert!((flip.flip_angle - 90.0).abs() < 0.01, "Expected 90.0, got {}", flip.flip_angle);
         
         flip.update(1.0); // 100% 进度
-        assert!((flip.flip_angle - 180.0).abs() < 0.01);
+        println!("After second update: flip_angle = {}", flip.flip_angle);
+        assert!((flip.flip_angle - 180.0).abs() < 0.01, "Expected 180.0, got {}", flip.flip_angle);
         assert!(flip.is_finished());
     }
 }

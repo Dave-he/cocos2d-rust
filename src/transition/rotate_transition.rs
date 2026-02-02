@@ -76,9 +76,11 @@ impl RotateTransition {
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
         
+        // 总是更新角度，即使已经完成
+        let progress = self.transition.progress();
+        self.current_angle = self.start_angle + (self.end_angle - self.start_angle) * progress;
+        
         if !self.transition.is_finished() {
-            let progress = self.transition.progress();
-            self.current_angle = self.start_angle + (self.end_angle - self.start_angle) * progress;
             self.apply_rotation(self.current_angle);
         }
     }
