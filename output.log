@@ -1,0 +1,2737 @@
+warning: unused import: `Ref`
+ --> src/_3d/animation_3d.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `std::f32::consts::PI`
+ --> src/_3d/animation_3d.rs:3:5
+  |
+3 | use std::f32::consts::PI;
+  |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/_3d/mesh.rs:2:19
+  |
+2 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `crate::renderer::Texture2D`
+ --> src/_3d/mesh.rs:4:5
+  |
+4 | use crate::renderer::Texture2D;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `TEX_COORD` should have an upper camel case name
+   --> src/_3d/mesh.rs:241:5
+    |
+241 |     TEX_COORD,
+    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord`
+    |
+    = note: `#[warn(non_camel_case_types)]` on by default
+
+warning: variant `TEX_COORD1` should have an upper camel case name
+   --> src/_3d/mesh.rs:242:5
+    |
+242 |     TEX_COORD1,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord1`
+
+warning: variant `TEX_COORD2` should have an upper camel case name
+   --> src/_3d/mesh.rs:243:5
+    |
+243 |     TEX_COORD2,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord2`
+
+warning: variant `TEX_COORD3` should have an upper camel case name
+   --> src/_3d/mesh.rs:244:5
+    |
+244 |     TEX_COORD3,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord3`
+
+warning: variant `TEX_COORD4` should have an upper camel case name
+   --> src/_3d/mesh.rs:245:5
+    |
+245 |     TEX_COORD4,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord4`
+
+warning: variant `TEX_COORD5` should have an upper camel case name
+   --> src/_3d/mesh.rs:246:5
+    |
+246 |     TEX_COORD5,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord5`
+
+warning: variant `TEX_COORD6` should have an upper camel case name
+   --> src/_3d/mesh.rs:247:5
+    |
+247 |     TEX_COORD6,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord6`
+
+warning: variant `TEX_COORD7` should have an upper camel case name
+   --> src/_3d/mesh.rs:248:5
+    |
+248 |     TEX_COORD7,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord7`
+
+warning: variant `TEX_COORD8` should have an upper camel case name
+   --> src/_3d/mesh.rs:249:5
+    |
+249 |     TEX_COORD8,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `TexCoord8`
+
+warning: variant `BLEND_INDICES` should have an upper camel case name
+   --> src/_3d/mesh.rs:255:5
+    |
+255 |     BLEND_INDICES,
+    |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BlendIndices`
+
+warning: variant `BLEND_WEIGHT` should have an upper camel case name
+   --> src/_3d/mesh.rs:256:5
+    |
+256 |     BLEND_WEIGHT,
+    |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BlendWeight`
+
+warning: variant `VIEW_POINT_ORIENTED` should have an upper camel case name
+   --> src/_3d/mesh.rs:331:5
+    |
+331 |     VIEW_POINT_ORIENTED,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ViewPointOriented`
+
+warning: variant `VIEW_PLANE_ORIENTED` should have an upper camel case name
+   --> src/_3d/mesh.rs:332:5
+    |
+332 |     VIEW_PLANE_ORIENTED,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ViewPlaneOriented`
+
+warning: unused import: `Ref`
+ --> src/_3d/model.rs:2:19
+  |
+2 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused imports: `Mat4` and `Vec3`
+ --> src/_3d/model.rs:3:19
+  |
+3 | use crate::math::{Mat4, Vec3};
+  |                   ^^^^  ^^^^
+
+warning: unused import: `Ref`
+ --> src/_3d/skin.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `Ref`
+ --> src/action/mod.rs:1:25
+  |
+1 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: unused import: `crate::math::Vec2`
+ --> src/action/mod.rs:2:5
+  |
+2 | use crate::math::Vec2;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src/audio/audio_player.rs:1:5
+  |
+1 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `TouchPhase`
+ --> src/input/touch_dispatcher.rs:1:36
+  |
+1 | use super::touch::{Touch, TouchId, TouchPhase};
+  |                                    ^^^^^^^^^^
+
+warning: unused import: `crate::math::Vec2`
+ --> src/input/touch_dispatcher.rs:2:5
+  |
+2 | use crate::math::Vec2;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/label/font_atlas.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `Ref`
+ --> src/label/label.rs:2:25
+  |
+2 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: variant `RESIZE_HEIGHT` should have an upper camel case name
+  --> src/label/label.rs:28:5
+   |
+28 |     RESIZE_HEIGHT,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ResizeHeight`
+
+warning: unused import: `Ref`
+ --> src/label/label_atlas.rs:2:25
+  |
+2 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: unused import: `Ref`
+ --> src/label/label_ttf.rs:3:25
+  |
+3 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: unused import: `Pixel`
+ --> src/label/label_ttf.rs:8:32
+  |
+8 | use image::{ImageBuffer, Rgba, Pixel};
+  |                                ^^^^^
+
+warning: unused import: `std::path::Path`
+ --> src/label/label_ttf.rs:9:5
+  |
+9 | use std::path::Path;
+  |     ^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/menu/menu.rs:2:25
+  |
+2 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: variant `TRACKING_TOUCH` should have an upper camel case name
+ --> src/menu/menu.rs:9:5
+  |
+9 |     TRACKING_TOUCH,
+  |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TrackingTouch`
+
+warning: unused import: `Ref`
+ --> src/menu/menu_item.rs:2:25
+  |
+2 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: unused import: `crate::math::Vec2`
+ --> src/menu/menu_item.rs:4:5
+  |
+4 | use crate::math::Vec2;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Mutex`
+ --> src/network/network.rs:2:22
+  |
+2 | use std::sync::{Arc, Mutex};
+  |                      ^^^^^
+
+warning: unused imports: `Vec2` and `Vec4`
+ --> src/particle/particle_system.rs:2:19
+  |
+2 | use crate::math::{Vec2, Vec3, Vec4};
+  |                   ^^^^        ^^^^
+
+warning: variant `CONVEX_HULL` should have an upper camel case name
+  --> src/physics/physics_3d.rs:71:5
+   |
+71 |     CONVEX_HULL,
+   |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `ConvexHull`
+
+warning: unused import: `crate::backend::opengl::OpenGLBackend`
+  --> src/platform/application.rs:19:5
+   |
+19 | use crate::backend::opengl::OpenGLBackend;
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::path::Path`
+ --> src/platform/image.rs:3:5
+  |
+3 | use std::path::Path;
+  |     ^^^^^^^^^^^^^^^
+
+warning: variant `RAW_DATA` should have an upper camel case name
+  --> src/platform/image.rs:16:5
+   |
+16 |     RAW_DATA,
+   |     ^^^^^^^^ help: convert the identifier to upper camel case: `RawData`
+
+warning: unused import: `Ref`
+ --> src/renderer/command.rs:3:19
+  |
+3 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `crate::base::types::Color4F`
+ --> src/renderer/material.rs:1:5
+  |
+1 | use crate::base::types::Color4F;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/renderer/material.rs:2:19
+  |
+2 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `crate::base::types::Color4F`
+ --> src/renderer/pipeline.rs:1:5
+  |
+1 | use crate::base::types::Color4F;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `LINE_STRIP` should have an upper camel case name
+  --> src/renderer/pipeline.rs:99:5
+   |
+99 |     LINE_STRIP,
+   |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `LineStrip`
+
+warning: variant `TRIANGLE_STRIP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:101:5
+    |
+101 |     TRIANGLE_STRIP,
+    |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TriangleStrip`
+
+warning: variant `TRIANGLE_FAN` should have an upper camel case name
+   --> src/renderer/pipeline.rs:102:5
+    |
+102 |     TRIANGLE_FAN,
+    |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TriangleFan`
+
+warning: variant `INCR_WRAP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:390:5
+    |
+390 |     INCR_WRAP,
+    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `IncrWrap`
+
+warning: variant `DECR_WRAP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:392:5
+    |
+392 |     DECR_WRAP,
+    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `DecrWrap`
+
+warning: unused import: `crate::math::Rect`
+ --> src/renderer/render_texture.rs:1:5
+  |
+1 | use crate::math::Rect;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::renderer::Texture`
+ --> src/renderer/render_texture.rs:2:5
+  |
+2 | use crate::renderer::Texture;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::base::types::Color4F`
+ --> src/renderer/renderer.rs:2:5
+  |
+2 | use crate::base::types::Color4F;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/renderer/renderer.rs:3:19
+  |
+3 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `CommandType`
+ --> src/renderer/renderer.rs:7:5
+  |
+7 |     CommandType, GroupCommand, MeshCommand, Quad, RenderCommand, Triangles,
+  |     ^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/renderer/texture.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src/renderer/texture.rs:2:5
+  |
+2 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `SRGB8_A8` should have an upper camel case name
+  --> src/renderer/texture.rs:40:5
+   |
+40 |     SRGB8_A8,
+   |     ^^^^^^^^ help: convert the identifier to upper camel case: `Srgb8A8`
+
+warning: variant `DEPTH_STENCIL` should have an upper camel case name
+  --> src/renderer/texture.rs:42:5
+   |
+42 |     DEPTH_STENCIL,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `DepthStencil`
+
+warning: variant `NEAREST_MIPMAP_NEAREST` should have an upper camel case name
+   --> src/renderer/texture.rs:127:5
+    |
+127 |     NEAREST_MIPMAP_NEAREST,
+    |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `NearestMipmapNearest`
+
+warning: variant `LINEAR_MIPMAP_NEAREST` should have an upper camel case name
+   --> src/renderer/texture.rs:128:5
+    |
+128 |     LINEAR_MIPMAP_NEAREST,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LinearMipmapNearest`
+
+warning: variant `NEAREST_MIPMAP_LINEAR` should have an upper camel case name
+   --> src/renderer/texture.rs:129:5
+    |
+129 |     NEAREST_MIPMAP_LINEAR,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `NearestMipmapLinear`
+
+warning: variant `LINEAR_MIPMAP_LINEAR` should have an upper camel case name
+   --> src/renderer/texture.rs:130:5
+    |
+130 |     LINEAR_MIPMAP_LINEAR,
+    |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LinearMipmapLinear`
+
+warning: variant `CLAMP_TO_EDGE` should have an upper camel case name
+   --> src/renderer/texture.rs:136:5
+    |
+136 |     CLAMP_TO_EDGE,
+    |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ClampToEdge`
+
+warning: variant `MIRRORED_REPEAT` should have an upper camel case name
+   --> src/renderer/texture.rs:137:5
+    |
+137 |     MIRRORED_REPEAT,
+    |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `MirroredRepeat`
+
+warning: unused imports: `Action` and `FiniteTimeAction`
+ --> src/scene/layer.rs:1:21
+  |
+1 | use crate::action::{Action, FiniteTimeAction};
+  |                     ^^^^^^  ^^^^^^^^^^^^^^^^
+
+warning: unused imports: `Color3B`, `Director`, `Ref`, and `Scene`
+ --> src/scene/layer.rs:2:19
+  |
+2 | use crate::base::{Color3B, Color4F, Director, Node, Ref, RefPtr, Scene};
+  |                   ^^^^^^^           ^^^^^^^^        ^^^          ^^^^^
+
+warning: unused import: `crate::sprite::Sprite`
+ --> src/scene/layer.rs:4:5
+  |
+4 | use crate::sprite::Sprite;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/sprite/mod.rs:1:25
+  |
+1 | use crate::base::{Node, Ref, RefPtr};
+  |                         ^^^
+
+warning: unused import: `Size`
+ --> src/sprite/mod.rs:2:41
+  |
+2 | use crate::base::types::{Color3B, Rect, Size, BlendFunc};
+  |                                         ^^^^
+
+warning: unused import: `crate::math::Vec2`
+ --> src/sprite/mod.rs:4:5
+  |
+4 | use crate::math::Vec2;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Triangles`
+ --> src/sprite/mod.rs:5:32
+  |
+5 | use crate::renderer::command::{Triangles, TrianglesCommand, Vertex};
+  |                                ^^^^^^^^^
+
+warning: unused import: `Renderer`
+ --> src/sprite/mod.rs:6:23
+  |
+6 | use crate::renderer::{Renderer, Texture2D, TextureCache};
+  |                       ^^^^^^^^
+
+warning: unused import: `Rect`
+ --> src/tilemap/tilemap_layer.rs:1:38
+  |
+1 | use super::tilemap_info::{LayerInfo, Rect, TileMapInfo, TileSet};
+  |                                      ^^^^
+
+warning: unused import: `Ref`
+ --> src/tilemap/tilemap_layer.rs:2:19
+  |
+2 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused imports: `RefPtr` and `Ref`
+ --> src/ui/button.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^  ^^^^^^
+
+warning: unused import: `TouchPhase`
+ --> src/ui/button.rs:2:27
+  |
+2 | use crate::input::{Touch, TouchPhase};
+  |                           ^^^^^^^^^^
+
+warning: unused import: `std::cell::RefCell`
+ --> src/ui/button.rs:5:5
+  |
+5 | use std::cell::RefCell;
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::rc::Rc`
+ --> src/ui/button.rs:6:5
+  |
+6 | use std::rc::Rc;
+  |     ^^^^^^^^^^^
+
+warning: unused imports: `LayoutParameter` and `WidgetSizeType`
+ --> src/ui/layouts.rs:1:21
+  |
+1 | use super::widget::{LayoutParameter, Widget, WidgetSizeType};
+  |                     ^^^^^^^^^^^^^^^          ^^^^^^^^^^^^^^
+
+warning: variant `CENTER_VERTICAL` should have an upper camel case name
+  --> src/ui/layouts.rs:83:5
+   |
+83 |     CENTER_VERTICAL,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterVertical`
+
+warning: variant `CENTER_HORIZONTAL` should have an upper camel case name
+  --> src/ui/layouts.rs:84:5
+   |
+84 |     CENTER_HORIZONTAL,
+   |     ^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterHorizontal`
+
+warning: variant `ALIGN_NONE` should have an upper camel case name
+   --> src/ui/layouts.rs:136:5
+    |
+136 |     ALIGN_NONE,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignNone`
+
+warning: variant `ALIGN_PARENT_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:137:5
+    |
+137 |     ALIGN_PARENT_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopLeft`
+
+warning: variant `ALIGN_PARENT_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:138:5
+    |
+138 |     ALIGN_PARENT_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopCenter`
+
+warning: variant `ALIGN_PARENT_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:139:5
+    |
+139 |     ALIGN_PARENT_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopRight`
+
+warning: variant `ALIGN_PARENT_LEFT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:140:5
+    |
+140 |     ALIGN_PARENT_LEFT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentLeftCenter`
+
+warning: variant `ALIGN_PARENT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:141:5
+    |
+141 |     ALIGN_PARENT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentCenter`
+
+warning: variant `ALIGN_PARENT_RIGHT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:142:5
+    |
+142 |     ALIGN_PARENT_RIGHT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentRightCenter`
+
+warning: variant `ALIGN_PARENT_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:143:5
+    |
+143 |     ALIGN_PARENT_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomLeft`
+
+warning: variant `ALIGN_PARENT_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:144:5
+    |
+144 |     ALIGN_PARENT_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomCenter`
+
+warning: variant `ALIGN_PARENT_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:145:5
+    |
+145 |     ALIGN_PARENT_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomRight`
+
+warning: variant `LOCATION_ABOVE_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:146:5
+    |
+146 |     LOCATION_ABOVE_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveLeft`
+
+warning: variant `LOCATION_ABOVE_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:147:5
+    |
+147 |     LOCATION_ABOVE_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveCenter`
+
+warning: variant `LOCATION_ABOVE_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:148:5
+    |
+148 |     LOCATION_ABOVE_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveRight`
+
+warning: variant `LOCATION_LEFT_OF_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:149:5
+    |
+149 |     LOCATION_LEFT_OF_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopLeft`
+
+warning: variant `LOCATION_LEFT_OF_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:150:5
+    |
+150 |     LOCATION_LEFT_OF_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopCenter`
+
+warning: variant `LOCATION_LEFT_OF_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:151:5
+    |
+151 |     LOCATION_LEFT_OF_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopRight`
+
+warning: variant `LOCATION_LEFT_OF_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:152:5
+    |
+152 |     LOCATION_LEFT_OF_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfCenter`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:153:5
+    |
+153 |     LOCATION_LEFT_OF_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomLeft`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:154:5
+    |
+154 |     LOCATION_LEFT_OF_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomCenter`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:155:5
+    |
+155 |     LOCATION_LEFT_OF_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomRight`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:156:5
+    |
+156 |     LOCATION_RIGHT_OF_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopLeft`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:157:5
+    |
+157 |     LOCATION_RIGHT_OF_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopCenter`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:158:5
+    |
+158 |     LOCATION_RIGHT_OF_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopRight`
+
+warning: variant `LOCATION_RIGHT_OF_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:159:5
+    |
+159 |     LOCATION_RIGHT_OF_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfCenter`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:160:5
+    |
+160 |     LOCATION_RIGHT_OF_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomLeft`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:161:5
+    |
+161 |     LOCATION_RIGHT_OF_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomCenter`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:162:5
+    |
+162 |     LOCATION_RIGHT_OF_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomRight`
+
+warning: variant `LOCATION_BELOW_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:163:5
+    |
+163 |     LOCATION_BELOW_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopLeft`
+
+warning: variant `LOCATION_BELOW_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:164:5
+    |
+164 |     LOCATION_BELOW_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopCenter`
+
+warning: variant `LOCATION_BELOW_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:165:5
+    |
+165 |     LOCATION_BELOW_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopRight`
+
+warning: variant `LOCATION_CENTER_IN_PARENT` should have an upper camel case name
+   --> src/ui/layouts.rs:166:5
+    |
+166 |     LOCATION_CENTER_IN_PARENT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterInParent`
+
+warning: variant `LOCATION_CENTER_HORIZONTAL` should have an upper camel case name
+   --> src/ui/layouts.rs:167:5
+    |
+167 |     LOCATION_CENTER_HORIZONTAL,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterHorizontal`
+
+warning: variant `LOCATION_CENTER_VERTICAL` should have an upper camel case name
+   --> src/ui/layouts.rs:168:5
+    |
+168 |     LOCATION_CENTER_VERTICAL,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterVertical`
+
+warning: unused import: `crate::sprite::Sprite`
+ --> src/ui/rich_text.rs:5:5
+  |
+5 | use crate::sprite::Sprite;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::collections::HashMap`
+ --> src/ui/rich_text.rs:6:5
+  |
+6 | use std::collections::HashMap;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `CUSTOM_NODE` should have an upper camel case name
+  --> src/ui/rich_text.rs:13:5
+   |
+13 |     CUSTOM_NODE,
+   |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `CustomNode`
+
+warning: unused import: `crate::ui::Widget`
+ --> src/ui/scroll/list_view.rs:4:5
+  |
+4 | use crate::ui::Widget;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: variant `CENTER_HORIZONTAL` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:11:5
+   |
+11 |     CENTER_HORIZONTAL,
+   |     ^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterHorizontal`
+
+warning: variant `CENTER_VERTICAL` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:14:5
+   |
+14 |     CENTER_VERTICAL,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterVertical`
+
+warning: variant `ON_SELECTED_ITEM_START` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:20:5
+   |
+20 |     ON_SELECTED_ITEM_START,
+   |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `OnSelectedItemStart`
+
+warning: variant `ON_SELECTED_ITEM_END` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:21:5
+   |
+21 |     ON_SELECTED_ITEM_END,
+   |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `OnSelectedItemEnd`
+
+warning: variant `SCROLL_TO_TOP` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:18:5
+   |
+18 |     SCROLL_TO_TOP,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToTop`
+
+warning: variant `SCROLL_TO_BOTTOM` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:19:5
+   |
+19 |     SCROLL_TO_BOTTOM,
+   |     ^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToBottom`
+
+warning: variant `SCROLL_TO_LEFT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:20:5
+   |
+20 |     SCROLL_TO_LEFT,
+   |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToLeft`
+
+warning: variant `SCROLL_TO_RIGHT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:21:5
+   |
+21 |     SCROLL_TO_RIGHT,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToRight`
+
+warning: variant `SCROLL_ENDED` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:23:5
+   |
+23 |     SCROLL_ENDED,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollEnded`
+
+warning: variant `BOUNCE_TOP` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:24:5
+   |
+24 |     BOUNCE_TOP,
+   |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceTop`
+
+warning: variant `BOUNCE_BOTTOM` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:25:5
+   |
+25 |     BOUNCE_BOTTOM,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceBottom`
+
+warning: variant `BOUNCE_LEFT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:26:5
+   |
+26 |     BOUNCE_LEFT,
+   |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceLeft`
+
+warning: variant `BOUNCE_RIGHT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:27:5
+   |
+27 |     BOUNCE_RIGHT,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceRight`
+
+warning: unused imports: `RefPtr` and `Ref`
+ --> src/ui/slider.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^  ^^^^^^
+
+warning: unused import: `std::cell::RefCell`
+ --> src/ui/slider.rs:5:5
+  |
+5 | use std::cell::RefCell;
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::rc::Rc`
+ --> src/ui/slider.rs:6:5
+  |
+6 | use std::rc::Rc;
+  |     ^^^^^^^^^^^
+
+warning: unused imports: `RefPtr` and `Ref`
+ --> src/ui/textfield.rs:1:19
+  |
+1 | use crate::base::{Ref, RefPtr};
+  |                   ^^^  ^^^^^^
+
+warning: unused import: `crate::math::Vec2`
+ --> src/ui/textfield.rs:3:5
+  |
+3 | use crate::math::Vec2;
+  |     ^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::cell::RefCell`
+ --> src/ui/textfield.rs:5:5
+  |
+5 | use std::cell::RefCell;
+  |     ^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::rc::Rc`
+ --> src/ui/textfield.rs:6:5
+  |
+6 | use std::rc::Rc;
+  |     ^^^^^^^^^^^
+
+warning: unused import: `Ref`
+ --> src/ui/widget.rs:2:19
+  |
+2 | use crate::base::{Ref, RefPtr};
+  |                   ^^^
+
+warning: unused import: `image::GenericImageView`
+ --> src/platform/image.rs:2:5
+  |
+2 | use image::GenericImageView;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused variable: `bone_name`
+   --> src/_3d/animation_3d.rs:231:9
+    |
+231 |         bone_name: &str,
+    |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_bone_name`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `file_name`
+  --> src/_3d/model.rs:27:28
+   |
+27 |     pub fn init(&mut self, file_name: &str) {}
+   |                            ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_file_name`
+
+warning: unused variable: `paused`
+   --> src/action/mod.rs:252:80
+    |
+252 |     pub fn add_action(&mut self, action: RefPtr<Action>, target: RefPtr<Node>, paused: bool) {
+    |                                                                                ^^^^^^ help: if this is intentional, prefix it with an underscore: `_paused`
+
+warning: unused variable: `target_id`
+   --> src/action/mod.rs:296:14
+    |
+296 |         for (target_id, actions) in &mut self.target_map {
+    |              ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_target_id`
+
+warning: variable does not need to be mutable
+  --> src/audio/audio_engine.rs:53:13
+   |
+53 |         let mut engine = Self::get_instance();
+   |             ----^^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+warning: variable does not need to be mutable
+  --> src/audio/audio_engine.rs:68:13
+   |
+68 |         let mut engine = Self::get_instance();
+   |             ----^^^^^^
+   |             |
+   |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/audio/audio_engine.rs:100:17
+    |
+100 |             let mut player = player.lock().unwrap();
+    |                 ----^^^^^^
+    |                 |
+    |                 help: remove this `mut`
+
+warning: unused variable: `obj`
+  --> src/base/autorelease_pool.rs:37:37
+   |
+37 |     pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {}
+   |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_obj`
+
+warning: unused variable: `pool`
+  --> src/base/autorelease_pool.rs:90:21
+   |
+90 |         if let Some(pool) = self.pools.pop_back() {}
+   |                     ^^^^ help: if this is intentional, prefix it with an underscore: `_pool`
+
+warning: unused variable: `delta_time`
+   --> src/base/director.rs:458:30
+    |
+458 |     pub fn update(&mut self, delta_time: f32) {}
+    |                              ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_delta_time`
+
+warning: variable does not need to be mutable
+   --> src/label/font_atlas.rs:134:13
+    |
+134 |         let mut height = self.common_line_height;
+    |             ----^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `char_map_file`
+   --> src/label/label.rs:110:9
+    |
+110 |         char_map_file: &str,
+    |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_char_map_file`
+
+warning: unused variable: `item_width`
+   --> src/label/label.rs:111:9
+    |
+111 |         item_width: i32,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_item_width`
+
+warning: unused variable: `item_height`
+   --> src/label/label.rs:112:9
+    |
+112 |         item_height: i32,
+    |         ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_item_height`
+
+warning: unused variable: `start_char`
+   --> src/label/label.rs:113:9
+    |
+113 |         start_char: char,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_start_char`
+
+warning: unused variable: `char_map_file`
+  --> src/label/label_atlas.rs:48:9
+   |
+48 |         char_map_file: &str,
+   |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_char_map_file`
+
+warning: value assigned to `height` is never read
+   --> src/label/label_ttf.rs:181:17
+    |
+181 |         let mut height = 0.0;
+    |                 ^^^^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` on by default
+
+warning: unused variable: `rectangle_center`
+   --> src/math/geometry.rs:186:13
+    |
+186 |         let rectangle_center = Vec2::new(self.get_mid_x(), self.get_mid_y());
+    |             ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_rectangle_center`
+
+warning: unused variable: `sin_theta`
+   --> src/math/quaternion.rs:188:13
+    |
+188 |         let sin_theta = theta.sin();
+    |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_sin_theta`
+
+warning: unused variable: `s1`
+   --> src/math/quaternion.rs:191:13
+    |
+191 |         let s1 = (theta_0 - theta).sin() / sin_theta_0; // wait, standard formula is different?
+    |             ^^ help: if this is intentional, prefix it with an underscore: `_s1`
+
+warning: unused variable: `normal_image`
+   --> src/menu/menu_item.rs:190:9
+    |
+190 |         normal_image: &str,
+    |         ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_normal_image`
+
+warning: unused variable: `selected_image`
+   --> src/menu/menu_item.rs:191:9
+    |
+191 |         selected_image: &str,
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_selected_image`
+
+warning: unused variable: `disabled_image`
+   --> src/menu/menu_item.rs:192:9
+    |
+192 |         disabled_image: Option<&str>,
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_disabled_image`
+
+warning: unused variable: `file`
+   --> src/particle/particle_system.rs:200:29
+    |
+200 |     pub fn create_with_file(file: &str) -> Option<ParticleSystem> {
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `body`
+   --> src/physics/physics_2d.rs:303:32
+    |
+303 |     pub fn add_body(&mut self, body: &PhysicsBody) {}
+    |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `body`
+   --> src/physics/physics_2d.rs:305:35
+    |
+305 |     pub fn remove_body(&mut self, body: &PhysicsBody) {}
+    |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `shape`
+   --> src/physics/physics_2d.rs:307:33
+    |
+307 |     pub fn add_shape(&mut self, shape: &PhysicsShape) {}
+    |                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_shape`
+
+warning: unused variable: `shape`
+   --> src/physics/physics_2d.rs:309:36
+    |
+309 |     pub fn remove_shape(&mut self, shape: &PhysicsShape) {}
+    |                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_shape`
+
+warning: unused variable: `joint`
+   --> src/physics/physics_2d.rs:311:33
+    |
+311 |     pub fn add_joint(&mut self, joint: &PhysicsJoint) {}
+    |                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_joint`
+
+warning: unused variable: `joint`
+   --> src/physics/physics_2d.rs:313:36
+    |
+313 |     pub fn remove_joint(&mut self, joint: &PhysicsJoint) {}
+    |                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_joint`
+
+warning: unused variable: `delta`
+   --> src/physics/physics_2d.rs:315:28
+    |
+315 |     pub fn step(&mut self, delta: f32) {}
+    |                            ^^^^^ help: if this is intentional, prefix it with an underscore: `_delta`
+
+warning: unused variable: `body`
+   --> src/physics/physics_3d.rs:149:32
+    |
+149 |     pub fn add_body(&mut self, body: &Physics3DBody) {}
+    |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `body`
+   --> src/physics/physics_3d.rs:151:35
+    |
+151 |     pub fn remove_body(&mut self, body: &Physics3DBody) {}
+    |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: variable does not need to be mutable
+   --> src/platform/application.rs:175:13
+    |
+175 |         let mut director = Director::get_instance();
+    |             ----^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src/platform/image.rs:54:13
+   |
+54 |         let mut file_utils = FileUtils::get_instance();
+   |             ----^^^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+
+warning: unused variable: `quad`
+   --> src/renderer/renderer.rs:247:33
+    |
+247 |     pub fn draw_quad(&mut self, quad: &Quad, material: RefPtr<Material>) {
+    |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_quad`
+
+warning: unused variable: `mesh`
+   --> src/renderer/renderer.rs:251:33
+    |
+251 |     pub fn draw_mesh(&mut self, mesh: &MeshCommand) {}
+    |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_mesh`
+
+warning: unused variable: `group`
+   --> src/renderer/renderer.rs:253:34
+    |
+253 |     pub fn draw_group(&mut self, group: &GroupCommand) {}
+    |                                  ^^^^^ help: if this is intentional, prefix it with an underscore: `_group`
+
+warning: unused variable: `enabled`
+   --> src/renderer/renderer.rs:263:46
+    |
+263 |     pub fn set_depth_test_enabled(&mut self, enabled: bool) {}
+    |                                              ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_enabled`
+
+warning: unused variable: `mode`
+   --> src/renderer/renderer.rs:265:37
+    |
+265 |     pub fn set_cull_mode(&mut self, mode: CullMode) {}
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_mode`
+
+warning: unused variable: `src`
+   --> src/renderer/renderer.rs:267:38
+    |
+267 |     pub fn set_blend_func(&mut self, src: u32, dst: u32) {}
+    |                                      ^^^ help: if this is intentional, prefix it with an underscore: `_src`
+
+warning: unused variable: `dst`
+   --> src/renderer/renderer.rs:267:48
+    |
+267 |     pub fn set_blend_func(&mut self, src: u32, dst: u32) {}
+    |                                                ^^^ help: if this is intentional, prefix it with an underscore: `_dst`
+
+warning: unused variable: `data`
+   --> src/renderer/texture.rs:192:30
+    |
+192 |     pub fn update(&mut self, data: &[u8], width: u32, height: u32, pixel_format: PixelFormat) {
+    |                              ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+
+warning: variable does not need to be mutable
+  --> src/renderer/texture_cache.rs:43:13
+   |
+43 |         let mut director = director.borrow_mut();
+   |             ----^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src/sprite/mod.rs:68:17
+   |
+68 |             let mut bl_uv = [0.0, 1.0];
+   |                 ----^^^^^
+   |                 |
+   |                 help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src/sprite/mod.rs:69:17
+   |
+69 |             let mut br_uv = [1.0, 1.0];
+   |                 ----^^^^^
+   |                 |
+   |                 help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src/sprite/mod.rs:70:17
+   |
+70 |             let mut tl_uv = [0.0, 0.0];
+   |                 ----^^^^^
+   |                 |
+   |                 help: remove this `mut`
+
+warning: variable does not need to be mutable
+  --> src/sprite/mod.rs:71:17
+   |
+71 |             let mut tr_uv = [1.0, 0.0];
+   |                 ----^^^^^
+   |                 |
+   |                 help: remove this `mut`
+
+warning: unused variable: `file`
+   --> src/tilemap/tilemap_info.rs:216:29
+    |
+216 |     pub fn create_with_file(file: &str) -> Option<TileMapInfo> {
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `gid`
+  --> src/tilemap/tilemap_layer.rs:60:36
+   |
+60 |     pub fn set_tile_gid(&mut self, gid: u32, x: u32, y: u32) {
+   |                                    ^^^ help: if this is intentional, prefix it with an underscore: `_gid`
+
+warning: unused variable: `file`
+   --> src/tilemap/tilemap_layer.rs:116:38
+    |
+116 |     pub fn init_with_file(&mut self, file: &str) {}
+    |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `name`
+   --> src/tilemap/tilemap_layer.rs:150:36
+    |
+150 |     pub fn get_object_group(&self, name: &str) -> Option<&Vec<()>> {
+    |                                    ^^^^ help: if this is intentional, prefix it with an underscore: `_name`
+
+warning: unused variable: `current_text`
+   --> src/ui/rich_text.rs:311:17
+    |
+311 |         let mut current_text = String::new();
+    |                 ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_current_text`
+
+warning: variable does not need to be mutable
+   --> src/ui/rich_text.rs:311:13
+    |
+311 |         let mut current_text = String::new();
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/ui/rich_text.rs:312:13
+    |
+312 |         let mut current_font = self.font_name.clone();
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/ui/rich_text.rs:313:13
+    |
+313 |         let mut current_size = self.font_size;
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/ui/rich_text.rs:314:13
+    |
+314 |         let mut current_color = self.font_color;
+    |             ----^^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:209:55
+    |
+209 |     pub fn scroll_to_top(&mut self, time_in_sec: f32, attenuated: bool) {
+    |                                                       ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:215:58
+    |
+215 |     pub fn scroll_to_bottom(&mut self, time_in_sec: f32, attenuated: bool) {
+    |                                                          ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:222:56
+    |
+222 |     pub fn scroll_to_left(&mut self, time_in_sec: f32, attenuated: bool) {
+    |                                                        ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:228:57
+    |
+228 |     pub fn scroll_to_right(&mut self, time_in_sec: f32, attenuated: bool) {
+    |                                                         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:235:82
+    |
+235 |     pub fn scroll_to_percent_vertical(&mut self, percent: f32, time_in_sec: f32, attenuated: bool) {
+    |                                                                                  ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:247:9
+    |
+247 |         attenuated: bool,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:261:9
+    |
+261 |         attenuated: bool,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `dest`
+   --> src/ui/scroll/scroll_view.rs:327:37
+    |
+327 |     fn start_auto_scroll(&mut self, dest: Vec2, time_in_sec: f32) {
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_dest`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:168:38
+    |
+168 |     pub fn on_touch_began(&mut self, touch: &Vec2) -> bool {
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:172:38
+    |
+172 |     pub fn on_touch_moved(&mut self, touch: &Vec2) {}
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:174:38
+    |
+174 |     pub fn on_touch_ended(&mut self, touch: &Vec2) {}
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:176:41
+    |
+176 |     pub fn on_touch_canceled(&mut self, touch: &Vec2) {}
+    |                                         ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: fields `in_tangent` and `out_tangent` are never read
+  --> src/_3d/animation_3d.rs:14:5
+   |
+11 | pub struct KeyFrame {
+   |            -------- fields in this struct
+...
+14 |     in_tangent: f32,
+   |     ^^^^^^^^^^
+15 |     out_tangent: f32,
+   |     ^^^^^^^^^^^
+   |
+   = note: `KeyFrame` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+   = note: `#[warn(dead_code)]` on by default
+
+warning: fields `position_curves`, `rotation_curves`, and `scale_curves` are never read
+  --> src/_3d/animation_3d.rs:54:5
+   |
+51 | pub struct Animation3D {
+   |            ----------- fields in this struct
+...
+54 |     position_curves: Vec<AnimationCurve>,
+   |     ^^^^^^^^^^^^^^^
+55 |     rotation_curves: Vec<AnimationCurve>,
+   |     ^^^^^^^^^^^^^^^
+56 |     scale_curves: Vec<AnimationCurve>,
+   |     ^^^^^^^^^^^^
+   |
+   = note: `Animation3D` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `animation` is never read
+  --> src/_3d/animation_3d.rs:89:5
+   |
+88 | pub struct Animate3D {
+   |            --------- field in this struct
+89 |     animation: RefPtr<Animation3D>,
+   |     ^^^^^^^^^
+   |
+   = note: `Animate3D` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `shadow_depth` and `shadow_frustum_size` are never read
+  --> src/_3d/light.rs:23:5
+   |
+13 | pub struct Light {
+   |            ----- fields in this struct
+...
+23 |     shadow_depth: f32,
+   |     ^^^^^^^^^^^^
+24 |     shadow_frustum_size: f32,
+   |     ^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `Light` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `index_buffer_id` and `index_format` are never read
+   --> src/_3d/mesh.rs:154:5
+    |
+153 | pub struct MeshIndexData {
+    |            ------------- fields in this struct
+154 |     index_buffer_id: u32,
+    |     ^^^^^^^^^^^^^^^
+155 |     index_count: u32,
+156 |     index_format: IndexFormat,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `MeshIndexData` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `vertex_buffer_id` is never read
+   --> src/_3d/mesh.rs:181:5
+    |
+180 | pub struct MeshVertexData {
+    |            -------------- field in this struct
+181 |     vertex_buffer_id: u32,
+    |     ^^^^^^^^^^^^^^^^
+    |
+    = note: `MeshVertexData` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `bind_pose_inverses` is never read
+   --> src/_3d/mesh.rs:209:5
+    |
+205 | pub struct MeshSkin {
+    |            -------- field in this struct
+...
+209 |     bind_pose_inverses: Vec<Mat4>,
+    |     ^^^^^^^^^^^^^^^^^^
+    |
+    = note: `MeshSkin` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `vertex_buffer` and `attribs` are never read
+   --> src/_3d/mesh.rs:303:5
+    |
+302 | pub struct VertexAttribBinding {
+    |            ------------------- fields in this struct
+303 |     vertex_buffer: RefPtr<MeshVertexData>,
+    |     ^^^^^^^^^^^^^
+304 |     attribs: Vec<VertexAttribBindingInfo>,
+    |     ^^^^^^^
+    |
+    = note: `VertexAttribBinding` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `attrib`, `size`, and `offset` are never read
+   --> src/_3d/mesh.rs:309:5
+    |
+308 | pub struct VertexAttribBindingInfo {
+    |            ----------------------- fields in this struct
+309 |     attrib: VertexAttrib,
+    |     ^^^^^^
+310 |     size: u32,
+    |     ^^^^
+311 |     offset: u32,
+    |     ^^^^^^
+    |
+    = note: `VertexAttribBindingInfo` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `eye_vector` is never read
+   --> src/_3d/mesh.rs:326:5
+    |
+324 | pub struct BillBoard {
+    |            --------- field in this struct
+325 |     mode: BillBoardMode,
+326 |     eye_vector: Vec3,
+    |     ^^^^^^^^^^
+    |
+    = note: `BillBoard` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `materials` is never read
+  --> src/_3d/model.rs:53:5
+   |
+51 | pub struct Model {
+   |            ----- field in this struct
+52 |     meshes: Vec<RefPtr<Mesh>>,
+53 |     materials: Vec<RefPtr<()>>,
+   |     ^^^^^^^^^
+   |
+   = note: `Model` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `parent` is never read
+  --> src/_3d/skin.rs:13:5
+   |
+ 5 | pub struct Bone3D {
+   |            ------ field in this struct
+...
+13 |     parent: Option<RefPtr<Bone3D>>,
+   |     ^^^^^^
+   |
+   = note: `Bone3D` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `mesh` is never read
+   --> src/_3d/skin.rs:127:5
+    |
+126 | pub struct Skin {
+    |            ---- field in this struct
+127 |     mesh: RefPtr<()>,
+    |     ^^^^
+    |
+    = note: `Skin` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+  --> src/action/mod.rs:84:5
+   |
+83 | pub struct FiniteTimeAction {
+   |            ---------------- field in this struct
+84 |     base: Action,
+   |     ^^^^
+   |
+   = note: `FiniteTimeAction` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+   --> src/action/mod.rs:111:5
+    |
+110 | pub struct Speed {
+    |            ----- field in this struct
+111 |     base: Action,
+    |     ^^^^
+    |
+    = note: `Speed` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `base` and `target_node` are never read
+   --> src/action/mod.rs:150:5
+    |
+149 | pub struct Follow {
+    |            ------ fields in this struct
+150 |     base: Action,
+    |     ^^^^
+151 |     target_node: RefPtr<Node>,
+    |     ^^^^^^^^^^^
+    |
+    = note: `Follow` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `action_hash`, `current_action`, and `current_action_removed` are never read
+   --> src/action/mod.rs:223:5
+    |
+222 | pub struct ActionManager {
+    |            ------------- fields in this struct
+223 |     action_hash: std::collections::HashMap<i32, RefPtr<Action>>,
+    |     ^^^^^^^^^^^
+224 |     current_action: Option<RefPtr<Action>>,
+    |     ^^^^^^^^^^^^^^
+225 |     current_action_removed: bool,
+    |     ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `ActionManager` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `max_audio_sources` is never read
+  --> src/audio/audio_engine.rs:13:5
+   |
+ 9 | pub struct AudioEngine {
+   |            ----------- field in this struct
+...
+13 |     max_audio_sources: usize,
+   |     ^^^^^^^^^^^^^^^^^
+   |
+   = note: `AudioEngine` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `buffer_type` and `usage` are never read
+  --> src/backend/device.rs:38:5
+   |
+36 | pub struct BufferObject {
+   |            ------------ fields in this struct
+37 |     id: u32,
+38 |     buffer_type: BufferType,
+   |     ^^^^^^^^^^^
+39 |     size: usize,
+40 |     usage: BufferUsage,
+   |     ^^^^^
+   |
+   = note: `BufferObject` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: multiple fields are never read
+   --> src/backend/device.rs:92:5
+    |
+ 91 | pub struct DeviceCapabilities {
+    |            ------------------ fields in this struct
+ 92 |     max_texture_size: u32,
+    |     ^^^^^^^^^^^^^^^^
+ 93 |     max_texture_units: u32,
+    |     ^^^^^^^^^^^^^^^^^
+ 94 |     max_vertex_attribs: u32,
+    |     ^^^^^^^^^^^^^^^^^^
+ 95 |     max_vertex_uniform_vectors: u32,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 96 |     max_fragment_uniform_vectors: u32,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 97 |     max_varying_vectors: u32,
+    |     ^^^^^^^^^^^^^^^^^^^
+ 98 |     supports_s3tc: bool,
+    |     ^^^^^^^^^^^^^
+ 99 |     supports_etc1: bool,
+    |     ^^^^^^^^^^^^^
+100 |     supports_pvrtc: bool,
+    |     ^^^^^^^^^^^^^^
+101 |     supports_bgra8888: bool,
+    |     ^^^^^^^^^^^^^^^^^
+102 |     supports_dxt: bool,
+    |     ^^^^^^^^^^^^
+103 |     supports_atc: bool,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `DeviceCapabilities` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `name` and `max_texture_size` are never read
+   --> src/backend/device.rs:127:5
+    |
+126 | pub struct DeviceProfile {
+    |            ------------- fields in this struct
+127 |     name: String,
+    |     ^^^^
+128 |     max_texture_size: u32,
+    |     ^^^^^^^^^^^^^^^^
+    |
+    = note: `DeviceProfile` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `id` and `shader_type` are never read
+   --> src/backend/device.rs:142:5
+    |
+141 | pub struct ShaderObject {
+    |            ------------ fields in this struct
+142 |     id: u32,
+    |     ^^
+143 |     shader_type: u32, // glow::VERTEX_SHADER or glow::FRAGMENT_SHADER
+    |     ^^^^^^^^^^^
+    |
+    = note: `ShaderObject` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `vertex_shader` and `fragment_shader` are never read
+   --> src/backend/device.rs:156:5
+    |
+154 | pub struct ShaderProgram {
+    |            ------------- fields in this struct
+155 |     id: u32,
+156 |     vertex_shader: u32,
+    |     ^^^^^^^^^^^^^
+157 |     fragment_shader: u32,
+    |     ^^^^^^^^^^^^^^^
+    |
+    = note: `ShaderProgram` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `target` and `format` are never read
+   --> src/backend/device.rs:191:5
+    |
+189 | pub struct TextureObject {
+    |            ------------- fields in this struct
+190 |     id: u32,
+191 |     target: u32,
+    |     ^^^^^^
+...
+194 |     format: u32,
+    |     ^^^^^^
+    |
+    = note: `TextureObject` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `color_buffer`, `depth_buffer`, `stencil_buffer`, `width`, and `height` are never read
+   --> src/backend/device.rs:230:5
+    |
+228 | pub struct FramebufferObject {
+    |            ----------------- fields in this struct
+229 |     id: u32,
+230 |     color_buffer: u32,
+    |     ^^^^^^^^^^^^
+231 |     depth_buffer: u32,
+    |     ^^^^^^^^^^^^
+232 |     stencil_buffer: u32,
+    |     ^^^^^^^^^^^^^^
+233 |     width: u32,
+    |     ^^^^^
+234 |     height: u32,
+    |     ^^^^^^
+    |
+    = note: `FramebufferObject` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+   --> src/base/director.rs:177:5
+    |
+176 | pub struct Scene {
+    |            ----- field in this struct
+177 |     base: Ref,
+    |     ^^^^
+    |
+    = note: `Scene` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+  --> src/base/event.rs:54:5
+   |
+53 | pub struct EventTouch {
+   |            ---------- field in this struct
+54 |     base: Event,
+   |     ^^^^
+   |
+   = note: `EventTouch` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+  --> src/base/event.rs:88:5
+   |
+87 | pub struct EventKeyboard {
+   |            ------------- field in this struct
+88 |     base: Event,
+   |     ^^^^
+   |
+   = note: `EventKeyboard` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+   --> src/base/event.rs:114:5
+    |
+113 | pub struct EventMouse {
+    |            ---------- field in this struct
+114 |     base: Event,
+    |     ^^^^
+    |
+    = note: `EventMouse` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `base` is never read
+   --> src/base/event.rs:159:5
+    |
+158 | pub struct EventCustom {
+    |            ----------- field in this struct
+159 |     base: Event,
+    |     ^^^^
+    |
+    = note: `EventCustom` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `callback` is never read
+  --> src/base/scheduler.rs:37:5
+   |
+36 | struct Timer {
+   |        ----- field in this struct
+37 |     callback: TimerCallback,
+   |     ^^^^^^^^
+
+warning: fields `callback`, `paused`, and `priority` are never read
+  --> src/base/scheduler.rs:45:5
+   |
+44 | struct UpdateEntry {
+   |        ----------- fields in this struct
+45 |     callback: Rc<dyn Fn(f32)>,
+   |     ^^^^^^^^
+46 |     paused: bool,
+   |     ^^^^^^
+47 |     priority: i32,
+   |     ^^^^^^^^
+
+warning: field `texture` is never read
+  --> src/label/label.rs:54:5
+   |
+33 | pub struct Label {
+   |            ----- field in this struct
+...
+54 |     texture: Option<RefPtr<Texture2D>>,
+   |     ^^^^^^^
+   |
+   = note: `Label` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `texture` and `color` are never read
+  --> src/label/label_atlas.rs:10:5
+   |
+ 7 | pub struct LabelAtlas {
+   |            ---------- fields in this struct
+...
+10 |     texture: Option<RefPtr<Texture2D>>,
+   |     ^^^^^^^
+...
+14 |     color: Color3B,
+   |     ^^^^^
+   |
+   = note: `LabelAtlas` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `state` is never read
+  --> src/menu/menu.rs:18:5
+   |
+14 | pub struct Menu {
+   |            ---- field in this struct
+...
+18 |     state: MenuState,
+   |     ^^^^^
+   |
+   = note: `Menu` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `original_scale` is never read
+   --> src/menu/menu_item.rs:106:5
+    |
+103 | pub struct MenuItemLabel {
+    |            ------------- field in this struct
+...
+106 |     original_scale: f32,
+    |     ^^^^^^^^^^^^^^
+    |
+    = note: `MenuItemLabel` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `color_delta` and `size_delta` are never read
+  --> src/particle/particle_system.rs:24:5
+   |
+19 | pub struct Particle {
+   |            -------- fields in this struct
+...
+24 |     color_delta: Color4F,
+   |     ^^^^^^^^^^^
+25 |     size: f32,
+26 |     size_delta: f32,
+   |     ^^^^^^^^^^
+   |
+   = note: `Particle` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `velocity_limit` and `angular_velocity_limit` are never read
+  --> src/physics/physics_2d.rs:71:5
+   |
+65 | pub struct PhysicsBody {
+   |            ----------- fields in this struct
+...
+71 |     velocity_limit: f32,
+   |     ^^^^^^^^^^^^^^
+72 |     angular_velocity_limit: f32,
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `PhysicsBody` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `enabled` is never read
+  --> src/physics/physics_3d.rs:10:5
+   |
+ 4 | pub struct Physics3DBody {
+   |            ------------- field in this struct
+...
+10 |     enabled: bool,
+   |     ^^^^^^^
+   |
+   = note: `Physics3DBody` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `size`, `radius`, and `height` are never read
+  --> src/physics/physics_3d.rs:78:5
+   |
+76 | pub struct Physics3DShape {
+   |            -------------- fields in this struct
+77 |     shape_type: Physics3DShapeType,
+78 |     size: Vec3,
+   |     ^^^^
+79 |     radius: f32,
+   |     ^^^^^^
+80 |     height: f32,
+   |     ^^^^^^
+   |
+   = note: `Physics3DShape` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `default_res_search_order` is never read
+ --> src/platform/file_utils.rs:8:5
+  |
+7 | pub struct FileUtils {
+  |            --------- field in this struct
+8 |     default_res_search_order: Vec<SearchPathType>,
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `FileUtils` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `material` is never read
+   --> src/renderer/command.rs:102:5
+    |
+ 98 | pub struct TrianglesCommand {
+    |            ---------------- field in this struct
+...
+102 |     material: Option<RefPtr<Material>>,
+    |     ^^^^^^^^
+    |
+    = note: `TrianglesCommand` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `group_id` is never read
+   --> src/renderer/command.rs:226:5
+    |
+223 | pub struct GroupCommand {
+    |            ------------ field in this struct
+...
+226 |     group_id: i32,
+    |     ^^^^^^^^
+    |
+    = note: `GroupCommand` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `rgb_op` and `alpha_op` are never read
+   --> src/renderer/pipeline.rs:112:5
+    |
+106 | pub struct BlendState {
+    |            ---------- fields in this struct
+...
+112 |     rgb_op: u32,
+    |     ^^^^^^
+113 |     alpha_op: u32,
+    |     ^^^^^^^^
+    |
+    = note: `BlendState` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `depth_bias_clamp`, `slope_scaled_depth_bias`, and `depth_clip_enabled` are never read
+   --> src/renderer/pipeline.rs:400:5
+    |
+397 | pub struct RasterizerState {
+    |            --------------- fields in this struct
+...
+400 |     depth_bias_clamp: f32,
+    |     ^^^^^^^^^^^^^^^^
+401 |     slope_scaled_depth_bias: f32,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^
+402 |     depth_clip_enabled: bool,
+    |     ^^^^^^^^^^^^^^^^^^
+    |
+    = note: `RasterizerState` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `indices` is never read
+   --> src/renderer/texture.rs:237:5
+    |
+233 | pub struct TextureAtlas {
+    |            ------------ field in this struct
+...
+237 |     indices: Vec<u16>,
+    |     ^^^^^^^
+    |
+    = note: `TextureAtlas` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `tl`, `tr`, `bl`, and `br` are never read
+   --> src/renderer/texture.rs:242:5
+    |
+241 | pub struct TextureQuad {
+    |            ----------- fields in this struct
+242 |     tl: TexturedVertex,
+    |     ^^
+243 |     tr: TexturedVertex,
+    |     ^^
+244 |     bl: TexturedVertex,
+    |     ^^
+245 |     br: TexturedVertex,
+    |     ^^
+    |
+    = note: `TextureQuad` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `x`, `y`, `z`, `u`, and `v` are never read
+   --> src/renderer/texture.rs:250:5
+    |
+249 | pub struct TexturedVertex {
+    |            -------------- fields in this struct
+250 |     x: f32,
+    |     ^
+251 |     y: f32,
+    |     ^
+252 |     z: f32,
+    |     ^
+253 |     u: f32,
+    |     ^
+254 |     v: f32,
+    |     ^
+    |
+    = note: `TexturedVertex` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `compare_mode` and `compare_func` are never read
+   --> src/renderer/texture.rs:345:5
+    |
+340 | pub struct Sampler {
+    |            ------- fields in this struct
+...
+345 |     compare_mode: bool,
+    |     ^^^^^^^^^^^^
+346 |     compare_func: CompareFunc,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `Sampler` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: field `keyboard_enabled` is never read
+  --> src/scene/layer.rs:10:5
+   |
+ 7 | pub struct Layer {
+   |            ----- field in this struct
+...
+10 |     keyboard_enabled: bool,
+   |     ^^^^^^^^^^^^^^^^
+   |
+   = note: `Layer` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `layer` is never read
+  --> src/scene/layer.rs:61:5
+   |
+60 | pub struct LayerColor {
+   |            ---------- field in this struct
+61 |     layer: Layer,
+   |     ^^^^^
+   |
+   = note: `LayerColor` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `image_size` and `tile_count` are never read
+  --> src/tilemap/tilemap_info.rs:12:5
+   |
+ 5 | pub struct TileSet {
+   |            ------- fields in this struct
+...
+12 |     image_size: Vec2,
+   |     ^^^^^^^^^^
+13 |     tile_count: u32,
+   |     ^^^^^^^^^^
+   |
+   = note: `TileSet` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `filename`, `orientation`, and `object_groups` are never read
+   --> src/tilemap/tilemap_info.rs:111:5
+    |
+110 | pub struct TileMapInfo {
+    |            ----------- fields in this struct
+111 |     filename: String,
+    |     ^^^^^^^^
+...
+114 |     orientation: MapOrientation,
+    |     ^^^^^^^^^^^
+...
+118 |     object_groups: Vec<ObjectGroup>,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `TileMapInfo` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `opacity`, `visible`, and `properties` are never read
+   --> src/tilemap/tilemap_info.rs:133:5
+    |
+130 | pub struct LayerInfo {
+    |            --------- fields in this struct
+...
+133 |     opacity: f32,
+    |     ^^^^^^^
+134 |     visible: bool,
+    |     ^^^^^^^
+135 |     tiles: Vec<u32>,
+136 |     properties: HashMap<String, String>,
+    |     ^^^^^^^^^^
+    |
+    = note: `LayerInfo` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `name`, `color`, and `objects` are never read
+   --> src/tilemap/tilemap_info.rs:166:5
+    |
+165 | pub struct ObjectGroup {
+    |            ----------- fields in this struct
+166 |     name: String,
+    |     ^^^^
+167 |     color: String,
+    |     ^^^^^
+168 |     objects: Vec<TileMapObject>,
+    |     ^^^^^^^
+    |
+    = note: `ObjectGroup` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: multiple fields are never read
+   --> src/tilemap/tilemap_info.rs:173:5
+    |
+172 | pub struct TileMapObject {
+    |            ------------- fields in this struct
+173 |     id: i32,
+    |     ^^
+174 |     name: String,
+    |     ^^^^
+175 |     object_type: String,
+    |     ^^^^^^^^^^^
+176 |     x: f32,
+    |     ^
+177 |     y: f32,
+    |     ^
+178 |     width: f32,
+    |     ^^^^^
+179 |     height: f32,
+    |     ^^^^^^
+180 |     rotation: f32,
+    |     ^^^^^^^^
+181 |     visible: bool,
+    |     ^^^^^^^
+182 |     properties: HashMap<String, String>,
+    |     ^^^^^^^^^^
+    |
+    = note: `TileMapObject` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: fields `widget` and `clip_margin` are never read
+  --> src/ui/layouts.rs:15:5
+   |
+14 | pub struct Layout {
+   |            ------ fields in this struct
+15 |     widget: Widget,
+   |     ^^^^^^
+...
+18 |     clip_margin: f32,
+   |     ^^^^^^^^^^^
+   |
+   = note: `Layout` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `layout` is never read
+  --> src/ui/layouts.rs:67:5
+   |
+66 | pub struct LinearLayout {
+   |            ------------ field in this struct
+67 |     layout: Layout,
+   |     ^^^^^^
+   |
+   = note: `LinearLayout` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `layout`, `padding_left`, `padding_right`, `padding_top`, and `padding_bottom` are never read
+   --> src/ui/layouts.rs:126:5
+    |
+125 | pub struct RelativeLayout {
+    |            -------------- fields in this struct
+126 |     layout: Layout,
+    |     ^^^^^^
+127 |     relative_align: RelativeAlign,
+128 |     padding_left: f32,
+    |     ^^^^^^^^^^^^
+129 |     padding_right: f32,
+    |     ^^^^^^^^^^^^^
+130 |     padding_top: f32,
+    |     ^^^^^^^^^^^
+131 |     padding_bottom: f32,
+    |     ^^^^^^^^^^^^^^
+    |
+    = note: `RelativeLayout` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: multiple fields are never read
+   --> src/ui/layouts.rs:194:5
+    |
+193 | pub struct GridLayout {
+    |            ---------- fields in this struct
+194 |     layout: Layout,
+    |     ^^^^^^
+...
+199 |     padding_left: f32,
+    |     ^^^^^^^^^^^^
+200 |     padding_right: f32,
+    |     ^^^^^^^^^^^^^
+201 |     padding_top: f32,
+    |     ^^^^^^^^^^^
+202 |     padding_bottom: f32,
+    |     ^^^^^^^^^^^^^^
+203 |     column_gap: f32,
+    |     ^^^^^^^^^^
+204 |     row_gap: f32,
+    |     ^^^^^^^
+    |
+    = note: `GridLayout` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `tag`, `opacity`, and `image_file` are never read
+  --> src/ui/rich_text.rs:20:5
+   |
+18 | pub struct RichElement {
+   |            ----------- fields in this struct
+19 |     element_type: RichElementType,
+20 |     tag: String,
+   |     ^^^
+21 |     color: Color3B,
+22 |     opacity: u8,
+   |     ^^^^^^^
+...
+26 |     image_file: String,
+   |     ^^^^^^^^^^
+   |
+   = note: `RichElement` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `node` and `element` are never read
+  --> src/ui/rich_text.rs:95:5
+   |
+94 | struct RichElementNode {
+   |        --------------- fields in this struct
+95 |     node: Node,
+   |     ^^^^
+96 |     element: RichElement,
+   |     ^^^^^^^
+   |
+   = note: `RichElementNode` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `anchor_text_shadow` and `anchor_text_outline` are never read
+   --> src/ui/rich_text.rs:126:5
+    |
+108 | pub struct RichText {
+    |            -------- fields in this struct
+...
+126 |     anchor_text_shadow: bool,
+    |     ^^^^^^^^^^^^^^^^^^
+127 |     anchor_text_outline: bool,
+    |     ^^^^^^^^^^^^^^^^^^^
+
+warning: method `on_url_clicked` is never used
+   --> src/ui/rich_text.rs:409:8
+    |
+144 | impl RichText {
+    | ------------- method in this implementation
+...
+409 |     fn on_url_clicked(&mut self, url: &str) {
+    |        ^^^^^^^^^^^^^^
+
+warning: field `auto_scroll_stop_epsilon` is never read
+  --> src/ui/scroll/page_view.rs:27:5
+   |
+23 | pub struct PageView {
+   |            -------- field in this struct
+...
+27 |     auto_scroll_stop_epsilon: f32,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: multiple fields are never read
+  --> src/ui/scroll/scroll_view.rs:58:5
+   |
+42 | pub struct ScrollView {
+   |            ---------- fields in this struct
+...
+58 |     is_scrolling: bool,
+   |     ^^^^^^^^^^^^
+...
+64 |     touch_began_position: Vec2,
+   |     ^^^^^^^^^^^^^^^^^^^^
+65 |     touch_moved_position: Vec2,
+   |     ^^^^^^^^^^^^^^^^^^^^
+66 |     touch_ended_position: Vec2,
+   |     ^^^^^^^^^^^^^^^^^^^^
+67 |     touch_move_distance: Vec2,
+   |     ^^^^^^^^^^^^^^^^^^^
+...
+74 |     bounce_duration: Duration,
+   |     ^^^^^^^^^^^^^^^
+75 |     bounce_back_distance: f32,
+   |     ^^^^^^^^^^^^^^^^^^^^
+
+warning: fields `text_color`, `placeholder_color`, `cursor_color`, and `selection_color` are never read
+  --> src/ui/textfield.rs:58:5
+   |
+34 | pub struct TextField {
+   |            --------- fields in this struct
+...
+58 |     text_color: [f32; 4],
+   |     ^^^^^^^^^^
+59 |     /// 占位符颜色
+60 |     placeholder_color: [f32; 4],
+   |     ^^^^^^^^^^^^^^^^^
+61 |     /// 光标颜色
+62 |     cursor_color: [f32; 4],
+   |     ^^^^^^^^^^^^
+63 |     /// 选择背景颜色
+64 |     selection_color: [f32; 4],
+   |     ^^^^^^^^^^^^^^^
+
+warning: fields `touch_pass_through`, `pass_through_lb`, `pass_through_rb`, `layout_parameter`, and `parent` are never read
+  --> src/ui/widget.rs:45:5
+   |
+34 | pub struct Widget {
+   |            ------ fields in this struct
+...
+45 |     touch_pass_through: bool,
+   |     ^^^^^^^^^^^^^^^^^^
+46 |     pass_through_lb: Vec2,
+   |     ^^^^^^^^^^^^^^^
+47 |     pass_through_rb: Vec2,
+   |     ^^^^^^^^^^^^^^^
+48 |     layout_parameter: Option<LayoutParameter>,
+   |     ^^^^^^^^^^^^^^^^
+49 |     parent: Option<RefPtr<Widget>>,
+   |     ^^^^^^
+   |
+   = note: `Widget` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `widget` is never read
+   --> src/ui/widget.rs:181:5
+    |
+180 | pub struct Button {
+    |            ------ field in this struct
+181 |     widget: Widget,
+    |     ^^^^^^
+    |
+    = note: `Button` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `widget`, `font_size`, `font_name`, `color`, and `password_char` are never read
+   --> src/ui/widget.rs:222:5
+    |
+221 | pub struct TextField {
+    |            --------- fields in this struct
+222 |     widget: Widget,
+    |     ^^^^^^
+...
+225 |     font_size: f32,
+    |     ^^^^^^^^^
+226 |     font_name: String,
+    |     ^^^^^^^^^
+227 |     color: Color3B,
+    |     ^^^^^
+...
+230 |     password_char: char,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `TextField` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `widget`, `progress_bar_image`, `ball_normal_image`, `ball_pressed_image`, and `ball_disabled_image` are never read
+   --> src/ui/widget.rs:283:5
+    |
+282 | pub struct Slider {
+    |            ------ fields in this struct
+283 |     widget: Widget,
+    |     ^^^^^^
+284 |     bar_image: String,
+285 |     progress_bar_image: String,
+    |     ^^^^^^^^^^^^^^^^^^
+286 |     ball_normal_image: String,
+    |     ^^^^^^^^^^^^^^^^^
+287 |     ball_pressed_image: String,
+    |     ^^^^^^^^^^^^^^^^^^
+288 |     ball_disabled_image: String,
+    |     ^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `Slider` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `widget` is never read
+   --> src/ui/widget.rs:340:5
+    |
+339 | pub struct CheckBox {
+    |            -------- field in this struct
+340 |     widget: Widget,
+    |     ^^^^^^
+    |
+    = note: `CheckBox` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: field `widget` is never read
+   --> src/ui/widget.rs:388:5
+    |
+387 | pub struct ImageView {
+    |            --------- field in this struct
+388 |     widget: Widget,
+    |     ^^^^^^
+    |
+    = note: `ImageView` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: fields `widget`, `horizontal_alignment`, `vertical_alignment`, `shadow_enabled`, `shadow_color`, and `shadow_offset` are never read
+   --> src/ui/widget.rs:413:5
+    |
+412 | pub struct Text {
+    |            ---- fields in this struct
+413 |     widget: Widget,
+    |     ^^^^^^
+...
+418 |     horizontal_alignment: TextHAlignment,
+    |     ^^^^^^^^^^^^^^^^^^^^
+419 |     vertical_alignment: TextVAlignment,
+    |     ^^^^^^^^^^^^^^^^^^
+420 |     shadow_enabled: bool,
+    |     ^^^^^^^^^^^^^^
+421 |     shadow_color: Color3B,
+    |     ^^^^^^^^^^^^
+422 |     shadow_offset: Vec2,
+    |     ^^^^^^^^^^^^^
+    |
+    = note: `Text` has a derived impl for the trait `Debug`, but this is intentionally ignored during dead code analysis
+
+warning: creating a shared reference to mutable static
+   --> src/action/mod.rs:244:16
+    |
+244 |             if ACTION_MANAGER.is_none() {
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+    = note: `#[warn(static_mut_refs)]` on by default
+
+warning: creating a mutable reference to mutable static
+   --> src/action/mod.rs:247:13
+    |
+247 |             ACTION_MANAGER.as_mut().unwrap()
+    |             ^^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/animation/animation_cache.rs:161:16
+    |
+161 |             if INSTANCE.is_none() {
+    |                ^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/animation/animation_cache.rs:164:13
+    |
+164 |             INSTANCE.as_ref().unwrap()
+    |             ^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/animation/sprite_frame_cache.rs:229:16
+    |
+229 |             if INSTANCE.is_none() {
+    |                ^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/animation/sprite_frame_cache.rs:232:13
+    |
+232 |             INSTANCE.as_ref().unwrap()
+    |             ^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+  --> src/audio/audio_engine.rs:45:16
+   |
+45 |             if AUDIO_ENGINE.is_none() {
+   |                ^^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+  --> src/audio/audio_engine.rs:48:13
+   |
+48 |             AUDIO_ENGINE.as_mut().unwrap()
+   |             ^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+  --> src/base/autorelease_pool.rs:61:16
+   |
+61 |             if POOL_MANAGER.is_none() {
+   |                ^^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+  --> src/base/autorelease_pool.rs:64:13
+   |
+64 |             POOL_MANAGER.as_mut().unwrap()
+   |             ^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+  --> src/base/director.rs:33:16
+   |
+33 |             if DIRECTOR.is_none() {
+   |                ^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+  --> src/base/director.rs:36:13
+   |
+36 |             DIRECTOR.as_ref().unwrap().borrow().clone()
+   |             ^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/base/ref_count.rs:101:19
+    |
+101 |     pub fn borrow(&self) -> std::cell::Ref<T> {
+    |                   ^^^^^     ----------------- the same lifetime is hidden here
+    |                   |
+    |                   the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+    = note: `#[warn(mismatched_lifetime_syntaxes)]` on by default
+help: use `'_` for type paths
+    |
+101 |     pub fn borrow(&self) -> std::cell::Ref<'_, T> {
+    |                                            +++
+
+warning: hiding a lifetime that's elided elsewhere is confusing
+   --> src/base/ref_count.rs:106:23
+    |
+106 |     pub fn borrow_mut(&self) -> std::cell::RefMut<T> {
+    |                       ^^^^^     -------------------- the same lifetime is hidden here
+    |                       |
+    |                       the lifetime is elided here
+    |
+    = help: the same lifetime is referred to in inconsistent ways, making the signature confusing
+help: use `'_` for type paths
+    |
+106 |     pub fn borrow_mut(&self) -> std::cell::RefMut<'_, T> {
+    |                                                   +++
+
+warning: creating a shared reference to mutable static
+   --> src/network/network.rs:142:16
+    |
+142 |             if HTTP_CLIENT.is_none() {
+    |                ^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+   --> src/network/network.rs:145:13
+    |
+145 |             HTTP_CLIENT.as_mut().unwrap()
+    |             ^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/network/network.rs:201:16
+    |
+201 |             if NETWORK.is_none() {
+    |                ^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+   --> src/network/network.rs:204:13
+    |
+204 |             NETWORK.as_mut().unwrap()
+    |             ^^^^^^^^^^^^^^^^ mutable reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+  --> src/platform/file_utils.rs:40:16
+   |
+40 |             if FILE_UTILS.is_none() {
+   |                ^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+  --> src/platform/file_utils.rs:43:13
+   |
+43 |             FILE_UTILS.as_mut().unwrap()
+   |             ^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: method `get_scaleX` should have a snake case name
+   --> src/renderer/renderer.rs:281:12
+    |
+281 |     pub fn get_scaleX(&self) -> f32 {
+    |            ^^^^^^^^^^ help: convert the identifier to snake case: `get_scale_x`
+    |
+    = note: `#[warn(non_snake_case)]` on by default
+
+warning: method `get_scaleY` should have a snake case name
+   --> src/renderer/renderer.rs:285:12
+    |
+285 |     pub fn get_scaleY(&self) -> f32 {
+    |            ^^^^^^^^^^ help: convert the identifier to snake case: `get_scale_y`
+
+warning: creating a shared reference to mutable static
+  --> src/renderer/texture_cache.rs:18:16
+   |
+18 |             if TEXTURE_CACHE.is_none() {
+   |                ^^^^^^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a mutable reference to mutable static
+  --> src/renderer/texture_cache.rs:21:13
+   |
+21 |             TEXTURE_CACHE.as_mut().unwrap()
+   |             ^^^^^^^^^^^^^^^^^^^^^^ mutable reference to mutable static
+   |
+   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+   = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/shader/shader_cache.rs:143:16
+    |
+143 |             if INSTANCE.is_none() {
+    |                ^^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: creating a shared reference to mutable static
+   --> src/shader/shader_cache.rs:146:13
+    |
+146 |             INSTANCE.as_ref().unwrap()
+    |             ^^^^^^^^^^^^^^^^^ shared reference to mutable static
+    |
+    = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>
+    = note: shared references to mutable statics are dangerous; it's undefined behavior if the static is mutated or if a mutable reference is created for it while the shared reference lives
+
+warning: method `loadTextures` should have a snake case name
+   --> src/ui/widget.rs:213:12
+    |
+213 |     pub fn loadTextures(&mut self, normal: &str, pressed: &str, disabled: &str) {
+    |            ^^^^^^^^^^^^ help: convert the identifier to snake case: `load_textures`
+
+warning: method `loadSlidingBar` should have a snake case name
+   --> src/ui/widget.rs:333:12
+    |
+333 |     pub fn loadSlidingBar(&mut self, bar: &str) {
+    |            ^^^^^^^^^^^^^^ help: convert the identifier to snake case: `load_sliding_bar`
+
+warning: method `loadTextures` should have a snake case name
+   --> src/ui/widget.rs:370:12
+    |
+370 |     pub fn loadTextures(
+    |            ^^^^^^^^^^^^ help: convert the identifier to snake case: `load_textures`
+
+warning: `cocos2d-rust` (lib) generated 314 warnings (run `cargo fix --lib -p cocos2d-rust` to apply 77 suggestions)
+warning: variable does not need to be mutable
+  --> src/main.rs:14:13
+   |
+14 |         let mut director = Director::get_instance();
+   |             ----^^^^^^^^
+   |             |
+   |             help: remove this `mut`
+   |
+   = note: `#[warn(unused_mut)]` on by default
+
+warning: `cocos2d-rust` (bin "cocos2d-rust") generated 1 warning (run `cargo fix --bin "cocos2d-rust"` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.69s
+     Running `target/debug/cocos2d-rust`
+[2026-02-02T12:14:29Z INFO  cocos2d_rust] Added sprite from file
+[2026-02-02T12:14:29Z INFO  cocos2d_rust] Added label with font: /System/Library/Fonts/Helvetica.ttc
+[2026-02-02T12:14:29Z INFO  cocos2d_rust] Application launched successfully!
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.04801179
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.17568004
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003401167
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003358208
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.037743915
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.000587958
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.004750167
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.004946167
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00366175
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013086708
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003329667
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.017256916
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.000646209
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.012566291
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002665417
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013491458
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003672834
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013421791
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00307125
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013216917
+[2026-02-02T12:14:29Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003932375
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013040875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002510292
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014073708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008556667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002281708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.018863
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008384292
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0310265
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0178865
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.031404
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.01133675
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00749075
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0027045
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014648583
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002128917
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013901333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003145667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013726875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.026346833
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.007422792
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.007077708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.009249875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002545083
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014078584
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.007963625
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002339458
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014790333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001769042
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.01507025
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001854833
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014795917
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00170625
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014493875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008503875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001846667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014618833
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008656792
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.005778333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.010893917
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008360708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001902167
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014683208
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003282458
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013167292
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008623083
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001747125
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014532375
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.01041975
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00041225
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014182625
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003275917
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013456125
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008221667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002170791
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014516459
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.026029957
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.007298875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002104125
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.010403083
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008465542
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002064458
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014530667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008254792
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00277325
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013906166
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00838075
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003018167
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013672125
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008241875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003307583
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013456959
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003049208
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013479875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002940917
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014265083
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.009616667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.006552083
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00237875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.017396208
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.005271625
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002524459
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014451625
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008394375
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.004670375
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.011922958
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008025125
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002100417
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014600875
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002062041
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014597667
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00845525
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.004929792
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.011556333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008366292
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002187666
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014569834
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002467708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014138042
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008517708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002322958
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014435084
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008003833
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002194708
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014782
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001933459
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014429333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003237333
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013907042
+[2026-02-02T12:14:30Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0081525
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.005685833
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.011004084
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008022458
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00261075
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014079625
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008541625
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002803042
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.013628625
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008731666
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.015697334
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0006655
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002082583
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014679792
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.003092041
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.0134155
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008485792
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.00223125
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014757375
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.007872792
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.001999291
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014886334
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.008085041
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.002629792
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.014162167
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.005827166
+[2026-02-02T12:14:31Z INFO  cocos2d_rust::base::director] Director loop running. Delta: 0.012245375

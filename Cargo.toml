@@ -12,8 +12,8 @@ image = "0.25.9"
 log = "0.4.29"
 plist = "1.7"
 rand = "0.8"
-# 使用 0.5 版本以匹配 winit 和 glutin 的依赖
 raw-window-handle = "0.5"
+rodio = "0.21"
 winit = "0.29"
 
 [[example]]

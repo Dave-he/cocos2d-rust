@@ -256,3 +256,302 @@ impl DivAssign<f32> for Vec2 {
         self.y /= scalar;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    fn assert_vec2_eq(a: Vec2, b: Vec2) {
+        assert!((a.x - b.x).abs() < EPSILON, "x: {} != {}", a.x, b.x);
+        assert!((a.y - b.y).abs() < EPSILON, "y: {} != {}", a.y, b.y);
+    }
+
+    #[test]
+    fn test_vec2_new() {
+        let v = Vec2::new(3.0, 4.0);
+        assert_eq!(v.x, 3.0);
+        assert_eq!(v.y, 4.0);
+    }
+
+    #[test]
+    fn test_vec2_constants() {
+        assert_eq!(Vec2::ZERO, Vec2::new(0.0, 0.0));
+        assert_eq!(Vec2::ONE, Vec2::new(1.0, 1.0));
+        assert_eq!(Vec2::UNIT_X, Vec2::new(1.0, 0.0));
+        assert_eq!(Vec2::UNIT_Y, Vec2::new(0.0, 1.0));
+        assert_eq!(Vec2::ANCHOR_MIDDLE, Vec2::new(0.5, 0.5));
+    }
+
+    #[test]
+    fn test_vec2_from_array() {
+        let arr = [5.0, 7.0];
+        let v = Vec2::from_array(&arr);
+        assert_eq!(v.x, 5.0);
+        assert_eq!(v.y, 7.0);
+    }
+
+    #[test]
+    fn test_vec2_is_zero() {
+        assert!(Vec2::ZERO.is_zero());
+        assert!(!Vec2::new(0.1, 0.0).is_zero());
+        assert!(!Vec2::new(0.0, 0.1).is_zero());
+    }
+
+    #[test]
+    fn test_vec2_is_one() {
+        assert!(Vec2::ONE.is_one());
+        assert!(!Vec2::new(1.0, 0.9).is_one());
+    }
+
+    #[test]
+    fn test_vec2_add() {
+        let a = Vec2::new(1.0, 2.0);
+        let b = Vec2::new(3.0, 4.0);
+        let result = a + b;
+        assert_eq!(result, Vec2::new(4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec2_add_assign() {
+        let mut a = Vec2::new(1.0, 2.0);
+        a += Vec2::new(3.0, 4.0);
+        assert_eq!(a, Vec2::new(4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec2_sub() {
+        let a = Vec2::new(5.0, 7.0);
+        let b = Vec2::new(2.0, 3.0);
+        let result = a - b;
+        assert_eq!(result, Vec2::new(3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec2_sub_assign() {
+        let mut a = Vec2::new(5.0, 7.0);
+        a -= Vec2::new(2.0, 3.0);
+        assert_eq!(a, Vec2::new(3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec2_neg() {
+        let v = Vec2::new(3.0, -4.0);
+        let result = -v;
+        assert_eq!(result, Vec2::new(-3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec2_mul_scalar() {
+        let v = Vec2::new(2.0, 3.0);
+        let result = v * 2.0;
+        assert_eq!(result, Vec2::new(4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec2_mul_assign() {
+        let mut v = Vec2::new(2.0, 3.0);
+        v *= 2.0;
+        assert_eq!(v, Vec2::new(4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec2_div_scalar() {
+        let v = Vec2::new(6.0, 8.0);
+        let result = v / 2.0;
+        assert_eq!(result, Vec2::new(3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec2_div_assign() {
+        let mut v = Vec2::new(6.0, 8.0);
+        v /= 2.0;
+        assert_eq!(v, Vec2::new(3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec2_length() {
+        let v = Vec2::new(3.0, 4.0);
+        assert!((v.length() - 5.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_length_squared() {
+        let v = Vec2::new(3.0, 4.0);
+        assert_eq!(v.length_squared(), 25.0);
+    }
+
+    #[test]
+    fn test_vec2_normalize() {
+        let mut v = Vec2::new(3.0, 4.0);
+        v.normalize();
+        assert!((v.length() - 1.0).abs() < EPSILON);
+        assert_vec2_eq(v, Vec2::new(0.6, 0.8));
+    }
+
+    #[test]
+    fn test_vec2_normalize_zero() {
+        let mut v = Vec2::ZERO;
+        v.normalize(); // Should not panic
+        assert_eq!(v, Vec2::ZERO); // Zero vector stays zero
+    }
+
+    #[test]
+    fn test_vec2_get_normalized() {
+        let v = Vec2::new(3.0, 4.0);
+        let normalized = v.get_normalized();
+        assert!((normalized.length() - 1.0).abs() < EPSILON);
+        assert_eq!(v, Vec2::new(3.0, 4.0)); // Original unchanged
+    }
+
+    #[test]
+    fn test_vec2_dot() {
+        let a = Vec2::new(1.0, 2.0);
+        let b = Vec2::new(3.0, 4.0);
+        assert_eq!(a.dot(&b), 11.0); // 1*3 + 2*4 = 11
+    }
+
+    #[test]
+    fn test_vec2_cross() {
+        let a = Vec2::new(1.0, 2.0);
+        let b = Vec2::new(3.0, 4.0);
+        assert_eq!(a.cross(&b), -2.0); // 1*4 - 2*3 = -2
+    }
+
+    #[test]
+    fn test_vec2_distance() {
+        let a = Vec2::new(0.0, 0.0);
+        let b = Vec2::new(3.0, 4.0);
+        assert!((a.distance(&b) - 5.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_distance_squared() {
+        let a = Vec2::new(0.0, 0.0);
+        let b = Vec2::new(3.0, 4.0);
+        assert_eq!(a.distance_squared(&b), 25.0);
+    }
+
+    #[test]
+    fn test_vec2_angle() {
+        let a = Vec2::UNIT_X;
+        let b = Vec2::UNIT_Y;
+        let angle = Vec2::angle(&a, &b);
+        assert!((angle - std::f32::consts::FRAC_PI_2).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_clamp() {
+        let mut v = Vec2::new(5.0, -2.0);
+        v.clamp(&Vec2::new(0.0, 0.0), &Vec2::new(3.0, 3.0));
+        assert_eq!(v, Vec2::new(3.0, 0.0));
+    }
+
+    #[test]
+    fn test_vec2_scale() {
+        let mut v = Vec2::new(2.0, 3.0);
+        v.scale(2.5);
+        assert_vec2_eq(v, Vec2::new(5.0, 7.5));
+    }
+
+    #[test]
+    fn test_vec2_scale_vec() {
+        let mut v = Vec2::new(2.0, 3.0);
+        v.scale_vec(&Vec2::new(2.0, 3.0));
+        assert_vec2_eq(v, Vec2::new(4.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec2_rotate() {
+        let mut v = Vec2::new(1.0, 0.0);
+        v.rotate(&Vec2::ZERO, std::f32::consts::FRAC_PI_2);
+        assert_vec2_eq(v, Vec2::new(0.0, 1.0));
+    }
+
+    #[test]
+    fn test_vec2_get_perp() {
+        let v = Vec2::new(3.0, 4.0);
+        let perp = v.get_perp();
+        assert_eq!(perp, Vec2::new(-4.0, 3.0));
+        // Verify it's perpendicular
+        assert!((v.dot(&perp)).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_get_r_perp() {
+        let v = Vec2::new(3.0, 4.0);
+        let r_perp = v.get_r_perp();
+        assert_eq!(r_perp, Vec2::new(4.0, -3.0));
+        assert!((v.dot(&r_perp)).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_project() {
+        let a = Vec2::new(3.0, 4.0);
+        let b = Vec2::UNIT_X;
+        let projected = a.project(&b);
+        assert_vec2_eq(projected, Vec2::new(3.0, 0.0));
+    }
+
+    #[test]
+    fn test_vec2_lerp() {
+        let a = Vec2::new(0.0, 0.0);
+        let b = Vec2::new(10.0, 10.0);
+        let mid = a.lerp(&b, 0.5);
+        assert_vec2_eq(mid, Vec2::new(5.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec2_for_angle() {
+        let v = Vec2::for_angle(0.0);
+        assert_vec2_eq(v, Vec2::UNIT_X);
+        
+        let v = Vec2::for_angle(std::f32::consts::FRAC_PI_2);
+        assert_vec2_eq(v, Vec2::UNIT_Y);
+    }
+
+    #[test]
+    fn test_vec2_get_angle() {
+        let v = Vec2::UNIT_X;
+        assert!((v.get_angle() - 0.0).abs() < EPSILON);
+        
+        let v = Vec2::UNIT_Y;
+        assert!((v.get_angle() - std::f32::consts::FRAC_PI_2).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec2_fuzzy_equals() {
+        let a = Vec2::new(1.0, 2.0);
+        let b = Vec2::new(1.01, 2.01);
+        
+        assert!(a.fuzzy_equals(&b, 0.02));
+        assert!(!a.fuzzy_equals(&b, 0.005));
+    }
+
+    #[test]
+    fn test_vec2_smooth() {
+        let mut current = Vec2::new(0.0, 0.0);
+        let target = Vec2::new(10.0, 10.0);
+        
+        current.smooth(&target, 0.5, 1.0);
+        
+        // Should move towards target but not reach it
+        assert!(current.x > 0.0 && current.x < 10.0);
+        assert!(current.y > 0.0 && current.y < 10.0);
+    }
+
+    #[test]
+    fn test_vec2_set() {
+        let mut v = Vec2::ZERO;
+        v.set(5.0, 7.0);
+        assert_eq!(v, Vec2::new(5.0, 7.0));
+    }
+
+    #[test]
+    fn test_vec2_set_zero() {
+        let mut v = Vec2::new(5.0, 7.0);
+        v.set_zero();
+        assert_eq!(v, Vec2::ZERO);
+    }
+}
