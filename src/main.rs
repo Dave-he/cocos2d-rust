@@ -4,12 +4,13 @@ use cocos2d_rust::base::RefPtr;
 use cocos2d_rust::sprite::Sprite;
 use cocos2d_rust::base::types::{Rect, Color3B};
 use cocos2d_rust::math::Vec2;
+use cocos2d_rust::audio::{AudioEngine, generate_beep, generate_click};
 
 struct AppDelegate;
 
 impl ApplicationDelegate for AppDelegate {
     fn application_did_finish_launching(&mut self) -> bool {
-        let mut director = Director::get_instance();
+        let director = Director::get_instance();
         let scene = Scene::new();
         
         let mut sprite = Sprite::new();
@@ -17,9 +18,28 @@ impl ApplicationDelegate for AppDelegate {
         sprite.set_color(Color3B::new(255, 0, 0));
         sprite.get_node_mut().borrow_mut().set_position(Vec2::new(480.0, 320.0));
         
-        scene.borrow_mut().add_child(sprite.get_node().clone());
+        let mut scene = scene;
+        scene.add_child(sprite.get_node().clone());
 
         director.borrow_mut().run_scene(RefPtr::new(scene));
+
+        if AudioEngine::init() {
+            log::info!("AudioEngine initialized successfully!");
+            
+            generate_beep("beep.wav", 440.0, 0.5);
+            generate_click("click.wav");
+            log::info!("Generated test audio files");
+            
+            let audio_id = AudioEngine::play2d("beep.wav", false, 1.0);
+            if audio_id > 0 {
+                log::info!("Playing beep sound with ID: {}", audio_id);
+            } else {
+                log::warn!("Failed to play audio");
+            }
+        } else {
+            log::error!("Failed to initialize AudioEngine");
+        }
+
         log::info!("Application launched successfully!");
         true
     }

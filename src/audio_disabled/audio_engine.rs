@@ -96,15 +96,7 @@ impl AudioEngine {
         sink.set_volume(volume * self.volume);
         
         if loop_enabled {
-            if let Ok(file_reopen) = File::open(file_path) {
-                if let Ok(decoder) = Decoder::try_from(BufReader::new(file_reopen)) {
-                    let sample_rate = decoder.sample_rate();
-                    let channels = decoder.channels();
-                    let samples: Vec<i16> = decoder.into_sample().collect();
-                    let buffer = rodio::buffer::SamplesBuffer::new(channels, sample_rate, samples);
-                    sink.append(buffer.repeat_infinite());
-                }
-            }
+            sink.append(source.repeat_infinite());
         } else {
             sink.append(source);
         }

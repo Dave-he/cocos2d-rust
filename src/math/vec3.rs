@@ -218,3 +218,227 @@ impl DivAssign<f32> for Vec3 {
         self.z /= scalar;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    fn assert_vec3_eq(a: Vec3, b: Vec3) {
+        assert!((a.x - b.x).abs() < EPSILON, "x: {} != {}", a.x, b.x);
+        assert!((a.y - b.y).abs() < EPSILON, "y: {} != {}", a.y, b.y);
+        assert!((a.z - b.z).abs() < EPSILON, "z: {} != {}", a.z, b.z);
+    }
+
+    #[test]
+    fn test_vec3_new() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(v.x, 1.0);
+        assert_eq!(v.y, 2.0);
+        assert_eq!(v.z, 3.0);
+    }
+
+    #[test]
+    fn test_vec3_constants() {
+        assert_eq!(Vec3::ZERO, Vec3::new(0.0, 0.0, 0.0));
+        assert_eq!(Vec3::ONE, Vec3::new(1.0, 1.0, 1.0));
+        assert_eq!(Vec3::UNIT_X, Vec3::new(1.0, 0.0, 0.0));
+        assert_eq!(Vec3::UNIT_Y, Vec3::new(0.0, 1.0, 0.0));
+        assert_eq!(Vec3::UNIT_Z, Vec3::new(0.0, 0.0, 1.0));
+    }
+
+    #[test]
+    fn test_vec3_from_array() {
+        let arr = [1.0, 2.0, 3.0];
+        let v = Vec3::from_array(&arr);
+        assert_eq!(v, Vec3::new(1.0, 2.0, 3.0));
+    }
+
+    #[test]
+    fn test_vec3_from_color() {
+        let color = 0xFF0000; // Red
+        let v = Vec3::from_color(color);
+        assert!((v.x - 1.0).abs() < EPSILON);
+        assert!((v.y - 0.0).abs() < EPSILON);
+        assert!((v.z - 0.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec3_is_zero() {
+        assert!(Vec3::ZERO.is_zero());
+        assert!(!Vec3::new(0.1, 0.0, 0.0).is_zero());
+    }
+
+    #[test]
+    fn test_vec3_is_one() {
+        assert!(Vec3::ONE.is_one());
+        assert!(!Vec3::new(1.0, 1.0, 0.9).is_one());
+    }
+
+    #[test]
+    fn test_vec3_add() {
+        let a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        assert_eq!(a + b, Vec3::new(5.0, 7.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec3_add_assign() {
+        let mut a = Vec3::new(1.0, 2.0, 3.0);
+        a += Vec3::new(4.0, 5.0, 6.0);
+        assert_eq!(a, Vec3::new(5.0, 7.0, 9.0));
+    }
+
+    #[test]
+    fn test_vec3_sub() {
+        let a = Vec3::new(10.0, 8.0, 6.0);
+        let b = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(a - b, Vec3::new(9.0, 6.0, 3.0));
+    }
+
+    #[test]
+    fn test_vec3_sub_assign() {
+        let mut a = Vec3::new(10.0, 8.0, 6.0);
+        a -= Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(a, Vec3::new(9.0, 6.0, 3.0));
+    }
+
+    #[test]
+    fn test_vec3_neg() {
+        let v = Vec3::new(1.0, -2.0, 3.0);
+        assert_eq!(-v, Vec3::new(-1.0, 2.0, -3.0));
+    }
+
+    #[test]
+    fn test_vec3_mul_scalar() {
+        let v = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(v * 2.0, Vec3::new(2.0, 4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec3_mul_assign() {
+        let mut v = Vec3::new(1.0, 2.0, 3.0);
+        v *= 2.0;
+        assert_eq!(v, Vec3::new(2.0, 4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec3_div_scalar() {
+        let v = Vec3::new(6.0, 8.0, 10.0);
+        assert_eq!(v / 2.0, Vec3::new(3.0, 4.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec3_div_assign() {
+        let mut v = Vec3::new(6.0, 8.0, 10.0);
+        v /= 2.0;
+        assert_eq!(v, Vec3::new(3.0, 4.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec3_length() {
+        let v = Vec3::new(3.0, 4.0, 0.0);
+        assert!((v.length() - 5.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec3_length_squared() {
+        let v = Vec3::new(3.0, 4.0, 0.0);
+        assert_eq!(v.length_squared(), 25.0);
+    }
+
+    #[test]
+    fn test_vec3_normalize() {
+        let mut v = Vec3::new(3.0, 4.0, 0.0);
+        v.normalize();
+        assert!((v.length() - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec3_normalize_zero() {
+        let mut v = Vec3::ZERO;
+        v.normalize();
+        assert_eq!(v, Vec3::ZERO);
+    }
+
+    #[test]
+    fn test_vec3_dot() {
+        let a = Vec3::new(1.0, 2.0, 3.0);
+        let b = Vec3::new(4.0, 5.0, 6.0);
+        assert_eq!(a.dot(&b), 32.0); // 1*4 + 2*5 + 3*6 = 32
+    }
+
+    #[test]
+    fn test_vec3_distance() {
+        let a = Vec3::new(0.0, 0.0, 0.0);
+        let b = Vec3::new(3.0, 4.0, 0.0);
+        assert!((a.distance(&b) - 5.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec3_distance_squared() {
+        let a = Vec3::new(0.0, 0.0, 0.0);
+        let b = Vec3::new(3.0, 4.0, 0.0);
+        assert_eq!(a.distance_squared(&b), 25.0);
+    }
+
+    #[test]
+    fn test_vec3_cross() {
+        let a = Vec3::UNIT_X;
+        let b = Vec3::UNIT_Y;
+        let result = a.cross(&b);
+        assert_eq!(result, Vec3::UNIT_Z);
+    }
+
+    #[test]
+    fn test_vec3_angle() {
+        let a = Vec3::UNIT_X;
+        let b = Vec3::UNIT_X;
+        let angle = Vec3::angle(&a, &b);
+        assert!((angle - 0.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec3_add_components() {
+        let mut v = Vec3::new(1.0, 2.0, 3.0);
+        v.add_components(1.0, 2.0, 3.0);
+        assert_eq!(v, Vec3::new(2.0, 4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec3_clamp() {
+        let mut v = Vec3::new(10.0, -5.0, 15.0);
+        v.clamp(&Vec3::ZERO, &Vec3::new(5.0, 5.0, 5.0));
+        assert_eq!(v, Vec3::new(5.0, 0.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec3_scale() {
+        let mut v = Vec3::new(1.0, 2.0, 3.0);
+        v.scale(2.0);
+        assert_eq!(v, Vec3::new(2.0, 4.0, 6.0));
+    }
+
+    #[test]
+    fn test_vec3_lerp() {
+        let a = Vec3::ZERO;
+        let b = Vec3::new(10.0, 10.0, 10.0);
+        let mid = a.lerp(&b, 0.5);
+        assert_eq!(mid, Vec3::new(5.0, 5.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec3_set() {
+        let mut v = Vec3::ZERO;
+        v.set(1.0, 2.0, 3.0);
+        assert_eq!(v, Vec3::new(1.0, 2.0, 3.0));
+    }
+
+    #[test]
+    fn test_vec3_set_zero() {
+        let mut v = Vec3::new(1.0, 2.0, 3.0);
+        v.set_zero();
+        assert_eq!(v, Vec3::ZERO);
+    }
+}

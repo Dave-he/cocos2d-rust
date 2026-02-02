@@ -5,7 +5,7 @@ pub mod sprite;
 pub mod scene;
 pub mod action;
 pub mod renderer;
-// pub mod audio; // 临时禁用，有编译错误
+// pub mod audio; // 临时禁用（依赖问题）
 pub mod network;
 pub mod physics;
 pub mod ui;

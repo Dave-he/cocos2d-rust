@@ -200,3 +200,201 @@ impl DivAssign<f32> for Vec4 {
         self.w /= scalar;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPSILON: f32 = 0.0001;
+
+    fn assert_vec4_eq(a: Vec4, b: Vec4) {
+        assert!((a.x - b.x).abs() < EPSILON, "x: {} != {}", a.x, b.x);
+        assert!((a.y - b.y).abs() < EPSILON, "y: {} != {}", a.y, b.y);
+        assert!((a.z - b.z).abs() < EPSILON, "z: {} != {}", a.z, b.z);
+        assert!((a.w - b.w).abs() < EPSILON, "w: {} != {}", a.w, b.w);
+    }
+
+    #[test]
+    fn test_vec4_new() {
+        let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(v.x, 1.0);
+        assert_eq!(v.y, 2.0);
+        assert_eq!(v.z, 3.0);
+        assert_eq!(v.w, 4.0);
+    }
+
+    #[test]
+    fn test_vec4_constants() {
+        assert_eq!(Vec4::ZERO, Vec4::new(0.0, 0.0, 0.0, 0.0));
+        assert_eq!(Vec4::ONE, Vec4::new(1.0, 1.0, 1.0, 1.0));
+        assert_eq!(Vec4::UNIT_X, Vec4::new(1.0, 0.0, 0.0, 0.0));
+        assert_eq!(Vec4::UNIT_Y, Vec4::new(0.0, 1.0, 0.0, 0.0));
+        assert_eq!(Vec4::UNIT_Z, Vec4::new(0.0, 0.0, 1.0, 0.0));
+        assert_eq!(Vec4::UNIT_W, Vec4::new(0.0, 0.0, 0.0, 1.0));
+    }
+
+    #[test]
+    fn test_vec4_from_array() {
+        let arr = [1.0, 2.0, 3.0, 4.0];
+        let v = Vec4::from_array(&arr);
+        assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec4_from_color() {
+        let color = 0xFF00_80FF; // RGBA: R=255, G=0, B=128, A=255
+        let v = Vec4::from_color(color);
+        assert!((v.x - 1.0).abs() < EPSILON);
+        assert!((v.y - 0.0).abs() < EPSILON);
+        assert!((v.z - 0.50196).abs() < 0.01);
+        assert!((v.w - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec4_is_zero() {
+        assert!(Vec4::ZERO.is_zero());
+        assert!(!Vec4::new(0.1, 0.0, 0.0, 0.0).is_zero());
+    }
+
+    #[test]
+    fn test_vec4_is_one() {
+        assert!(Vec4::ONE.is_one());
+        assert!(!Vec4::new(1.0, 1.0, 1.0, 0.9).is_one());
+    }
+
+    #[test]
+    fn test_vec4_add() {
+        let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
+        assert_eq!(a + b, Vec4::new(6.0, 8.0, 10.0, 12.0));
+    }
+
+    #[test]
+    fn test_vec4_add_assign() {
+        let mut a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        a += Vec4::new(5.0, 6.0, 7.0, 8.0);
+        assert_eq!(a, Vec4::new(6.0, 8.0, 10.0, 12.0));
+    }
+
+    #[test]
+    fn test_vec4_sub() {
+        let a = Vec4::new(10.0, 8.0, 6.0, 4.0);
+        let b = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(a - b, Vec4::new(9.0, 6.0, 3.0, 0.0));
+    }
+
+    #[test]
+    fn test_vec4_sub_assign() {
+        let mut a = Vec4::new(10.0, 8.0, 6.0, 4.0);
+        a -= Vec4::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(a, Vec4::new(9.0, 6.0, 3.0, 0.0));
+    }
+
+    #[test]
+    fn test_vec4_neg() {
+        let v = Vec4::new(1.0, -2.0, 3.0, -4.0);
+        assert_eq!(-v, Vec4::new(-1.0, 2.0, -3.0, 4.0));
+    }
+
+    #[test]
+    fn test_vec4_mul_scalar() {
+        let v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(v * 2.0, Vec4::new(2.0, 4.0, 6.0, 8.0));
+    }
+
+    #[test]
+    fn test_vec4_mul_assign() {
+        let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        v *= 2.0;
+        assert_eq!(v, Vec4::new(2.0, 4.0, 6.0, 8.0));
+    }
+
+    #[test]
+    fn test_vec4_div_scalar() {
+        let v = Vec4::new(10.0, 8.0, 6.0, 4.0);
+        assert_eq!(v / 2.0, Vec4::new(5.0, 4.0, 3.0, 2.0));
+    }
+
+    #[test]
+    fn test_vec4_div_assign() {
+        let mut v = Vec4::new(10.0, 8.0, 6.0, 4.0);
+        v /= 2.0;
+        assert_eq!(v, Vec4::new(5.0, 4.0, 3.0, 2.0));
+    }
+
+    #[test]
+    fn test_vec4_length() {
+        let v = Vec4::new(1.0, 2.0, 2.0, 2.0); // sqrt(1+4+4+4) = sqrt(13)
+        assert!((v.length() - 3.6055).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_vec4_length_squared() {
+        let v = Vec4::new(1.0, 2.0, 2.0, 2.0);
+        assert_eq!(v.length_squared(), 13.0);
+    }
+
+    #[test]
+    fn test_vec4_normalize() {
+        let mut v = Vec4::new(1.0, 2.0, 2.0, 2.0);
+        v.normalize();
+        assert!((v.length() - 1.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec4_normalize_zero() {
+        let mut v = Vec4::ZERO;
+        v.normalize();
+        assert_eq!(v, Vec4::ZERO);
+    }
+
+    #[test]
+    fn test_vec4_dot() {
+        let a = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        let b = Vec4::new(5.0, 6.0, 7.0, 8.0);
+        assert_eq!(a.dot(&b), 70.0); // 1*5 + 2*6 + 3*7 + 4*8 = 70
+    }
+
+    #[test]
+    fn test_vec4_distance() {
+        let a = Vec4::ZERO;
+        let b = Vec4::new(1.0, 2.0, 2.0, 2.0);
+        assert!((a.distance(&b) - 3.6055).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_vec4_distance_squared() {
+        let a = Vec4::ZERO;
+        let b = Vec4::new(1.0, 2.0, 2.0, 2.0);
+        assert_eq!(a.distance_squared(&b), 13.0);
+    }
+
+    #[test]
+    fn test_vec4_angle() {
+        let a = Vec4::UNIT_X;
+        let b = Vec4::UNIT_X;
+        let angle = Vec4::angle(&a, &b);
+        assert!((angle - 0.0).abs() < EPSILON);
+    }
+
+    #[test]
+    fn test_vec4_scale() {
+        let mut v = Vec4::new(1.0, 2.0, 3.0, 4.0);
+        v.scale(2.0);
+        assert_eq!(v, Vec4::new(2.0, 4.0, 6.0, 8.0));
+    }
+
+    #[test]
+    fn test_vec4_clamp() {
+        let mut v = Vec4::new(10.0, -5.0, 15.0, 20.0);
+        v.clamp(&Vec4::ZERO, &Vec4::new(5.0, 5.0, 5.0, 5.0));
+        assert_eq!(v, Vec4::new(5.0, 0.0, 5.0, 5.0));
+    }
+
+    #[test]
+    fn test_vec4_set() {
+        let mut v = Vec4::ZERO;
+        v.set(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(v, Vec4::new(1.0, 2.0, 3.0, 4.0));
+    }
+}
