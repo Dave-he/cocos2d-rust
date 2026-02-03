@@ -25,6 +25,14 @@ impl Vec2 {
     pub fn new(x: f32, y: f32) -> Self {
         Vec2 { x, y }
     }
+    
+    pub fn zero() -> Self {
+        Self::ZERO
+    }
+    
+    pub fn one() -> Self {
+        Self::ONE
+    }
 
     pub fn from_array(array: &[f32; 2]) -> Self {
         Vec2 {

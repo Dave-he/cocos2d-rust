@@ -43,6 +43,31 @@ impl Color3B {
     pub fn new(r: u8, g: u8, b: u8) -> Self {
         Color3B { r, g, b }
     }
+    
+    #[inline]
+    pub fn white() -> Self {
+        Self::WHITE
+    }
+    
+    #[inline]
+    pub fn black() -> Self {
+        Self::BLACK
+    }
+    
+    #[inline]
+    pub fn red() -> Self {
+        Self::RED
+    }
+    
+    #[inline]
+    pub fn green() -> Self {
+        Self::GREEN
+    }
+    
+    #[inline]
+    pub fn blue() -> Self {
+        Self::BLUE
+    }
 
     #[inline]
     pub fn from_float3(r: f32, g: f32, b: f32) -> Self {

@@ -209,6 +209,8 @@ pub struct Node {
     global_transform: crate::math::Mat4,
     content_size: crate::math::Vec2,
     on_draw: Option<Box<dyn Fn(&mut Renderer, &crate::math::Mat4)>>,
+    color: crate::base::Color3B,
+    opacity: u8,
 }
 
 impl Clone for Node {
@@ -228,6 +230,8 @@ impl Clone for Node {
             global_transform: self.global_transform,
             content_size: self.content_size,
             on_draw: None,
+            color: self.color,
+            opacity: self.opacity,
         }
     }
 }
@@ -268,6 +272,8 @@ impl Node {
             global_transform: crate::math::Mat4::IDENTITY,
             content_size: crate::math::Vec2::ZERO,
             on_draw: None,
+            color: crate::base::Color3B::WHITE,
+            opacity: 255,
         }
     }
 
@@ -423,6 +429,38 @@ impl Node {
 
     pub fn get_base_mut(&mut self) -> &mut Ref {
         &mut self.base
+    }
+    
+    pub fn color(&self) -> crate::base::Color3B {
+        self.color
+    }
+    
+    pub fn set_color(&mut self, color: crate::base::Color3B) {
+        self.color = color;
+    }
+    
+    pub fn opacity(&self) -> u8 {
+        self.opacity
+    }
+    
+    pub fn set_opacity(&mut self, opacity: u8) {
+        self.opacity = opacity;
+    }
+    
+    pub fn on_enter(&mut self) {
+        // Hook for when node enters the scene
+    }
+    
+    pub fn on_exit(&mut self) {
+        // Hook for when node exits the scene
+    }
+    
+    pub fn content_size(&self) -> crate::math::Vec2 {
+        self.content_size
+    }
+    
+    pub fn set_content_size(&mut self, size: crate::math::Vec2) {
+        self.content_size = size;
     }
 }
 
