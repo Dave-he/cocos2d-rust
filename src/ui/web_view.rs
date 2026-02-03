@@ -640,7 +640,7 @@ mod tests {
         webview.set_javascript_enabled(false);
         assert!(!webview.is_javascript_enabled());
         
-        let result = webview.evaluate_javascript("console.log('test')");
+        let result = webview.evaluate_js("console.log('test')");
         assert!(result.success);
     }
     

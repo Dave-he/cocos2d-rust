@@ -134,24 +134,6 @@ impl Default for Sprite {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct Texture2D {
-    width: u32,
-    height: u32,
-}
-
-impl Texture2D {
-    pub fn new(width: u32, height: u32) -> Self {
-        Texture2D { width, height }
-    }
-}
-
-impl Default for Texture2D {
-    fn default() -> Self {
-        Texture2D::new(0, 0)
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -166,19 +148,5 @@ mod tests {
     fn test_sprite_default() {
         let sprite = Sprite::default();
         let _ = sprite.get_node();
-    }
-
-    #[test]
-    fn test_texture2d_creation() {
-        let texture = Texture2D::new(128, 128);
-        assert_eq!(texture.width, 128);
-        assert_eq!(texture.height, 128);
-    }
-
-    #[test]
-    fn test_texture2d_default() {
-        let texture = Texture2D::default();
-        assert_eq!(texture.width, 0);
-        assert_eq!(texture.height, 0);
     }
 }

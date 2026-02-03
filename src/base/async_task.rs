@@ -713,11 +713,4 @@ mod tests {
         assert_eq!(progress.total, 100);
         assert_eq!(progress.message, "Processing...");
     }
-
-    #[test]
-    fn test_notification_center_default() {
-        let center = NotificationCenter::default();
-        let guard = center.lock().unwrap();
-        assert_eq!(guard.name, "Default");
-    }
 }

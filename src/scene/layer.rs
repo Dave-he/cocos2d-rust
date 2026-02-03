@@ -170,8 +170,6 @@ impl Default for Layer {
 /// LayerColor - 颜色图层
 ///
 /// 可以设置背景颜色的图层。
-use crate::base::types::Color3B;
-use crate::base::types::Color4B;
 use crate::math::Size;
 
 pub struct LayerColor {
