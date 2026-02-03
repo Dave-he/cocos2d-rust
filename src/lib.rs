@@ -1,7 +1,7 @@
 pub mod _3d;
 pub mod action;
 pub mod animation;
-pub mod audio; // 恢复
+pub mod audio;
 pub mod backend;
 pub mod base;
 pub mod input;
@@ -22,14 +22,23 @@ pub mod camera;
 pub mod effects;
 pub mod ui;
 
-pub use base::{Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect, DebugStats, DebugConsole, DebugProfiler, DebugLayer, LogLevel, LogEntry, ConsoleCommand, ProfilerScope, ProfilerCategory, ProfilerEntry, DebugPanel, DebugPanelConfig, NotificationCenter, Notification, DefaultNotification, NotificationObserver, NotificationPriority, AsyncTask, AsyncTaskResult, AsyncTaskHandler, TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager};
+// 重新导出常用类型
+pub use base::{
+    Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect,
+    DebugStats, DebugConsole, DebugProfiler, DebugLayer,
+    LogLevel, LogEntry, ConsoleCommand,
+    ProfilerScope, ProfilerCategory, ProfilerEntry,
+    DebugPanel, DebugPanelConfig,
+    NotificationCenter, Notification, DefaultNotification,
+    NotificationObserver, NotificationPriority,
+    AsyncTask, AsyncTaskResult, AsyncTaskHandler,
+    TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager
+};
 pub use math::{Vec2, Vec3, Vec4, Mat4, Quaternion};
 pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
-pub use audio::AudioEngine; // 恢复
-pub use animation::{Animate, Animation, AnimationCache, SpriteFrame, SpriteFrameCache};
 pub use audio::AudioEngine;
-pub use base::{Color3B, Color4B, Color4F, Director, Node, Rect, Scene, Size};
+pub use animation::{Animate, Animation, AnimationCache, SpriteFrame, SpriteFrameCache};
 pub use input::{KeyCode, MouseButton, Touch, TouchDispatcher};
 pub use label::{Label, LabelAtlas, LabelTTF};
 pub use menu::{Menu, MenuItem, MenuItemImage, MenuItemLabel};
@@ -55,15 +64,11 @@ pub use ui::{
     EnhancedWebView, WebViewState, CacheMode, WebViewDelegate, Cookie, WebViewHistoryItem,
 };
 pub use particle::ParticleSystem;
-pub use physics::{PhysicsBody, PhysicsWorld};
-pub use renderer::{Material, RenderTexture, Renderer, Texture};
-pub use scene::{Layer, LayerColor};
 pub use shader::{BuiltInShaders, ShaderCache, ShaderProgram};
 pub use tilemap::tilemap_layer::TileMap;
 pub use transition::{
     FadeTransition, FlipTransition, RotateTransition, SlideTransition, TransitionScene,
     ZoomTransition,
 };
-pub use ui::{Button, Layout, Slider, TextField, Widget};
 pub use camera::Camera2D;
 pub use effects::{ProgressTimer, ProgressTimerType, MotionStreak};

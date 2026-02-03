@@ -7,6 +7,17 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 #[derive(Debug, Clone)]
+struct SpriteData {
+    texture: Option<RefPtr<Texture2D>>,
+    color: Color3B,
+    opacity: u8,
+    flipped_x: bool,
+    flipped_y: bool,
+    blend_func: BlendFunc,
+    rect: Rect,
+}
+
+#[derive(Debug, Clone)]
 pub struct Sprite {
     node: Node,
     color: Color3B,
@@ -55,13 +66,10 @@ impl Sprite {
             let y = -height / 2.0;
             
             // Texture coordinates
-            let mut bl_uv = [0.0, 1.0];
-            let mut br_uv = [1.0, 1.0];
-            let mut tl_uv = [0.0, 0.0];
-            let mut tr_uv = [1.0, 0.0];
-            
-            // Handle texture rect if needed (simplified for now, full UV calculation would require texture size)
-            // If rect is used, we should map it to UVs
+            let bl_uv = [0.0, 1.0];
+            let br_uv = [1.0, 1.0];
+            let tl_uv = [0.0, 0.0];
+            let tr_uv = [1.0, 0.0];
             
             let mut bl = Vertex::with_position(x, y, 0.0);
             bl.tex_coord = bl_uv;
@@ -105,12 +113,6 @@ impl Sprite {
             rect: Rect::ZERO,
         }
     }
-        Sprite {
-            node: RefPtr::new(node),
-            data,
->>>>>>> feature/warning-cleanup
-        }
-    }
 
     pub fn with_file(filename: &str) -> Option<Self> {
         let _ = filename;
@@ -125,7 +127,6 @@ impl Sprite {
         &mut self.node
     }
 }
-<<<<<<< HEAD
 
 impl Default for Sprite {
     fn default() -> Self {
@@ -181,5 +182,3 @@ mod tests {
         assert_eq!(texture.height, 0);
     }
 }
-=======
->>>>>>> feature/warning-cleanup

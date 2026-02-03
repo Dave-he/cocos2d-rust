@@ -111,16 +111,12 @@ impl Director {
             self.running_scene = scene;
         }
 
-<<<<<<< HEAD
-        self.running_scene.borrow().visit(&mut self.renderer.borrow_mut(), &crate::math::Mat4::IDENTITY, 0);
-=======
         // Render the current scene
         self.running_scene.borrow().visit(
             &mut self.renderer.borrow_mut(),
             &crate::math::Mat4::IDENTITY,
             0,
         );
->>>>>>> feature/warning-cleanup
         self.renderer.borrow_mut().render();
         log::info!("Director loop running. Delta: {}", self.delta_time);
     }
@@ -413,13 +409,8 @@ impl Node {
         ));
     }
 
-<<<<<<< HEAD
-    pub fn update(&mut self, delta_time: f32) {
-    }
-=======
     /// Updates the node
     pub fn update(&mut self, delta_time: f32) {}
->>>>>>> feature/warning-cleanup
 
     pub fn get_id(&self) -> usize {
         let ptr = &self.base as *const Ref as *const u8 as usize;

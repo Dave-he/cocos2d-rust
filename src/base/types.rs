@@ -380,7 +380,6 @@ impl Rect {
     }
 }
 
-<<<<<<< HEAD
 #[cfg(test)]
 mod tests {
     use super::*;

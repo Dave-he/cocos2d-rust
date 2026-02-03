@@ -1,8 +1,5 @@
 pub mod action;
 pub mod action_interval;
-pub mod action_instant;
-pub mod action_ease;
-pub mod action_composite;
 pub mod camera_follow;
 
 pub use action::{

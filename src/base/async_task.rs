@@ -307,22 +307,25 @@ impl<T: Send + 'static> AsyncTask<T> {
             + 'static,
     {
         let self_clone = Arc::new(self);
-
-        thread::spawn({
-            let task = self_clone.clone();
-            let progress_callback = Arc::new(move |p: TaskProgress| {
+        let task = self_clone.clone();
+        
+        let progress_callback = Arc::new({
+            let task = task.clone();
+            move |p: TaskProgress| {
                 task.update_progress(p);
-            });
+            }
+        });
 
+        let cancel_callback = Arc::new({
             let is_cancelled = task.is_cancelled.clone();
-            let cancel_callback = Arc::new(move || {
+            move || {
                 is_cancelled.store(true, Ordering::Relaxed);
-            });
+            }
+        });
 
-            move {
-                if task.get_dependencies().is_empty() {
-                    task.run_internal(task_fn, progress_callback, cancel_callback);
-                }
+        thread::spawn(move || {
+            if task.get_dependencies().is_empty() {
+                task.run_internal(task_fn, progress_callback, cancel_callback);
             }
         });
 

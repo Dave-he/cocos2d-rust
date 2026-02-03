@@ -6,7 +6,7 @@ use crate::sprite::Sprite;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-use super::node::{Node, NodeType};
+use super::node::NodeType;
 
 /// Layer - 图层类
 ///
@@ -114,12 +114,9 @@ impl Layer {
 
     pub fn on_touch_moved(&mut self, _location: &Vec2) {}
 
-<<<<<<< HEAD
-    pub fn on_touch_ended(&mut self, _location: &Vec2) {
-    }
+    pub fn on_touch_ended(&mut self, _location: &Vec2) {}
 
-    pub fn on_touch_cancelled(&mut self, _location: &Vec2) {
-    }
+    pub fn on_touch_cancelled(&mut self, _location: &Vec2) {}
 
     // ===== 鼠标事件 =====
     
@@ -127,14 +124,11 @@ impl Layer {
         false
     }
 
-    pub fn on_mouse_up(&mut self, _button: u32, _location: &Vec2) {
-    }
+    pub fn on_mouse_up(&mut self, _button: u32, _location: &Vec2) {}
 
-    pub fn on_mouse_move(&mut self, _location: &Vec2) {
-    }
+    pub fn on_mouse_move(&mut self, _location: &Vec2) {}
 
-    pub fn on_mouse_scroll(&mut self, _delta: f32) {
-    }
+    pub fn on_mouse_scroll(&mut self, _delta: f32) {}
 
     // ===== 键盘事件 =====
     
@@ -165,9 +159,6 @@ impl Layer {
 
     pub fn on_exit_transition_did_start(&mut self) {
     }
-=======
-    pub fn on_touch_ended(&mut self, _location: &Vec2) {}
->>>>>>> feature/warning-cleanup
 }
 
 impl Default for Layer {

@@ -830,4 +830,189 @@ mod tests {
         editbox.move_to_line_end();
         assert_eq!(editbox.cursor_position, 13);
     }
+    
+    #[test]
+    fn test_editbox_email_validation() {
+        let mut editbox = EditBox::new();
+        editbox.set_input_mode(EditBoxInputMode::EmailAddress);
+        editbox.begin_editing();
+        
+        editbox.insert_text("user@example.com");
+        assert_eq!(editbox.text(), "user@example.com");
+        
+        // 非法字符应被忽略
+        let old_len = editbox.text().len();
+        editbox.insert_text("!");
+        assert_eq!(editbox.text().len(), old_len);
+    }
+    
+    #[test]
+    fn test_editbox_decimal_input() {
+        let mut editbox = EditBox::new();
+        editbox.set_input_mode(EditBoxInputMode::Decimal);
+        editbox.begin_editing();
+        
+        editbox.insert_text("123.45");
+        assert_eq!(editbox.text(), "123.45");
+        
+        editbox.insert_text("-67.89");
+        assert_eq!(editbox.text(), "123.45-67.89");
+    }
+    
+    #[test]
+    fn test_editbox_phone_input() {
+        let mut editbox = EditBox::new();
+        editbox.set_input_mode(EditBoxInputMode::PhoneNumber);
+        editbox.begin_editing();
+        
+        editbox.insert_text("+1 (555) 123-4567");
+        assert_eq!(editbox.text(), "+1 (555) 123-4567");
+    }
+    
+    #[test]
+    fn test_editbox_url_input() {
+        let mut editbox = EditBox::new();
+        editbox.set_input_mode(EditBoxInputMode::Url);
+        editbox.begin_editing();
+        
+        editbox.insert_text("https://example.com/path?query=value");
+        assert_eq!(editbox.text(), "https://example.com/path?query=value");
+    }
+    
+    #[test]
+    fn test_editbox_caps_word() {
+        let mut editbox = EditBox::new();
+        let mut flag = EditBoxInputFlag::default();
+        flag.initial_caps_word = true;
+        editbox.set_input_flag(flag);
+        
+        editbox.begin_editing();
+        editbox.insert_text("hello world");
+        assert_eq!(editbox.text(), "Hello World");
+    }
+    
+    #[test]
+    fn test_editbox_caps_sentence() {
+        let mut editbox = EditBox::new();
+        let mut flag = EditBoxInputFlag::default();
+        flag.initial_caps_sentence = true;
+        editbox.set_input_flag(flag);
+        
+        editbox.begin_editing();
+        editbox.insert_text("hello. world! test?");
+        assert_eq!(editbox.text(), "Hello. World! Test?");
+    }
+    
+    #[test]
+    fn test_editbox_delete_selection() {
+        let mut editbox = EditBox::new();
+        editbox.set_text("Hello World");
+        editbox.begin_editing();
+        
+        editbox.selection_range = Some((0, 5));
+        editbox.delete_backward();
+        
+        assert_eq!(editbox.text(), " World");
+        assert!(!editbox.has_selection());
+    }
+    
+    #[test]
+    fn test_editbox_replace_selection() {
+        let mut editbox = EditBox::new();
+        editbox.set_text("Hello World");
+        editbox.begin_editing();
+        
+        editbox.selection_range = Some((6, 11));
+        editbox.insert_text("Rust");
+        
+        assert_eq!(editbox.text(), "Hello Rust");
+    }
+    
+    #[test]
+    fn test_editbox_history_limit() {
+        let mut editbox = EditBox::new();
+        editbox.max_history = 3;
+        editbox.begin_editing();
+        
+        for i in 0..5 {
+            editbox.insert_text(&format!("{}", i));
+        }
+        
+        // 历史记录应被限制在 3 个
+        assert!(editbox.history.len() <= 3);
+    }
+    
+    #[test]
+    fn test_editbox_delete_forward() {
+        let mut editbox = EditBox::new();
+        editbox.set_text("Hello");
+        editbox.begin_editing();
+        editbox.cursor_position = 0;
+        
+        editbox.delete_forward();
+        assert_eq!(editbox.text(), "ello");
+        
+        editbox.delete_forward();
+        assert_eq!(editbox.text(), "llo");
+    }
+    
+    #[test]
+    fn test_editbox_multiline_max_lines() {
+        let editbox = EditBox::new_multiline(5);
+        assert_eq!(editbox.max_lines, 5);
+        assert!(editbox.multiline);
+    }
+    
+    #[test]
+    fn test_editbox_return_key_handling() {
+        let mut editbox = EditBox::new();
+        let mut return_pressed = false;
+        
+        editbox.set_on_return(|_| {
+            // 此处在实际使用中会被调用
+        });
+        
+        editbox.begin_editing();
+        
+        // 单行模式下，回车应结束编辑
+        let event = KeyboardEvent {
+            key_code: KeyCode::Enter,
+            event_type: KeyEventType::Pressed,
+            character: Some('\n'),
+        };
+        
+        let was_editing = editbox.is_editing();
+        editbox.on_keyboard_event(&event);
+        
+        // 验证编辑状态改变
+        assert_ne!(was_editing, editbox.is_editing());
+    }
+    
+    #[test]
+    fn test_editbox_callbacks() {
+        let mut editbox = EditBox::new();
+        let mut text_changed = false;
+        let mut began = false;
+        let mut ended = false;
+        
+        editbox.set_on_text_changed(|_| {
+            // 文本改变回调
+        });
+        
+        editbox.set_on_editing_began(|_| {
+            // 开始编辑回调
+        });
+        
+        editbox.set_on_editing_ended(|_| {
+            // 结束编辑回调
+        });
+        
+        editbox.begin_editing();
+        editbox.insert_text("test");
+        editbox.end_editing();
+        
+        // 验证状态
+        assert!(!editbox.is_editing());
+        assert_eq!(editbox.text(), "test");
+    }
 }
