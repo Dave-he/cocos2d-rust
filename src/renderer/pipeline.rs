@@ -219,6 +219,14 @@ impl ColorWriteMask {
     }
 }
 
+use std::ops::BitOr;
+impl BitOr for ColorWriteMask {
+    type Output = Self;
+    fn bitor(self, rhs: Self) -> Self::Output {
+        ColorWriteMask(self.0 | rhs.0)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct DepthStencilState {
     depth_test_enabled: bool,
@@ -452,6 +460,10 @@ impl RasterizerState {
     pub fn set_line_width(&mut self, width: f32) {
         self.line_width = width;
     }
+
+    pub fn is_depth_clip_enabled(&self) -> bool {
+        self.depth_clip_enabled
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -459,4 +471,226 @@ pub enum CullMode {
     NONE,
     FRONT,
     BACK,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_pipeline_state_new() {
+        let pipeline = PipelineState::new();
+        assert_eq!(pipeline.get_name(), "");
+        assert_eq!(pipeline.get_program(), "");
+        assert_eq!(pipeline.primitive_type, PrimitiveType::TRIANGLES);
+    }
+
+    #[test]
+    fn test_pipeline_state_with_name() {
+        let pipeline = PipelineState::with_name("opaque");
+        assert_eq!(pipeline.get_name(), "opaque");
+    }
+
+    #[test]
+    fn test_pipeline_state_set_name() {
+        let mut pipeline = PipelineState::new();
+        pipeline.set_name("transparent");
+        assert_eq!(pipeline.get_name(), "transparent");
+    }
+
+    #[test]
+    fn test_pipeline_state_set_program() {
+        let mut pipeline = PipelineState::new();
+        pipeline.set_program("default");
+        assert_eq!(pipeline.get_program(), "default");
+    }
+
+    #[test]
+    fn test_pipeline_state_set_primitive_type() {
+        let mut pipeline = PipelineState::new();
+        pipeline.set_primitive_type(PrimitiveType::LINES);
+        assert_eq!(pipeline.primitive_type, PrimitiveType::LINES);
+    }
+
+    #[test]
+    fn test_primitive_type_variants() {
+        let types = [
+            PrimitiveType::POINTS,
+            PrimitiveType::LINES,
+            PrimitiveType::LINE_STRIP,
+            PrimitiveType::TRIANGLES,
+            PrimitiveType::TRIANGLE_STRIP,
+            PrimitiveType::TRIANGLE_FAN,
+        ];
+        assert_eq!(types.len(), 6);
+    }
+
+    #[test]
+    fn test_blend_state_new() {
+        let blend = BlendState::new();
+        assert!(!blend.is_enabled());
+        assert_eq!(blend.get_src_rgb(), 770);
+        assert_eq!(blend.get_dst_rgb(), 771);
+    }
+
+    #[test]
+    fn test_blend_state_set_enabled() {
+        let mut blend = BlendState::new();
+        assert!(!blend.is_enabled());
+        blend.set_enabled(true);
+        assert!(blend.is_enabled());
+    }
+
+    #[test]
+    fn test_blend_state_set_blend_func() {
+        let mut blend = BlendState::new();
+        blend.set_blend_func(1, 0);
+        assert_eq!(blend.get_src_rgb(), 1);
+        assert_eq!(blend.get_dst_rgb(), 0);
+    }
+
+    #[test]
+    fn test_blend_state_set_blend_func_separate() {
+        let mut blend = BlendState::new();
+        blend.set_blend_func_separate(1, 0, 2, 3);
+        assert_eq!(blend.get_src_rgb(), 1);
+        assert_eq!(blend.get_dst_rgb(), 0);
+        assert_eq!(blend.get_src_alpha(), 2);
+        assert_eq!(blend.get_dst_alpha(), 3);
+    }
+
+    #[test]
+    fn test_color_write_mask() {
+        assert_eq!(ColorWriteMask::NONE.0, 0);
+        assert_eq!(ColorWriteMask::RED.0, 1);
+        assert_eq!(ColorWriteMask::GREEN.0, 2);
+        assert_eq!(ColorWriteMask::BLUE.0, 4);
+        assert_eq!(ColorWriteMask::ALPHA.0, 8);
+        assert_eq!(ColorWriteMask::ALL.0, 15);
+    }
+
+    #[test]
+    fn test_color_write_mask_getters() {
+        let mask = ColorWriteMask::ALL;
+        assert!(mask.get_red());
+        assert!(mask.get_green());
+        assert!(mask.get_blue());
+        assert!(mask.get_alpha());
+
+        let mask = ColorWriteMask::RED | ColorWriteMask::BLUE;
+        assert!(mask.get_red());
+        assert!(!mask.get_green());
+        assert!(mask.get_blue());
+        assert!(!mask.get_alpha());
+    }
+
+    #[test]
+    fn test_depth_stencil_state_new() {
+        let ds = DepthStencilState::new();
+        assert!(ds.is_depth_test_enabled());
+        assert!(ds.is_depth_write_enabled());
+        assert_eq!(ds.get_depth_func(), CompareFunc::LEQUAL);
+        assert!(!ds.is_stencil_enabled());
+    }
+
+    #[test]
+    fn test_depth_stencil_state_setters() {
+        let mut ds = DepthStencilState::new();
+        ds.set_depth_test_enabled(false);
+        ds.set_depth_write_enabled(false);
+        ds.set_depth_func(CompareFunc::LESS);
+        ds.set_stencil_enabled(true);
+
+        assert!(!ds.is_depth_test_enabled());
+        assert!(!ds.is_depth_write_enabled());
+        assert_eq!(ds.get_depth_func(), CompareFunc::LESS);
+        assert!(ds.is_stencil_enabled());
+    }
+
+    #[test]
+    fn test_compare_func_variants() {
+        let funcs = [
+            CompareFunc::NEVER,
+            CompareFunc::LESS,
+            CompareFunc::EQUAL,
+            CompareFunc::LEQUAL,
+            CompareFunc::GREATER,
+            CompareFunc::NOTEQUAL,
+            CompareFunc::GEQUAL,
+            CompareFunc::ALWAYS,
+        ];
+        assert_eq!(funcs.len(), 8);
+    }
+
+    #[test]
+    fn test_stencil_state_new() {
+        let stencil = StencilState::new();
+        assert_eq!(stencil.get_stencil_func(), CompareFunc::ALWAYS);
+        assert_eq!(stencil.get_stencil_ref(), 0);
+        assert_eq!(stencil.get_stencil_fail_op(), StencilOp::KEEP);
+    }
+
+    #[test]
+    fn test_stencil_state_setters() {
+        let mut stencil = StencilState::new();
+        stencil.set_stencil_func(CompareFunc::LESS);
+        stencil.set_stencil_ref(1);
+        stencil.set_stencil_fail_op(StencilOp::ZERO);
+        stencil.set_stencil_pass_depth_fail_op(StencilOp::INCR);
+        stencil.set_stencil_pass_depth_pass_op(StencilOp::DECR);
+
+        assert_eq!(stencil.get_stencil_func(), CompareFunc::LESS);
+        assert_eq!(stencil.get_stencil_ref(), 1);
+        assert_eq!(stencil.get_stencil_fail_op(), StencilOp::ZERO);
+        assert_eq!(stencil.get_stencil_pass_depth_fail_op(), StencilOp::INCR);
+        assert_eq!(stencil.get_stencil_pass_depth_pass_op(), StencilOp::DECR);
+    }
+
+    #[test]
+    fn test_stencil_op_variants() {
+        let ops = [
+            StencilOp::KEEP,
+            StencilOp::ZERO,
+            StencilOp::REPLACE,
+            StencilOp::INCR,
+            StencilOp::INCR_WRAP,
+            StencilOp::DECR,
+            StencilOp::DECR_WRAP,
+            StencilOp::INV,
+        ];
+        assert_eq!(ops.len(), 8);
+    }
+
+    #[test]
+    fn test_rasterizer_state_new() {
+        let rs = RasterizerState::new();
+        assert_eq!(rs.get_cull_mode(), CullMode::BACK);
+        assert!((rs.get_depth_bias() - 0.0).abs() < 0.001);
+        assert!((rs.get_line_width() - 1.0).abs() < 0.001);
+        assert!(rs.is_depth_clip_enabled());
+        assert!(!rs.is_scissor_test_enabled());
+        assert!(rs.is_multisample_antialiasing_enabled());
+    }
+
+    #[test]
+    fn test_rasterizer_state_setters() {
+        let mut rs = RasterizerState::new();
+        rs.set_cull_mode(CullMode::FRONT);
+        rs.set_depth_bias(0.5);
+        rs.set_scissor_test_enabled(true);
+        rs.set_line_width(2.0);
+
+        assert_eq!(rs.get_cull_mode(), CullMode::FRONT);
+        assert!((rs.get_depth_bias() - 0.5).abs() < 0.001);
+        assert!(rs.is_scissor_test_enabled());
+        assert!((rs.get_line_width() - 2.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_cull_mode_variants() {
+        assert_eq!(CullMode::NONE, CullMode::NONE);
+        assert_eq!(CullMode::FRONT, CullMode::FRONT);
+        assert_eq!(CullMode::BACK, CullMode::BACK);
+        assert_ne!(CullMode::NONE, CullMode::FRONT);
+    }
 }

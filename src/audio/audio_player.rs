@@ -225,3 +225,104 @@ impl AudioListener {
         self.volume = volume.clamp(0.0, 1.0);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_audio_source_creation() {
+        let source = AudioSource::new("test.mp3");
+        assert_eq!(source.get_path(), "test.mp3");
+        assert_eq!(source.get_volume(), 1.0);
+        assert!(!source.is_loop_enabled());
+    }
+
+    #[test]
+    fn test_audio_source_volume() {
+        let mut source = AudioSource::new("test.mp3");
+        source.set_volume(0.5);
+        assert_eq!(source.get_volume(), 0.5);
+        
+        source.set_volume(1.5);
+        assert_eq!(source.get_volume(), 1.0);
+        
+        source.set_volume(-0.1);
+        assert_eq!(source.get_volume(), 0.0);
+    }
+
+    #[test]
+    fn test_audio_source_loop() {
+        let mut source = AudioSource::new("test.mp3");
+        assert!(!source.is_loop_enabled());
+        source.set_loop_enabled(true);
+        assert!(source.is_loop_enabled());
+    }
+
+    #[test]
+    fn test_audio_source_pan() {
+        let mut source = AudioSource::new("test.mp3");
+        source.set_pan(0.5);
+        assert_eq!(source.get_pan(), 0.5);
+        
+        source.set_pan(2.0);
+        assert_eq!(source.get_pan(), 1.0);
+        
+        source.set_pan(-2.0);
+        assert_eq!(source.get_pan(), -1.0);
+    }
+
+    #[test]
+    fn test_audio_player_creation() {
+        let player = AudioPlayer::new();
+        assert_eq!(player.get_id(), 0);
+        assert_eq!(player.get_state(), AudioState::INITIALIZING);
+        assert_eq!(player.get_volume(), 1.0);
+    }
+
+    #[test]
+    fn test_audio_player_state() {
+        let mut player = AudioPlayer::new();
+        assert_eq!(player.get_state(), AudioState::INITIALIZING);
+        assert!(!player.is_playing());
+        assert!(!player.is_paused());
+        
+        player.play();
+        assert!(player.is_playing());
+        assert!(!player.is_paused());
+        
+        player.pause();
+        assert!(!player.is_playing());
+        assert!(player.is_paused());
+        
+        player.stop();
+        assert!(!player.is_playing());
+        assert!(!player.is_paused());
+        assert!(player.is_stopped());
+    }
+
+    #[test]
+    fn test_audio_player_volume() {
+        let mut player = AudioPlayer::new();
+        player.set_volume(0.7);
+        assert_eq!(player.get_volume(), 0.7);
+    }
+
+    #[test]
+    fn test_audio_buffer_creation() {
+        let buffer = AudioBuffer::new();
+        assert_eq!(buffer.get_id(), 0);
+        assert_eq!(buffer.get_sample_rate(), 44100);
+        assert_eq!(buffer.get_channels(), 2);
+        assert_eq!(buffer.get_bits_per_sample(), 16);
+    }
+
+    #[test]
+    fn test_audio_listener() {
+        let mut listener = AudioListener::new();
+        assert_eq!(listener.get_volume(), 1.0);
+        
+        listener.set_volume(0.5);
+        assert_eq!(listener.get_volume(), 0.5);
+    }
+}

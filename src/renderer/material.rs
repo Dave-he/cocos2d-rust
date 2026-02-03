@@ -276,6 +276,62 @@ pub enum UniformValue {
     Sampler(i32),
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum UniformType {
+    Float,
+    Vec2,
+    Vec3,
+    Vec4,
+    Int,
+    IVec2,
+    IVec3,
+    IVec4,
+    Bool,
+    BVec2,
+    BVec3,
+    BVec4,
+    Mat2,
+    Mat3,
+    Mat4,
+    Sampler2D,
+    SamplerCube,
+}
+
+impl UniformType {
+    pub fn get_size(&self) -> u32 {
+        match self {
+            UniformType::Float | UniformType::Int | UniformType::Bool | UniformType::Sampler2D | UniformType::SamplerCube => 4,
+            UniformType::Vec2 | UniformType::IVec2 | UniformType::BVec2 => 8,
+            UniformType::Vec3 | UniformType::IVec3 | UniformType::BVec3 => 12,
+            UniformType::Vec4 | UniformType::IVec4 | UniformType::BVec4 => 16,
+            UniformType::Mat2 => 16,
+            UniformType::Mat3 => 36,
+            UniformType::Mat4 => 64,
+        }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct UniformInfo {
+    pub name: String,
+    pub location: i32,
+    pub uniform_type: UniformType,
+    pub count: u32,
+    pub size: u32,
+}
+
+impl UniformInfo {
+    pub fn new(name: &str, uniform_type: UniformType) -> UniformInfo {
+        UniformInfo {
+            name: name.to_string(),
+            location: -1,
+            uniform_type,
+            count: 1,
+            size: uniform_type.get_size(),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct Program {
     name: String,
@@ -328,58 +384,229 @@ impl Program {
     }
 }
 
-#[derive(Debug, Clone)]
-pub struct UniformInfo {
-    pub name: String,
-    pub location: i32,
-    pub uniform_type: UniformType,
-    pub count: u32,
-    pub size: u32,
-}
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-impl UniformInfo {
-    pub fn new(name: &str, uniform_type: UniformType) -> UniformInfo {
-        UniformInfo {
-            name: name.to_string(),
-            location: -1,
-            uniform_type,
-            count: 1,
-            size: uniform_type.get_size(),
+    #[test]
+    fn test_material_new() {
+        let material = Material::new();
+        assert_eq!(material.get_name(), "");
+        assert!(material.get_technique().is_none());
+    }
+
+    #[test]
+    fn test_material_with_name() {
+        let material = Material::with_name("test_material");
+        assert_eq!(material.get_name(), "test_material");
+    }
+
+    #[test]
+    fn test_material_set_name() {
+        let mut material = Material::new();
+        material.set_name("new_name");
+        assert_eq!(material.get_name(), "new_name");
+    }
+
+    #[test]
+    fn test_material_state_new() {
+        let state = MaterialState::new();
+        assert!(state.depth_write);
+        assert!(state.depth_test);
+        assert!(!state.blend);
+        assert_eq!(state.blend_src, 770);
+        assert_eq!(state.blend_dst, 771);
+        assert_eq!(state.cull_mode, 2);
+    }
+
+    #[test]
+    fn test_material_set_depth_write() {
+        let mut material = Material::new();
+        assert!(material.get_state().depth_write);
+        material.set_depth_write(false);
+        assert!(!material.get_state().depth_write);
+    }
+
+    #[test]
+    fn test_material_set_depth_test() {
+        let mut material = Material::new();
+        assert!(material.get_state().depth_test);
+        material.set_depth_test(false);
+        assert!(!material.get_state().depth_test);
+    }
+
+    #[test]
+    fn test_material_set_blend() {
+        let mut material = Material::new();
+        assert!(!material.get_state().blend);
+        material.set_blend(true);
+        assert!(material.get_state().blend);
+    }
+
+    #[test]
+    fn test_material_set_blend_func() {
+        let mut material = Material::new();
+        material.set_blend_func(1, 0);
+        assert_eq!(material.get_state().blend_src, 1);
+        assert_eq!(material.get_state().blend_dst, 0);
+    }
+
+    #[test]
+    fn test_material_set_cull_mode() {
+        let mut material = Material::new();
+        assert_eq!(material.get_state().cull_mode, 2);
+        material.set_cull_mode(0);
+        assert_eq!(material.get_state().cull_mode, 0);
+    }
+
+    #[test]
+    fn test_technique_new() {
+        let technique = Technique::new();
+        assert_eq!(technique.get_name(), "");
+        assert_eq!(technique.get_pass_count(), 0);
+    }
+
+    #[test]
+    fn test_technique_with_name() {
+        let technique = Technique::with_name("deferred");
+        assert_eq!(technique.get_name(), "deferred");
+    }
+
+    #[test]
+    fn test_technique_set_name() {
+        let mut technique = Technique::new();
+        technique.set_name("forward");
+        assert_eq!(technique.get_name(), "forward");
+    }
+
+    #[test]
+    fn test_technique_add_pass() {
+        let mut technique = Technique::new();
+        let pass = RefPtr::new(Pass::new());
+        technique.add_pass(pass.clone());
+        assert_eq!(technique.get_pass_count(), 1);
+        assert_eq!(technique.get_passes().len(), 1);
+    }
+
+    #[test]
+    fn test_pass_new() {
+        let pass = Pass::new();
+        assert_eq!(pass.get_name(), "");
+        assert!(pass.get_program().is_none());
+    }
+
+    #[test]
+    fn test_pass_set_name() {
+        let mut pass = Pass::new();
+        pass.set_name("main_pass");
+        assert_eq!(pass.get_name(), "main_pass");
+    }
+
+    #[test]
+    fn test_pass_uniforms() {
+        let mut pass = Pass::new();
+        pass.set_uniform("u_color", UniformValue::Vec4(Vec4::new(1.0, 0.0, 0.0, 1.0)));
+        pass.set_uniform("u_intensity", UniformValue::Float(0.5));
+
+        assert!(pass.get_uniform("u_color").is_some());
+        assert!(pass.get_uniform("u_nonexistent").is_none());
+    }
+
+    #[test]
+    fn test_render_state_new() {
+        let state = RenderState::new();
+        assert!(state.depth_write);
+        assert!(state.depth_test);
+        assert!(!state.blend);
+        assert_eq!(state.blend_src, 770);
+        assert_eq!(state.depth_func, 3);
+    }
+
+    #[test]
+    fn test_uniform_value_variants() {
+        let float_val = UniformValue::Float(1.0);
+        let vec4_val = UniformValue::Vec4(Vec4::new(1.0, 2.0, 3.0, 4.0));
+        let int_val = UniformValue::Int(42);
+        let mat4_val = UniformValue::Mat4(Mat4::IDENTITY);
+        let sampler_val = UniformValue::Sampler(0);
+
+        match float_val {
+            UniformValue::Float(v) => assert!((v - 1.0).abs() < 0.001),
+            _ => panic!("Expected Float"),
+        }
+
+        match vec4_val {
+            UniformValue::Vec4(v) => {
+                assert!((v.x - 1.0).abs() < 0.001);
+                assert!((v.y - 2.0).abs() < 0.001);
+            }
+            _ => panic!("Expected Vec4"),
+        }
+
+        match int_val {
+            UniformValue::Int(v) => assert_eq!(v, 42),
+            _ => panic!("Expected Int"),
+        }
+
+        match sampler_val {
+            UniformValue::Sampler(v) => assert_eq!(v, 0),
+            _ => panic!("Expected Sampler"),
         }
     }
-}
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum UniformType {
-    Float,
-    Vec2,
-    Vec3,
-    Vec4,
-    Int,
-    IVec2,
-    IVec3,
-    IVec4,
-    Bool,
-    BVec2,
-    BVec3,
-    BVec4,
-    Mat2,
-    Mat3,
-    Mat4,
-    Sampler2D,
-    SamplerCube,
-}
+    #[test]
+    fn test_program_new() {
+        let program = Program::new();
+        assert_eq!(program.get_name(), "");
+    }
 
-impl UniformType {
-    pub fn get_size(&self) -> u32 {
-        match self {
-            UniformType::Float | UniformType::Int | UniformType::Bool | UniformType::Sampler2D | UniformType::SamplerCube => 4,
-            UniformType::Vec2 | UniformType::IVec2 | UniformType::BVec2 => 8,
-            UniformType::Vec3 | UniformType::IVec3 | UniformType::BVec3 => 12,
-            UniformType::Vec4 | UniformType::IVec4 | UniformType::BVec4 => 16,
-            UniformType::Mat2 => 16,
-            UniformType::Mat3 => 36,
-            UniformType::Mat4 => 64,
-        }
+    #[test]
+    fn test_program_with_name() {
+        let program = Program::with_name("default");
+        assert_eq!(program.get_name(), "default");
+    }
+
+    #[test]
+    fn test_program_set_shaders() {
+        let mut program = Program::new();
+        program.set_vertex_shader("void main() { gl_Position = vec4(0.0); }");
+        program.set_fragment_shader("void main() { gl_FragColor = vec4(1.0); }");
+    }
+
+    #[test]
+    fn test_program_add_uniform() {
+        let mut program = Program::new();
+        let uniform = UniformInfo::new("u_color", UniformType::Vec4);
+        program.add_uniform("u_color", uniform);
+        assert!(program.get_uniform("u_color").is_some());
+    }
+
+    #[test]
+    fn test_uniform_type_size() {
+        assert_eq!(UniformType::Float.get_size(), 4);
+        assert_eq!(UniformType::Vec2.get_size(), 8);
+        assert_eq!(UniformType::Vec3.get_size(), 12);
+        assert_eq!(UniformType::Vec4.get_size(), 16);
+        assert_eq!(UniformType::Mat4.get_size(), 64);
+        assert_eq!(UniformType::Mat2.get_size(), 16);
+        assert_eq!(UniformType::Mat3.get_size(), 36);
+    }
+
+    #[test]
+    fn test_uniform_info_new() {
+        let info = UniformInfo::new("u_tex0", UniformType::Sampler2D);
+        assert_eq!(info.name, "u_tex0");
+        assert_eq!(info.uniform_type, UniformType::Sampler2D);
+        assert_eq!(info.location, -1);
+        assert_eq!(info.count, 1);
+    }
+
+    #[test]
+    fn test_material_technique_by_name() {
+        let mut material = Material::new();
+        let technique = RefPtr::new(Technique::with_name("forward"));
+        material.add_technique("forward", technique.clone());
+        assert!(material.get_technique_by_name("forward").is_some());
+        assert!(material.get_technique_by_name("deferred").is_none());
     }
 }

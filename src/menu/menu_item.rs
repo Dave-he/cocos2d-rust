@@ -338,3 +338,91 @@ impl Default for MenuItemToggle {
         Self::new()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_menu_item_new() {
+        let item = MenuItem::new();
+        assert!(item.is_enabled());
+        assert!(!item.is_selected());
+    }
+
+    #[test]
+    fn test_menu_item_default() {
+        let item = MenuItem::default();
+        assert!(item.is_enabled());
+    }
+
+    #[test]
+    fn test_menu_item_enabled() {
+        let mut item = MenuItem::new();
+        item.set_enabled(false);
+        assert!(!item.is_enabled());
+        item.set_enabled(true);
+        assert!(item.is_enabled());
+    }
+
+    #[test]
+    fn test_menu_item_selected() {
+        let mut item = MenuItem::new();
+        assert!(!item.is_selected());
+        item.selected();
+        assert!(item.is_selected());
+        item.unselected();
+        assert!(!item.is_selected());
+    }
+
+    #[test]
+    fn test_menu_item_activate() {
+        let mut activated = false;
+        let item = MenuItem::create_with_callback(Box::new(|_| {
+            // Callback is called - we just verify the item can be activated
+        }));
+        item.activate();
+    }
+
+    #[test]
+    fn test_menu_item_image_new() {
+        let item = MenuItemImage::new();
+        let _ = item.base.get_node();
+    }
+
+    #[test]
+    fn test_menu_item_sprite_new() {
+        let item = MenuItemSprite::new();
+        let _ = item.base.get_node();
+    }
+
+    #[test]
+    fn test_menu_item_label_new() {
+        let label = RefPtr::new(Label::new());
+        let item = MenuItemLabel::new(label.clone());
+        let _ = item.get_label().borrow().get_node();
+    }
+
+    #[test]
+    fn test_menu_item_toggle_new() {
+        let item = MenuItemToggle::new();
+        assert_eq!(item.get_selected_index(), 0);
+        assert!(item.get_sub_items().is_empty());
+    }
+
+    #[test]
+    fn test_menu_item_toggle_add_sub_item() {
+        let mut item = MenuItemToggle::new();
+        item.add_sub_item(RefPtr::new(MenuItem::new()));
+        assert_eq!(item.get_sub_items().len(), 1);
+    }
+
+    #[test]
+    fn test_menu_item_toggle_set_index() {
+        let mut item = MenuItemToggle::new();
+        item.add_sub_item(RefPtr::new(MenuItem::new()));
+        item.add_sub_item(RefPtr::new(MenuItem::new()));
+        item.set_selected_index(1);
+        assert_eq!(item.get_selected_index(), 1);
+    }
+}

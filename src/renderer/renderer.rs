@@ -434,3 +434,145 @@ impl ViewPort {
         self.scale = scale;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_renderer_new() {
+        let renderer = Renderer::new();
+        assert_eq!(renderer.commands.len(), 0);
+        assert_eq!(renderer.command_queue.len(), 0);
+        assert!(!renderer.is_recording);
+        assert!(!renderer.frustum_culled);
+    }
+
+    #[test]
+    fn test_renderer_start_end_frame() {
+        let mut renderer = Renderer::new();
+        assert!(!renderer.is_recording);
+
+        renderer.start_frame();
+        assert!(renderer.is_recording);
+        assert_eq!(renderer.commands.len(), 0);
+
+        renderer.end_frame();
+        assert!(!renderer.is_recording);
+    }
+
+    #[test]
+    fn test_renderer_clear() {
+        let mut renderer = Renderer::new();
+        renderer.clear();
+        assert_eq!(renderer.command_queue.len(), 0);
+        assert!(renderer.current_material.is_none());
+        assert!(renderer.current_pipeline.is_none());
+    }
+
+    #[test]
+    fn test_renderer_view_projection_matrix() {
+        let mut renderer = Renderer::new();
+        let matrix = Mat4::IDENTITY;
+        renderer.set_view_projection_matrix(matrix);
+        assert_eq!(renderer.get_view_projection_matrix(), Mat4::IDENTITY);
+    }
+
+    #[test]
+    fn test_renderer_get_rendertarget_size() {
+        let renderer = Renderer::new();
+        let (width, height) = renderer.get_rendertarget_size();
+        assert_eq!(width, 1920);
+        assert_eq!(height, 1080);
+    }
+
+    #[test]
+    fn test_renderer_dimensions() {
+        let renderer = Renderer::new();
+        assert_eq!(renderer.get_width(), 1920);
+        assert_eq!(renderer.get_height(), 1080);
+    }
+
+    #[test]
+    fn test_renderer_scale() {
+        let renderer = Renderer::new();
+        assert!((renderer.get_scaleX() - 1.0).abs() < 0.001);
+        assert!((renderer.get_scaleY() - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_renderer_gamma() {
+        let renderer = Renderer::new();
+        assert!((renderer.get_gamma_zero() - 1.0).abs() < 0.001);
+        assert!((renderer.get_gamma_squared() - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_cull_mode_default() {
+        assert_eq!(CullMode::default(), CullMode::Back);
+    }
+
+    #[test]
+    fn test_cull_mode_variants() {
+        assert_eq!(CullMode::None, CullMode::None);
+        assert_eq!(CullMode::Front, CullMode::Front);
+        assert_eq!(CullMode::Back, CullMode::Back);
+    }
+
+    #[test]
+    fn test_scissor_rect_new() {
+        let rect = ScissorRect::new(0, 0, 100, 200);
+        assert_eq!(rect.get_x(), 0);
+        assert_eq!(rect.get_y(), 0);
+        assert_eq!(rect.get_width(), 100);
+        assert_eq!(rect.get_height(), 200);
+    }
+
+    #[test]
+    fn test_scissor_rect_is_valid() {
+        let rect_valid = ScissorRect::new(0, 0, 100, 200);
+        assert!(rect_valid.is_valid());
+
+        let rect_invalid_width = ScissorRect::new(0, 0, 0, 200);
+        assert!(!rect_invalid_width.is_valid());
+
+        let rect_invalid_height = ScissorRect::new(0, 0, 100, 0);
+        assert!(!rect_invalid_height.is_valid());
+    }
+
+    #[test]
+    fn test_viewport_new() {
+        let vp = ViewPort::new(0.0, 0.0, 960.0, 640.0);
+        assert_eq!(vp.get_left(), 0.0);
+        assert_eq!(vp.get_bottom(), 0.0);
+        assert_eq!(vp.get_width(), 960.0);
+        assert_eq!(vp.get_height(), 640.0);
+        assert!((vp.get_scale() - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_viewport_set_scale() {
+        let mut vp = ViewPort::new(0.0, 0.0, 960.0, 640.0);
+        vp.set_scale(2.0);
+        assert!((vp.get_scale() - 2.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_renderer_pipeline_operations() {
+        let mut renderer = Renderer::new();
+        assert!(renderer.get_pipeline().is_none());
+
+        let pipeline = RefPtr::new(PipelineState::new());
+        renderer.set_pipeline(pipeline.clone());
+        assert!(renderer.get_pipeline().is_some());
+        assert_eq!(renderer.get_pipeline().unwrap().borrow().get_name(), "");
+    }
+
+    #[test]
+    fn test_renderer_debug_format() {
+        let renderer = Renderer::new();
+        let debug_str = format!("{:?}", renderer);
+        assert!(debug_str.contains("Renderer"));
+        assert!(debug_str.contains("commands_count"));
+    }
+}

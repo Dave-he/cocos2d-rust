@@ -7,10 +7,6 @@ use crate::renderer::Renderer;
 use std::rc::Rc;
 use glow::Context;
 
-/// Director is the main object that runs the scene.
-///
-/// It is a singleton object that runs the main game loop. The Director is
-/// responsible for managing the scenes and the transition between them.
 #[derive(Debug)]
 pub struct Director {
     running_scene: RefPtr<Scene>,
@@ -26,7 +22,6 @@ pub struct Director {
 }
 
 impl Director {
-    /// Gets the singleton instance of Director
     pub fn get_instance() -> RefPtr<Director> {
         static mut DIRECTOR: Option<RefCell<RefPtr<Director>>> = None;
         unsafe {
@@ -37,7 +32,6 @@ impl Director {
         }
     }
 
-    /// Creates a new Director
     pub fn new() -> Director {
         Director {
             running_scene: RefPtr::new(Scene::new()),
@@ -61,114 +55,92 @@ impl Director {
         &self.renderer
     }
 
-    /// Gets the running scene
     pub fn get_running_scene(&self) -> &RefPtr<Scene> {
         &self.running_scene
     }
 
-    /// Gets the scheduler
     pub fn get_scheduler(&self) -> &RefPtr<Scheduler> {
         &self.scheduler
     }
 
-    /// Gets the event dispatcher
     pub fn get_event_dispatcher(&self) -> &RefPtr<EventDispatcher> {
         &self.event_dispatcher
     }
 
-    /// Gets the delta time
     pub fn get_delta_time(&self) -> f32 {
         self.delta_time
     }
 
-    /// Gets the total time
     pub fn get_total_time(&self) -> f32 {
         self.total_time
     }
 
-    /// Checks if the director is paused
     pub fn is_paused(&self) -> bool {
         self.is_paused
     }
 
-    /// Runs a scene
     pub fn run_scene(&mut self, scene: RefPtr<Scene>) {
         self.next_scene = Some(scene);
     }
 
-    /// Pushes a scene to the stack
     pub fn push_scene(&mut self, scene: RefPtr<Scene>) {
         self.next_scene = Some(scene);
     }
 
-    /// Pops the running scene
     pub fn pop_scene(&mut self) {
     }
 
-    /// Replaces the running scene
     pub fn replace_scene(&mut self, scene: RefPtr<Scene>) {
         self.running_scene = scene;
     }
 
-    /// Main loop function
     pub fn main_loop(&mut self) {
         let now = std::time::Instant::now();
         let elapsed = now.duration_since(self.last_update_time);
         self.last_update_time = now;
 
-        // Calculate delta time in seconds
         self.delta_time = elapsed.as_secs_f32();
         self.total_time += self.delta_time;
 
         if !self.is_paused {
-            // Update the scheduler
             self.scheduler.borrow_mut().update(self.delta_time);
         }
 
-        // Process scene transitions
         if let Some(scene) = self.next_scene.take() {
             self.running_scene = scene;
         }
 
-        // Render the current scene
         self.running_scene.borrow().visit(&mut self.renderer.borrow_mut(), &crate::math::Mat4::IDENTITY, 0);
         self.renderer.borrow_mut().render();
         log::info!("Director loop running. Delta: {}", self.delta_time);
     }
 
-    /// Pauses the game
     pub fn pause(&mut self) {
         self.is_paused = true;
     }
 
-    /// Resumes the game
     pub fn resume(&mut self) {
         self.is_paused = false;
         self.last_update_time = std::time::Instant::now();
     }
 
-    /// Stops the game
     pub fn stop(&mut self) {
         self.is_cleanup = true;
     }
 
-    /// Gets the frame size
     pub fn get_win_size(&self) -> Size {
         Size::new(960.0, 640.0)
     }
 
-    /// Gets the visible size
     pub fn get_visible_size(&self) -> Size {
         self.get_win_size()
     }
 
-    /// Gets the visible origin
     pub fn get_visible_origin(&self) -> crate::math::Vec2 {
         crate::math::Vec2::ZERO
     }
 }
 
-/// Scene is a node that contains all the game elements
 #[derive(Debug)]
 pub struct Scene {
     base: Ref,
@@ -176,7 +148,6 @@ pub struct Scene {
 }
 
 impl Scene {
-    /// Creates a new scene
     pub fn new() -> Scene {
         Scene {
             base: Ref::new(),
@@ -184,22 +155,18 @@ impl Scene {
         }
     }
 
-    /// Gets the children of the scene
     pub fn get_children(&self) -> &Vec<RefPtr<Node>> {
         &self.children
     }
 
-    /// Adds a child to the scene
     pub fn add_child(&mut self, child: RefPtr<Node>) {
         self.children.push(child);
     }
 
-    /// Removes a child from the scene
     pub fn remove_child(&mut self, child: &RefPtr<Node>) {
         self.children.retain(|c| !c.borrow().get_id() == child.borrow().get_id());
     }
 
-    /// Updates the scene
     pub fn update(&mut self, delta_time: f32) {
         for child in &mut self.children {
             child.borrow_mut().update(delta_time);
@@ -213,8 +180,6 @@ impl Scene {
     }
 }
 
-/// Base node type for all scene elements
-// #[derive(Debug)] // Manual implementation below
 pub struct Node {
     base: Ref,
     parent: Option<RefPtr<Node>>,
@@ -230,6 +195,27 @@ pub struct Node {
     global_transform: crate::math::Mat4,
     content_size: crate::math::Vec2,
     on_draw: Option<Box<dyn Fn(&mut Renderer, &crate::math::Mat4)>>,
+}
+
+impl Clone for Node {
+    fn clone(&self) -> Self {
+        Node {
+            base: self.base.clone(),
+            parent: None,
+            children: Vec::new(),
+            position: self.position,
+            rotation: self.rotation,
+            scale_x: self.scale_x,
+            scale_y: self.scale_y,
+            visible: self.visible,
+            tag: self.tag,
+            name: self.name.clone(),
+            local_transform: self.local_transform,
+            global_transform: self.global_transform,
+            content_size: self.content_size,
+            on_draw: None,
+        }
+    }
 }
 
 impl std::fmt::Debug for Node {
@@ -252,7 +238,6 @@ impl std::fmt::Debug for Node {
 }
 
 impl Node {
-    /// Creates a new node
     pub fn new() -> Node {
         Node {
             base: Ref::new(),
@@ -281,173 +266,424 @@ impl Node {
             return;
         }
 
-        // Update local transform if needed (simplified)
-        // self.update_local_transform(); // Already done in setters usually
-
-        // Update global transform
-        // global_transform = parent_transform * local_transform
         self.global_transform = *parent_transform * self.local_transform;
 
-        // Visit children (simplified: just iterate, no z-order sorting yet)
         for child in &self.children {
             child.borrow_mut().visit(renderer, &self.global_transform, _parent_flags);
         }
 
-        // Draw self
         if let Some(callback) = &self.on_draw {
             callback(renderer, &self.global_transform);
         }
     }
 
-    /// Gets the parent node
     pub fn get_parent(&self) -> Option<&RefPtr<Node>> {
         self.parent.as_ref()
     }
 
-    /// Sets the parent node
     pub fn set_parent(&mut self, parent: RefPtr<Node>) {
         self.parent = Some(parent);
     }
 
-    /// Gets the children
     pub fn get_children(&self) -> &Vec<RefPtr<Node>> {
         &self.children
     }
 
-    /// Adds a child node
     pub fn add_child(&mut self, child: RefPtr<Node>) {
-        // child.borrow_mut().set_parent(self.base.clone());
         self.children.push(child);
     }
 
-    /// Removes a child node
     pub fn remove_child(&mut self, child: &RefPtr<Node>) {
         self.children.retain(|c| c.borrow().get_id() != child.borrow().get_id());
     }
 
-    /// Removes all children
     pub fn remove_all_children(&mut self) {
         self.children.clear();
     }
 
-    /// Gets the position
     pub fn get_position(&self) -> &crate::math::Vec2 {
         &self.position
     }
 
-    /// Sets the position
     pub fn set_position(&mut self, position: crate::math::Vec2) {
         self.position = position;
         self.update_local_transform();
     }
 
-    /// Gets the rotation
     pub fn get_rotation(&self) -> f32 {
         self.rotation
     }
 
-    /// Sets the rotation
     pub fn set_rotation(&mut self, rotation: f32) {
         self.rotation = rotation;
         self.update_local_transform();
     }
 
-    /// Gets the scale X
     pub fn get_scale_x(&self) -> f32 {
         self.scale_x
     }
 
-    /// Gets the scale Y
     pub fn get_scale_y(&self) -> f32 {
         self.scale_y
     }
 
-    /// Sets the scale
     pub fn set_scale(&mut self, scale: f32) {
         self.scale_x = scale;
         self.scale_y = scale;
         self.update_local_transform();
     }
 
-    /// Sets the scale with separate X and Y
     pub fn set_scale_xy(&mut self, scale_x: f32, scale_y: f32) {
         self.scale_x = scale_x;
         self.scale_y = scale_y;
         self.update_local_transform();
     }
 
-    /// Gets the tag
     pub fn get_tag(&self) -> i32 {
         self.tag
     }
 
-    /// Sets the tag
     pub fn set_tag(&mut self, tag: i32) {
         self.tag = tag;
     }
 
-    /// Gets the name
     pub fn get_name(&self) -> &str {
         &self.name
     }
 
-    /// Sets the name
     pub fn set_name(&mut self, name: String) {
         self.name = name;
     }
 
-    /// Gets the local transform matrix
     pub fn get_local_transform(&self) -> &crate::math::Mat4 {
         &self.local_transform
     }
 
-    /// Gets the global transform matrix
     pub fn get_global_transform(&self) -> &crate::math::Mat4 {
         &self.global_transform
     }
 
-    /// Checks if the node is visible
     pub fn is_visible(&self) -> bool {
         self.visible
     }
 
-    /// Sets the visibility
     pub fn set_visible(&mut self, visible: bool) {
         self.visible = visible;
     }
 
-    /// Gets the content size
     pub fn get_content_size(&self) -> crate::math::Vec2 {
         self.content_size
     }
 
-    /// Sets the content size
     pub fn set_content_size(&mut self, size: crate::math::Vec2) {
         self.content_size = size;
     }
 
-    /// Updates the local transform matrix
     fn update_local_transform(&mut self) {
         self.local_transform = crate::math::Mat4::create_translation(&crate::math::Vec3::new(self.position.x, self.position.y, 0.0));
     }
 
-    /// Updates the node
     pub fn update(&mut self, delta_time: f32) {
     }
 
-    /// Gets a unique ID for the node
     pub fn get_id(&self) -> usize {
         let ptr = &self.base as *const Ref as *const u8 as usize;
         ptr
     }
 
-    /// Gets the base reference
     pub fn get_base(&self) -> &Ref {
         &self.base
     }
 
-    /// Gets mutable base reference
     pub fn get_base_mut(&mut self) -> &mut Ref {
         &mut self.base
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::base::RefPtr;
+
+    #[test]
+    fn test_scene_new() {
+        let scene = Scene::new();
+        assert_eq!(scene.get_children().len(), 0);
+    }
+
+    #[test]
+    fn test_scene_add_child() {
+        let mut scene = Scene::new();
+        let node = RefPtr::new(Node::new());
+        scene.add_child(node.clone());
+        assert_eq!(scene.get_children().len(), 1);
+    }
+
+    #[test]
+    fn test_scene_remove_child() {
+        let mut scene = Scene::new();
+        let node = RefPtr::new(Node::new());
+        scene.add_child(node.clone());
+        assert_eq!(scene.get_children().len(), 1);
+
+        scene.remove_child(&node);
+        assert_eq!(scene.get_children().len(), 0);
+    }
+
+    #[test]
+    fn test_scene_multiple_children() {
+        let mut scene = Scene::new();
+        for i in 0..5 {
+            let node = RefPtr::new(Node::new());
+            scene.add_child(node);
+        }
+        assert_eq!(scene.get_children().len(), 5);
+    }
+
+    #[test]
+    fn test_node_new() {
+        let node = Node::new();
+        assert_eq!(node.get_position().x, 0.0);
+        assert_eq!(node.get_position().y, 0.0);
+        assert_eq!(node.get_rotation(), 0.0);
+        assert_eq!(node.get_scale_x(), 1.0);
+        assert_eq!(node.get_scale_y(), 1.0);
+        assert!(node.is_visible());
+        assert_eq!(node.get_tag(), 0);
+        assert_eq!(node.get_name(), "");
+    }
+
+    #[test]
+    fn test_node_set_position() {
+        let mut node = Node::new();
+        node.set_position(crate::math::Vec2::new(100.0, 200.0));
+        assert_eq!(node.get_position().x, 100.0);
+        assert_eq!(node.get_position().y, 200.0);
+    }
+
+    #[test]
+    fn test_node_set_rotation() {
+        let mut node = Node::new();
+        node.set_rotation(45.0);
+        assert_eq!(node.get_rotation(), 45.0);
+
+        node.set_rotation(-90.0);
+        assert_eq!(node.get_rotation(), -90.0);
+    }
+
+    #[test]
+    fn test_node_set_scale() {
+        let mut node = Node::new();
+        node.set_scale(2.0);
+        assert_eq!(node.get_scale_x(), 2.0);
+        assert_eq!(node.get_scale_y(), 2.0);
+    }
+
+    #[test]
+    fn test_node_set_scale_xy() {
+        let mut node = Node::new();
+        node.set_scale_xy(1.5, 2.5);
+        assert_eq!(node.get_scale_x(), 1.5);
+        assert_eq!(node.get_scale_y(), 2.5);
+    }
+
+    #[test]
+    fn test_node_set_visible() {
+        let mut node = Node::new();
+        assert!(node.is_visible());
+        node.set_visible(false);
+        assert!(!node.is_visible());
+    }
+
+    #[test]
+    fn test_node_set_tag() {
+        let mut node = Node::new();
+        node.set_tag(42);
+        assert_eq!(node.get_tag(), 42);
+    }
+
+    #[test]
+    fn test_node_set_name() {
+        let mut node = Node::new();
+        node.set_name(String::from("test_node"));
+        assert_eq!(node.get_name(), "test_node");
+    }
+
+    #[test]
+    fn test_node_set_content_size() {
+        let mut node = Node::new();
+        node.set_content_size(crate::math::Vec2::new(100.0, 50.0));
+        assert_eq!(node.get_content_size().x, 100.0);
+        assert_eq!(node.get_content_size().y, 50.0);
+    }
+
+    #[test]
+    fn test_node_get_id() {
+        let node = Node::new();
+        let id1 = node.get_id();
+        let node2 = Node::new();
+        let id2 = node2.get_id();
+        assert_ne!(id1, id2);
+    }
+
+    #[test]
+    fn test_node_add_child() {
+        let mut node = Node::new();
+        let child = RefPtr::new(Node::new());
+        node.add_child(child.clone());
+        assert_eq!(node.get_children().len(), 1);
+    }
+
+    #[test]
+    fn test_node_remove_child() {
+        let mut node = Node::new();
+        let child = RefPtr::new(Node::new());
+        node.add_child(child.clone());
+        assert_eq!(node.get_children().len(), 1);
+
+        node.remove_child(&child);
+        assert_eq!(node.get_children().len(), 0);
+    }
+
+    #[test]
+    fn test_node_remove_all_children() {
+        let mut node = Node::new();
+        for _ in 0..10 {
+            node.add_child(RefPtr::new(Node::new()));
+        }
+        assert_eq!(node.get_children().len(), 10);
+
+        node.remove_all_children();
+        assert_eq!(node.get_children().len(), 0);
+    }
+
+    #[test]
+    fn test_node_set_parent() {
+        let mut node = Node::new();
+        let parent = RefPtr::new(Node::new());
+        node.set_parent(parent.clone());
+        assert!(node.get_parent().is_some());
+    }
+
+    #[test]
+    fn test_node_hierarchy() {
+        let mut parent = Node::new();
+        let child1 = RefPtr::new(Node::new());
+        let child2 = RefPtr::new(Node::new());
+
+        parent.add_child(child1.clone());
+        parent.add_child(child2.clone());
+
+        assert_eq!(parent.get_children().len(), 2);
+    }
+
+    #[test]
+    fn test_node_transform_updates() {
+        let mut node = Node::new();
+        node.set_position(crate::math::Vec2::new(100.0, 50.0));
+        let transform = node.get_local_transform();
+        assert!(!transform.is_identity());
+    }
+
+    #[test]
+    fn test_node_multiple_property_changes() {
+        let mut node = Node::new();
+
+        node.set_position(crate::math::Vec2::new(10.0, 20.0));
+        node.set_rotation(30.0);
+        node.set_scale(1.5);
+        node.set_visible(false);
+        node.set_tag(100);
+
+        assert_eq!(node.get_position().x, 10.0);
+        assert_eq!(node.get_rotation(), 30.0);
+        assert_eq!(node.get_scale_x(), 1.5);
+        assert!(!node.is_visible());
+        assert_eq!(node.get_tag(), 100);
+    }
+
+    #[test]
+    fn test_scene_with_nodes() {
+        let mut scene = Scene::new();
+
+        for i in 0..3 {
+            let mut node = Node::new();
+            node.set_position(crate::math::Vec2::new(i as f32 * 10.0, 0.0));
+            node.set_tag(i as i32);
+            scene.add_child(RefPtr::new(node));
+        }
+
+        assert_eq!(scene.get_children().len(), 3);
+    }
+
+    #[test]
+    fn test_director_new() {
+        let director = Director::new();
+        assert_eq!(director.get_delta_time(), 0.0);
+        assert_eq!(director.get_total_time(), 0.0);
+        assert!(!director.is_paused());
+    }
+
+    #[test]
+    fn test_director_get_win_size() {
+        let director = Director::new();
+        let size = director.get_win_size();
+        assert_eq!(size.width, 960.0);
+        assert_eq!(size.height, 640.0);
+    }
+
+    #[test]
+    fn test_director_get_visible_size() {
+        let director = Director::new();
+        let size = director.get_visible_size();
+        assert_eq!(size.width, 960.0);
+        assert_eq!(size.height, 640.0);
+    }
+
+    #[test]
+    fn test_director_get_visible_origin() {
+        let director = Director::new();
+        let origin = director.get_visible_origin();
+        assert_eq!(origin.x, 0.0);
+        assert_eq!(origin.y, 0.0);
+    }
+
+    #[test]
+    fn test_director_pause_resume() {
+        let mut director = Director::new();
+        assert!(!director.is_paused());
+
+        director.pause();
+        assert!(director.is_paused());
+
+        director.resume();
+        assert!(!director.is_paused());
+    }
+
+    #[test]
+    fn test_director_stop() {
+        let mut director = Director::new();
+        director.stop();
+    }
+
+    #[test]
+    fn test_director_run_scene() {
+        let mut director = Director::new();
+        let scene = RefPtr::new(Scene::new());
+        director.run_scene(scene);
+    }
+
+    #[test]
+    fn test_director_replace_scene() {
+        let mut director = Director::new();
+        let scene = RefPtr::new(Scene::new());
+        director.replace_scene(scene);
+    }
+
+    #[test]
+    fn test_director_push_scene() {
+        let mut director = Director::new();
+        let scene = RefPtr::new(Scene::new());
+        director.push_scene(scene);
     }
 }

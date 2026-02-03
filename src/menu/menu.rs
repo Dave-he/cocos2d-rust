@@ -282,3 +282,57 @@ impl Default for Menu {
         Self::new()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_menu_new() {
+        let menu = Menu::new();
+        assert!(menu.is_enabled());
+        assert!(menu.get_items().is_empty());
+    }
+
+    #[test]
+    fn test_menu_add_item() {
+        let mut menu = Menu::new();
+        let item = RefPtr::new(MenuItem::new());
+        menu.add_item(item.clone());
+        assert_eq!(menu.get_items().len(), 1);
+    }
+
+    #[test]
+    fn test_menu_remove_item() {
+        let mut menu = Menu::new();
+        let item = RefPtr::new(MenuItem::new());
+        menu.add_item(item.clone());
+        menu.remove_item(&item);
+        assert!(menu.get_items().is_empty());
+    }
+
+    #[test]
+    fn test_menu_remove_all_items() {
+        let mut menu = Menu::new();
+        menu.add_item(RefPtr::new(MenuItem::new()));
+        menu.add_item(RefPtr::new(MenuItem::new()));
+        menu.remove_all_items();
+        assert!(menu.get_items().is_empty());
+    }
+
+    #[test]
+    fn test_menu_set_enabled() {
+        let mut menu = Menu::new();
+        assert!(menu.is_enabled());
+        menu.set_enabled(false);
+        assert!(!menu.is_enabled());
+    }
+
+    #[test]
+    fn test_menu_align_vertically() {
+        let mut menu = Menu::new();
+        menu.add_item(RefPtr::new(MenuItem::new()));
+        menu.add_item(RefPtr::new(MenuItem::new()));
+        menu.align_items_vertically();
+    }
+}

@@ -140,3 +140,54 @@ impl TileMap {
         None
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tilemap_layer_new() {
+        let layer = TileMapLayer::new();
+        assert_eq!(layer.get_tile_width(), 0.0);
+        assert_eq!(layer.get_tile_height(), 0.0);
+        assert_eq!(layer.get_map_width(), 0);
+        assert_eq!(layer.get_map_height(), 0);
+    }
+
+    #[test]
+    fn test_tilemap_layer_create() {
+        let layer_info = LayerInfo::new("TestLayer", 10, 10);
+        let tileset = TileSet::new();
+        let layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        assert_eq!(layer.get_layer_name(), "TestLayer");
+    }
+
+    #[test]
+    fn test_tilemap_new() {
+        let tilemap = TileMap::new();
+        let (width, height) = tilemap.get_map_size();
+        assert_eq!(width, 0);
+        assert_eq!(height, 0);
+    }
+
+    #[test]
+    fn test_tilemap_create() {
+        let tilemap = TileMap::create_with_tmx_file("test.tmx");
+        assert!(tilemap.is_some());
+    }
+
+    #[test]
+    fn test_tilemap_add_layer() {
+        let mut tilemap = TileMap::new();
+        let layer = TileMapLayer::new();
+        tilemap.add_layer(RefPtr::new(layer));
+        assert_eq!(tilemap.get_layers().len(), 1);
+    }
+
+    #[test]
+    fn test_get_property() {
+        let tilemap = TileMap::new();
+        let property = tilemap.get_property("test");
+        assert!(property.is_none());
+    }
+}

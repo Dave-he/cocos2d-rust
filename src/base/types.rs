@@ -1,7 +1,6 @@
 use std::ops::{Add, Sub};
 use crate::math::Vec2;
 
-/// Color type for 3 components (RGB)
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Color3B {
     pub r: u8,
@@ -40,7 +39,6 @@ impl Color3B {
     }
 }
 
-/// Color type for 4 components (RGBA)
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Color4B {
     pub r: u8,
@@ -77,7 +75,6 @@ impl Color4B {
     }
 }
 
-/// Color type with float components (RGBA)
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Color4F {
     pub r: f32,
@@ -115,10 +112,8 @@ impl Color4F {
     }
 }
 
-/// Point/Vector2D type
 pub type Point = Vec2;
 
-/// Size type
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Size {
     pub width: f32,
@@ -154,7 +149,6 @@ impl Sub for Size {
     }
 }
 
-/// Rectangle type
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Rect {
     pub origin: Point,
@@ -250,5 +244,341 @@ impl Rect {
         } else {
             Rect::ZERO
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_color3b_new() {
+        let color = Color3B::new(255, 128, 64);
+        assert_eq!(color.r, 255);
+        assert_eq!(color.g, 128);
+        assert_eq!(color.b, 64);
+    }
+
+    #[test]
+    fn test_color3b_predefined_colors() {
+        assert_eq!(Color3B::WHITE.r, 255);
+        assert_eq!(Color3B::WHITE.g, 255);
+        assert_eq!(Color3B::WHITE.b, 255);
+
+        assert_eq!(Color3B::BLACK.r, 0);
+        assert_eq!(Color3B::BLACK.g, 0);
+        assert_eq!(Color3B::BLACK.b, 0);
+
+        assert_eq!(Color3B::RED.r, 255);
+        assert_eq!(Color3B::RED.g, 0);
+        assert_eq!(Color3B::RED.b, 0);
+
+        assert_eq!(Color3B::GREEN.r, 0);
+        assert_eq!(Color3B::GREEN.g, 255);
+        assert_eq!(Color3B::GREEN.b, 0);
+
+        assert_eq!(Color3B::BLUE.r, 0);
+        assert_eq!(Color3B::BLUE.g, 0);
+        assert_eq!(Color3B::BLUE.b, 255);
+    }
+
+    #[test]
+    fn test_color3b_from_float3() {
+        let color = Color3B::from_float3(1.0, 0.5, 0.0);
+        assert_eq!(color.r, 255);
+        assert!((color.g as f32 - 127.5).abs() < 1.0);
+        assert_eq!(color.b, 0);
+    }
+
+    #[test]
+    fn test_color3b_to_color4f() {
+        let color = Color3B::new(255, 128, 64);
+        let color4f = color.to_color4f(128);
+        assert!((color4f.r - 1.0).abs() < 0.01);
+        assert!((color4f.g - 0.5).abs() < 0.01);
+        assert!((color4f.b - 0.25).abs() < 0.01);
+        assert!((color4f.a - 0.5).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_color4b_new() {
+        let color = Color4B::new(255, 128, 64, 200);
+        assert_eq!(color.r, 255);
+        assert_eq!(color.g, 128);
+        assert_eq!(color.b, 64);
+        assert_eq!(color.a, 200);
+    }
+
+    #[test]
+    fn test_color4b_predefined_colors() {
+        assert_eq!(Color4B::WHITE, Color4B { r: 255, g: 255, b: 255, a: 255 });
+        assert_eq!(Color4B::TRANSPARENT, Color4B { r: 0, g: 0, b: 0, a: 0 });
+    }
+
+    #[test]
+    fn test_color4b_from_color3b() {
+        let color3b = Color3B::new(100, 150, 200);
+        let color4b = Color4B::from_color3b(color3b, 128);
+        assert_eq!(color4b.r, 100);
+        assert_eq!(color4b.g, 150);
+        assert_eq!(color4b.b, 200);
+        assert_eq!(color4b.a, 128);
+    }
+
+    #[test]
+    fn test_color4b_to_color4f() {
+        let color = Color4B::new(255, 255, 255, 128);
+        let color4f = color.to_color4f();
+        assert!((color4f.r - 1.0).abs() < 0.01);
+        assert!((color4f.g - 1.0).abs() < 0.01);
+        assert!((color4f.b - 1.0).abs() < 0.01);
+        assert!((color4f.a - 0.50196).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_color4f_new() {
+        let color = Color4F::new(0.5, 0.25, 0.75, 1.0);
+        assert!((color.r - 0.5).abs() < 0.001);
+        assert!((color.g - 0.25).abs() < 0.001);
+        assert!((color.b - 0.75).abs() < 0.001);
+        assert!((color.a - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_color4f_predefined_colors() {
+        assert!((Color4F::WHITE.r - 1.0).abs() < 0.001);
+        assert!((Color4F::TRANSPARENT.a - 0.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_color4f_equal() {
+        let color1 = Color4F::new(1.0, 0.5, 0.25, 0.75);
+        let color2 = Color4F::new(1.0, 0.5, 0.25, 0.75);
+        let color3 = Color4F::new(1.0, 0.5, 0.30, 0.75);
+
+        assert!(color1.equal(&color2, 0.01));
+        assert!(!color1.equal(&color3, 0.01));
+        assert!(color1.equal(&color3, 0.1));
+    }
+
+    #[test]
+    fn test_color4f_from_color4b() {
+        let color4b = Color4B::new(128, 64, 32, 255);
+        let color4f = Color4F::from_color4b(color4b);
+        assert!((color4f.r - 0.50196).abs() < 0.001);
+        assert!((color4f.g - 0.25098).abs() < 0.001);
+        assert!((color4f.b - 0.12549).abs() < 0.001);
+        assert!((color4f.a - 1.0).abs() < 0.001);
+    }
+
+    #[test]
+    fn test_size_new() {
+        let size = Size::new(100.0, 200.0);
+        assert_eq!(size.width, 100.0);
+        assert_eq!(size.height, 200.0);
+    }
+
+    #[test]
+    fn test_size_zero() {
+        let size = Size::ZERO;
+        assert_eq!(size.width, 0.0);
+        assert_eq!(size.height, 0.0);
+    }
+
+    #[test]
+    fn test_size_set() {
+        let mut size = Size::new(100.0, 200.0);
+        size.set(300.0, 400.0);
+        assert_eq!(size.width, 300.0);
+        assert_eq!(size.height, 400.0);
+    }
+
+    #[test]
+    fn test_size_add() {
+        let size1 = Size::new(100.0, 200.0);
+        let size2 = Size::new(50.0, 100.0);
+        let result = size1 + size2;
+        assert_eq!(result.width, 150.0);
+        assert_eq!(result.height, 300.0);
+    }
+
+    #[test]
+    fn test_size_sub() {
+        let size1 = Size::new(100.0, 200.0);
+        let size2 = Size::new(30.0, 50.0);
+        let result = size1 - size2;
+        assert_eq!(result.width, 70.0);
+        assert_eq!(result.height, 150.0);
+    }
+
+    #[test]
+    fn test_rect_new() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.origin.x, 10.0);
+        assert_eq!(rect.origin.y, 20.0);
+        assert_eq!(rect.size.width, 100.0);
+        assert_eq!(rect.size.height, 200.0);
+    }
+
+    #[test]
+    fn test_rect_from_size() {
+        let size = Size::new(100.0, 200.0);
+        let rect = Rect::from_size(size);
+        assert_eq!(rect.origin.x, 0.0);
+        assert_eq!(rect.origin.y, 0.0);
+        assert_eq!(rect.size.width, 100.0);
+        assert_eq!(rect.size.height, 200.0);
+    }
+
+    #[test]
+    fn test_rect_zero() {
+        let rect = Rect::ZERO;
+        assert_eq!(rect.origin.x, 0.0);
+        assert_eq!(rect.origin.y, 0.0);
+        assert_eq!(rect.size.width, 0.0);
+        assert_eq!(rect.size.height, 0.0);
+    }
+
+    #[test]
+    fn test_rect_get_min_x() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_min_x(), 10.0);
+    }
+
+    #[test]
+    fn test_rect_get_mid_x() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_mid_x(), 60.0);
+    }
+
+    #[test]
+    fn test_rect_get_max_x() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_max_x(), 110.0);
+    }
+
+    #[test]
+    fn test_rect_get_min_y() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_min_y(), 20.0);
+    }
+
+    #[test]
+    fn test_rect_get_mid_y() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_mid_y(), 120.0);
+    }
+
+    #[test]
+    fn test_rect_get_max_y() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_max_y(), 220.0);
+    }
+
+    #[test]
+    fn test_rect_contains_point_inside() {
+        let rect = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let point = Point::new(50.0, 50.0);
+        assert!(rect.contains_point(&point));
+    }
+
+    #[test]
+    fn test_rect_contains_point_on_edge() {
+        let rect = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let point = Point::new(0.0, 0.0);
+        assert!(rect.contains_point(&point));
+        let point = Point::new(100.0, 100.0);
+        assert!(rect.contains_point(&point));
+    }
+
+    #[test]
+    fn test_rect_contains_point_outside() {
+        let rect = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let point = Point::new(150.0, 50.0);
+        assert!(!rect.contains_point(&point));
+        let point = Point::new(50.0, 150.0);
+        assert!(!rect.contains_point(&point));
+    }
+
+    #[test]
+    fn test_rect_intersects_overlapping() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        assert!(rect1.intersects_rect(&rect2));
+    }
+
+    #[test]
+    fn test_rect_intersects_non_overlapping() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(200.0, 200.0, 100.0, 100.0);
+        assert!(!rect1.intersects_rect(&rect2));
+    }
+
+    #[test]
+    fn test_rect_intersects_touching() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(100.0, 100.0, 100.0, 100.0);
+        assert!(!rect1.intersects_rect(&rect2));
+    }
+
+    #[test]
+    fn test_rect_union() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        let union = rect1.union_rect(&rect2);
+        assert_eq!(union.origin.x, 0.0);
+        assert_eq!(union.origin.y, 0.0);
+        assert_eq!(union.size.width, 150.0);
+        assert_eq!(union.size.height, 150.0);
+    }
+
+    #[test]
+    fn test_rect_union_non_overlapping() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(200.0, 200.0, 100.0, 100.0);
+        let union = rect1.union_rect(&rect2);
+        assert_eq!(union.origin.x, 0.0);
+        assert_eq!(union.origin.y, 0.0);
+        assert_eq!(union.size.width, 300.0);
+        assert_eq!(union.size.height, 300.0);
+    }
+
+    #[test]
+    fn test_rect_intersect() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(50.0, 50.0, 100.0, 100.0);
+        let intersect = rect1.intersect_rect(&rect2);
+        assert_eq!(intersect.origin.x, 50.0);
+        assert_eq!(intersect.origin.y, 50.0);
+        assert_eq!(intersect.size.width, 50.0);
+        assert_eq!(intersect.size.height, 50.0);
+    }
+
+    #[test]
+    fn test_rect_intersect_no_overlap() {
+        let rect1 = Rect::new(0.0, 0.0, 100.0, 100.0);
+        let rect2 = Rect::new(200.0, 200.0, 100.0, 100.0);
+        let intersect = rect1.intersect_rect(&rect2);
+        assert_eq!(intersect, Rect::ZERO);
+    }
+
+    #[test]
+    fn test_point_type_alias() {
+        let point: Point = Vec2::new(5.0, 10.0);
+        assert_eq!(point.x, 5.0);
+        assert_eq!(point.y, 10.0);
+    }
+
+    #[test]
+    fn test_all_color_traits() {
+        let color1 = Color3B::new(100, 150, 200);
+        let color2 = color1;
+        let color3 = color1.clone();
+
+        assert_eq!(color1, color2);
+        assert_eq!(color2, color3);
+
+        let debug_str = format!("{:?}", color1);
+        assert!(debug_str.contains("100"));
     }
 }

@@ -295,3 +295,84 @@ impl ParticleSystem {
         self.is_visible = visible;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_particle_new() {
+        let particle = Particle::new();
+        assert_eq!(particle.position, Vec3::ZERO);
+        assert_eq!(particle.velocity, Vec3::ZERO);
+        assert_eq!(particle.life, 0.0);
+    }
+
+    #[test]
+    fn test_particle_reset() {
+        let mut particle = Particle::new();
+        particle.position = Vec3::new(100.0, 200.0, 50.0);
+        particle.life = 1.0;
+        particle.reset();
+        assert_eq!(particle.position, Vec3::ZERO);
+        assert_eq!(particle.life, 0.0);
+    }
+
+    #[test]
+    fn test_particle_update() {
+        let mut particle = Particle::new();
+        particle.max_life = 1.0;
+        particle.life = 1.0;
+        particle.acceleration = Vec3::new(0.0, -9.8, 0.0);
+        particle.update(0.016);
+        assert!(particle.life < 1.0);
+    }
+
+    #[test]
+    fn test_particle_emitter_config_default() {
+        let config = ParticleEmitterConfig::default();
+        assert_eq!(config.emitter_type, EmitterType::GRAVITY);
+        assert_eq!(config.blend_type, BlendType::ADD);
+        assert_eq!(config.start_size, 50.0);
+        assert_eq!(config.total_particles, 100);
+    }
+
+    #[test]
+    fn test_particle_system_new() {
+        let system = ParticleSystem::new();
+        assert!(!system.is_active());
+        assert!(system.is_visible());
+    }
+
+    #[test]
+    fn test_particle_system_reset() {
+        let mut system = ParticleSystem::new();
+        system.reset();
+        assert!(!system.is_active());
+    }
+
+    #[test]
+    fn test_particle_system_start_stop() {
+        let mut system = ParticleSystem::new();
+        assert!(!system.is_active());
+        system.start();
+        assert!(system.is_active());
+        system.stop();
+        assert!(!system.is_active());
+    }
+
+    #[test]
+    fn test_particle_system_visible() {
+        let mut system = ParticleSystem::new();
+        system.set_visible(false);
+        assert!(!system.is_visible());
+        system.set_visible(true);
+        assert!(system.is_visible());
+    }
+
+    #[test]
+    fn test_particle_system_capacity() {
+        let system = ParticleSystem::new();
+        assert_eq!(system.get_capacity(), 100);
+    }
+}

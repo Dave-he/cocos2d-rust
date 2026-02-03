@@ -200,7 +200,6 @@ impl RenderCommand for MeshCommand {
     }
 
     fn execute(&self, _renderer: &mut Renderer) {
-        // Implementation in Renderer::draw_mesh
     }
 }
 
@@ -231,7 +230,6 @@ impl RenderCommand for GroupCommand {
     }
 
     fn execute(&self, _renderer: &mut Renderer) {
-        // Implementation in Renderer
     }
 }
 
@@ -269,7 +267,6 @@ impl RenderCommand for CallbackCommand {
     }
 }
 
-// #[derive(Debug, Clone)]
 pub struct CustomCommand {
     command_type: CommandType,
     global_order: f32,
@@ -317,5 +314,196 @@ impl RenderCommand for CustomCommand {
 
     fn execute(&self, renderer: &mut Renderer) {
         (self.callback)(renderer);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_command_type_traits() {
+        assert_eq!(CommandType::Triangles, CommandType::Triangles);
+        assert_ne!(CommandType::Triangles, CommandType::Quad);
+        assert_eq!(CommandType::Unknown as u8, 0);
+    }
+
+    #[test]
+    fn test_vertex_default() {
+        let vertex = Vertex::default();
+        assert_eq!(vertex.position, [0.0, 0.0, 0.0]);
+        assert_eq!(vertex.tex_coord, [0.0, 0.0]);
+    }
+
+    #[test]
+    fn test_vertex_with_position() {
+        let vertex = Vertex::with_position(1.0, 2.0, 3.0);
+        assert_eq!(vertex.position, [1.0, 2.0, 3.0]);
+        assert_eq!(vertex.tex_coord, [0.0, 0.0]);
+    }
+
+    #[test]
+    fn test_vertex_with_tex_coord() {
+        let vertex = Vertex::with_tex_coord(0.5, 0.75);
+        assert_eq!(vertex.position, [0.0, 0.0, 0.0]);
+        assert_eq!(vertex.tex_coord, [0.5, 0.75]);
+    }
+
+    #[test]
+    fn test_vertex_with_color() {
+        let color = Color4F::RED;
+        let vertex = Vertex::with_color(color);
+        assert_eq!(vertex.color.r, 1.0);
+        assert_eq!(vertex.color.g, 0.0);
+    }
+
+    #[test]
+    fn test_triangles_new() {
+        let triangles = Triangles::new();
+        assert_eq!(triangles.get_vertex_count(), 0);
+        assert_eq!(triangles.get_index_count(), 0);
+        assert_eq!(triangles.blend_func, (770, 771));
+    }
+
+    #[test]
+    fn test_triangles_with_data() {
+        let mut triangles = Triangles::new();
+        triangles.vertices.push(Vertex::with_position(0.0, 0.0, 0.0));
+        triangles.vertices.push(Vertex::with_position(1.0, 0.0, 0.0));
+        triangles.vertices.push(Vertex::with_position(0.0, 1.0, 0.0));
+        triangles.indices.push(0);
+        triangles.indices.push(1);
+        triangles.indices.push(2);
+
+        assert_eq!(triangles.get_vertex_count(), 3);
+        assert_eq!(triangles.get_index_count(), 3);
+    }
+
+    #[test]
+    fn test_triangles_command_new() {
+        let cmd = TrianglesCommand::new();
+        assert_eq!(cmd.get_command_type(), CommandType::Triangles);
+        assert_eq!(cmd.get_global_order(), 0.0);
+    }
+
+    #[test]
+    fn test_triangles_command_init() {
+        let mut cmd = TrianglesCommand::new();
+        let vertices = vec![
+            Vertex::with_position(0.0, 0.0, 0.0),
+            Vertex::with_position(1.0, 0.0, 0.0),
+            Vertex::with_position(0.0, 1.0, 0.0),
+        ];
+        let indices = vec![0, 1, 2];
+        let matrix = Mat4::IDENTITY;
+
+        cmd.init(1.5, vertices, indices, (770, 771), matrix);
+
+        assert_eq!(cmd.get_global_order(), 1.5);
+        assert_eq!(cmd.triangles.get_vertex_count(), 3);
+        assert_eq!(cmd.triangles.get_index_count(), 3);
+    }
+
+    #[test]
+    fn test_quad_new() {
+        let quad = Quad::new();
+        assert_eq!(quad.blend_func, (770, 771));
+    }
+
+    #[test]
+    fn test_mesh_command_new() {
+        let cmd = MeshCommand::new();
+        assert_eq!(cmd.get_command_type(), CommandType::Mesh);
+        assert_eq!(cmd.get_global_order(), 0.0);
+    }
+
+    #[test]
+    fn test_mesh_command_init() {
+        let mut cmd = MeshCommand::new();
+        let mesh_data = vec![0.0, 0.0, 0.0, 1.0, 1.0, 1.0];
+        let indices_data = vec![0, 1, 2];
+        let matrix = Mat4::IDENTITY;
+
+        cmd.init(42, mesh_data, indices_data, matrix);
+
+        assert_eq!(cmd.material_id, 42);
+        assert_eq!(cmd.mesh_data.len(), 6);
+        assert_eq!(cmd.indices_data.len(), 3);
+    }
+
+    #[test]
+    fn test_group_command_new() {
+        let cmd = GroupCommand::new();
+        assert_eq!(cmd.get_command_type(), CommandType::Group);
+        assert_eq!(cmd.get_global_order(), 0.0);
+        assert_eq!(cmd.group_id, 0);
+    }
+
+    #[test]
+    fn test_callback_command_new() {
+        let cmd = CallbackCommand::new();
+        assert_eq!(cmd.get_command_type(), CommandType::Callback);
+        assert_eq!(cmd.get_global_order(), 0.0);
+    }
+
+    #[test]
+    fn test_callback_command_init() {
+        let mut cmd = CallbackCommand::new();
+        let called = std::cell::RefCell::new(false);
+        let called_clone = called.clone();
+        let callback = Box::new(move |_renderer: &mut Renderer| {
+            *called_clone.borrow_mut() = true;
+        });
+        cmd.init(callback);
+        assert!(!*called.borrow());
+    }
+
+    #[test]
+    fn test_custom_command_new() {
+        let cmd = CustomCommand::new();
+        assert_eq!(cmd.get_command_type(), CommandType::Custom);
+        assert_eq!(cmd.get_global_order(), 0.0);
+        assert_eq!(cmd.depth, 0.0);
+    }
+
+    #[test]
+    fn test_custom_command_set_depth() {
+        let mut cmd = CustomCommand::new();
+        cmd.set_depth(5.0);
+        assert_eq!(cmd.depth, 5.0);
+    }
+
+    #[test]
+    fn test_custom_command_init() {
+        let mut cmd = CustomCommand::new();
+        let called = std::cell::RefCell::new(false);
+        let called_clone = called.clone();
+        cmd.init(move |_renderer| {
+            *called_clone.borrow_mut() = true;
+        });
+        assert!(!*called.borrow());
+    }
+
+    #[test]
+    fn test_all_command_types() {
+        let types = [
+            CommandType::Unknown,
+            CommandType::Triangles,
+            CommandType::Quad,
+            CommandType::Mesh,
+            CommandType::Group,
+            CommandType::Custom,
+            CommandType::Callback,
+        ];
+        assert_eq!(types.len(), 7);
+    }
+
+    #[test]
+    fn test_vertex_debug_format() {
+        let vertex = Vertex::with_position(1.0, 2.0, 3.0);
+        let debug_str = format!("{:?}", vertex);
+        assert!(debug_str.contains("1"));
+        assert!(debug_str.contains("2"));
+        assert!(debug_str.contains("3"));
     }
 }

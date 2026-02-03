@@ -1,6 +1,7 @@
 use crate::base::{Ref, Node, RefPtr};
 use crate::base::types::Color3B;
 use crate::renderer::Texture2D;
+use crate::math::Vec2;
 
 /// LabelAtlas is a label that uses a texture atlas
 #[derive(Debug)]
@@ -79,5 +80,45 @@ impl LabelAtlas {
 impl Default for LabelAtlas {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_label_atlas_new() {
+        let atlas = LabelAtlas::new();
+        assert!(atlas.get_string().is_empty());
+        assert_eq!(atlas.get_node().get_content_size(), Vec2::ZERO);
+    }
+
+    #[test]
+    fn test_label_atlas_default() {
+        let atlas = LabelAtlas::default();
+        assert!(atlas.get_string().is_empty());
+    }
+
+    #[test]
+    fn test_label_atlas_set_string() {
+        let mut atlas = LabelAtlas::new();
+        atlas.set_string("Hello");
+        assert_eq!(atlas.get_string(), "Hello");
+    }
+
+    #[test]
+    fn test_label_atlas_init_with_string() {
+        let mut atlas = LabelAtlas::new();
+        let result = atlas.init_with_string("Test", "test.png", 16, 16, 'A');
+        assert!(result);
+        assert_eq!(atlas.get_string(), "Test");
+    }
+
+    #[test]
+    fn test_label_atlas_properties() {
+        let mut atlas = LabelAtlas::new();
+        atlas.set_string("ABC");
+        assert_eq!(atlas.get_string(), "ABC");
     }
 }

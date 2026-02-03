@@ -330,3 +330,80 @@ impl BillBoard {
         self.mode = mode;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_mesh_new() {
+        let mesh = Mesh::new();
+        assert_eq!(mesh.get_name(), "");
+        assert_eq!(mesh.get_vertex_count(), 0);
+        assert_eq!(mesh.get_index_count(), 0);
+    }
+
+    #[test]
+    fn test_mesh_set_name() {
+        let mut mesh = Mesh::new();
+        mesh.set_name("test_mesh");
+        assert_eq!(mesh.get_name(), "test_mesh");
+    }
+
+    #[test]
+    fn test_mesh_vertex_data() {
+        let mut mesh = Mesh::new();
+        let data = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0];
+        mesh.set_vertex_data(data.clone());
+        assert_eq!(mesh.get_vertex_count(), 1);
+        assert_eq!(mesh.get_vertex_data(), &data);
+    }
+
+    #[test]
+    fn test_mesh_index_data() {
+        let mut mesh = Mesh::new();
+        let data = vec![0, 1, 2, 0, 2, 3];
+        mesh.set_index_data(data.clone());
+        assert_eq!(mesh.get_index_count(), 6);
+        assert_eq!(mesh.get_index_data(), &data);
+    }
+
+    #[test]
+    fn test_aabb_new() {
+        let aabb = AABB::new();
+        assert_eq!(aabb.get_min(), Vec3::new(f32::MAX, f32::MAX, f32::MAX));
+        assert_eq!(aabb.get_max(), Vec3::new(f32::MIN, f32::MIN, f32::MIN));
+    }
+
+    #[test]
+    fn test_aabb_from_min_max() {
+        let aabb = AABB::from_min_max(Vec3::new(0.0, 0.0, 0.0), Vec3::new(1.0, 1.0, 1.0));
+        assert_eq!(aabb.get_min(), Vec3::new(0.0, 0.0, 0.0));
+        assert_eq!(aabb.get_max(), Vec3::new(1.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn test_aabb_center() {
+        let aabb = AABB::from_min_max(Vec3::new(0.0, 0.0, 0.0), Vec3::new(2.0, 2.0, 2.0));
+        assert_eq!(aabb.get_center(), Vec3::new(1.0, 1.0, 1.0));
+    }
+
+    #[test]
+    fn test_aabb_half_extents() {
+        let aabb = AABB::from_min_max(Vec3::new(0.0, 0.0, 0.0), Vec3::new(2.0, 4.0, 6.0));
+        assert_eq!(aabb.get_half_extents(), Vec3::new(1.0, 2.0, 3.0));
+    }
+
+    #[test]
+    fn test_billboard_new() {
+        let billboard = BillBoard::new();
+        assert_eq!(billboard.get_mode(), BillBoardMode::VIEW_POINT_ORIENTED);
+    }
+
+    #[test]
+    fn test_billboard_mode() {
+        let mut billboard = BillBoard::new();
+        billboard.set_mode(BillBoardMode::VIEW_PLANE_ORIENTED);
+        assert_eq!(billboard.get_mode(), BillBoardMode::VIEW_PLANE_ORIENTED);
+    }
+}

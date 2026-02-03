@@ -352,3 +352,189 @@ pub enum CompareFunc {
     GEQUAL,
     ALWAYS,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_pixel_format_bytes_per_pixel() {
+        assert_eq!(PixelFormat::I8.get_bytes_per_pixel(), 1);
+        assert_eq!(PixelFormat::RGB888.get_bytes_per_pixel(), 3);
+        assert_eq!(PixelFormat::RGBA8888.get_bytes_per_pixel(), 4);
+        assert_eq!(PixelFormat::RGB565.get_bytes_per_pixel(), 2);
+        assert_eq!(PixelFormat::DEPTH.get_bytes_per_pixel(), 0);
+    }
+
+    #[test]
+    fn test_pixel_format_is_compressed() {
+        assert!(PixelFormat::NONE.is_compressed());
+        assert!(!PixelFormat::RGBA8888.is_compressed());
+    }
+
+    #[test]
+    fn test_pixel_format_is_float() {
+        assert!(PixelFormat::RGBA16F.is_float());
+        assert!(PixelFormat::RGB32F.is_float());
+        assert!(!PixelFormat::RGBA8888.is_float());
+    }
+
+    #[test]
+    fn test_pixel_format_has_alpha() {
+        assert!(PixelFormat::RGBA8888.has_alpha());
+        assert!(PixelFormat::AI88.has_alpha());
+        assert!(!PixelFormat::RGB888.has_alpha());
+    }
+
+    #[test]
+    fn test_texture_descriptor_new() {
+        let desc = TextureDescriptor::new();
+        assert_eq!(desc.width, 0);
+        assert_eq!(desc.height, 0);
+        assert_eq!(desc.pixel_format, PixelFormat::RGBA8888);
+        assert_eq!(desc.min_filter, TextureFilter::LINEAR);
+        assert_eq!(desc.mag_filter, TextureFilter::LINEAR);
+        assert_eq!(desc.mipmap_level, 1);
+    }
+
+    #[test]
+    fn test_texture_type_variants() {
+        assert_eq!(TextureType::Texture2D, TextureType::Texture2D);
+        assert_eq!(TextureType::TextureCube, TextureType::TextureCube);
+        assert_ne!(TextureType::Texture2D, TextureType::TextureCube);
+    }
+
+    #[test]
+    fn test_texture_filter_variants() {
+        assert_eq!(TextureFilter::NEAREST, TextureFilter::NEAREST);
+        assert_eq!(TextureFilter::LINEAR, TextureFilter::LINEAR);
+    }
+
+    #[test]
+    fn test_texture_wrap_variants() {
+        assert_eq!(TextureWrap::REPEAT, TextureWrap::REPEAT);
+        assert_eq!(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+    }
+
+    #[test]
+    fn test_texture2d_new() {
+        let texture = Texture2D::new();
+        assert_eq!(texture.get_name(), 0);
+        assert_eq!(texture.get_width(), 0);
+        assert_eq!(texture.get_height(), 0);
+        assert_eq!(texture.get_pixel_format(), PixelFormat::RGBA8888);
+        assert_eq!(texture.get_bits_per_pixel(), 32);
+        assert!(!texture.has_mipmaps());
+    }
+
+    #[test]
+    fn test_texture2d_set_name() {
+        let mut texture = Texture2D::new();
+        texture.set_name(123);
+        assert_eq!(texture.get_name(), 123);
+    }
+
+    #[test]
+    fn test_texture2d_update() {
+        let mut texture = Texture2D::new();
+        let data = &[0u8; 4];
+        texture.update(data, 256, 256, PixelFormat::RGBA8888);
+        assert_eq!(texture.get_width(), 256);
+        assert_eq!(texture.get_height(), 256);
+        assert_eq!(texture.get_pixel_format(), PixelFormat::RGBA8888);
+    }
+
+    #[test]
+    fn test_texture_atlas_new() {
+        let atlas = TextureAtlas::new();
+        assert!(atlas.get_texture().is_none());
+        assert_eq!(atlas.get_total_quads(), 0);
+        assert_eq!(atlas.get_capacity(), 0);
+    }
+
+    #[test]
+    fn test_texture_atlas_init() {
+        let mut atlas = TextureAtlas::new();
+        let texture = RefPtr::new(Texture2D::new());
+        atlas.init(texture.clone(), 10);
+        assert!(atlas.get_texture().is_some());
+        assert_eq!(atlas.get_capacity(), 10);
+        assert_eq!(atlas.get_total_quads(), 10);
+    }
+
+    #[test]
+    fn test_texture_atlas_update_quad() {
+        let mut atlas = TextureAtlas::new();
+        let texture = RefPtr::new(Texture2D::new());
+        atlas.init(texture, 5);
+        let quad = TextureQuad::new();
+        atlas.update_quad(quad, 2);
+        assert_eq!(atlas.get_total_quads(), 5);
+    }
+
+    #[test]
+    fn test_texture_atlas_insert_quad() {
+        let mut atlas = TextureAtlas::new();
+        let texture = RefPtr::new(Texture2D::new());
+        atlas.init(texture, 3);
+        let quad = TextureQuad::new();
+        atlas.insert_quad(quad, 1);
+        assert_eq!(atlas.get_total_quads(), 4);
+    }
+
+    #[test]
+    fn test_texture_atlas_remove_quad_at() {
+        let mut atlas = TextureAtlas::new();
+        let texture = RefPtr::new(Texture2D::new());
+        atlas.init(texture, 3);
+        atlas.remove_quad_at(1);
+        assert_eq!(atlas.get_total_quads(), 2);
+    }
+
+    #[test]
+    fn test_texture_quad_new() {
+        let quad = TextureQuad::new();
+        assert_eq!(quad.tl.u, 0.0);
+        assert_eq!(quad.tr.u, 1.0);
+        assert_eq!(quad.bl.v, 1.0);
+    }
+
+    #[test]
+    fn test_sampler_new() {
+        let sampler = Sampler::new();
+        assert_eq!(sampler.min_filter, TextureFilter::LINEAR);
+        assert_eq!(sampler.mag_filter, TextureFilter::LINEAR);
+        assert_eq!(sampler.wrap_s, TextureWrap::CLAMP_TO_EDGE);
+        assert_eq!(sampler.wrap_t, TextureWrap::CLAMP_TO_EDGE);
+        assert!(!sampler.compare_mode);
+    }
+
+    #[test]
+    fn test_sampler_setters() {
+        let mut sampler = Sampler::new();
+        sampler.set_min_filter(TextureFilter::NEAREST);
+        sampler.set_mag_filter(TextureFilter::NEAREST);
+        sampler.set_wrap_s(TextureWrap::REPEAT);
+        sampler.set_wrap_t(TextureWrap::REPEAT);
+
+        assert_eq!(sampler.min_filter, TextureFilter::NEAREST);
+        assert_eq!(sampler.mag_filter, TextureFilter::NEAREST);
+        assert_eq!(sampler.wrap_s, TextureWrap::REPEAT);
+        assert_eq!(sampler.wrap_t, TextureWrap::REPEAT);
+    }
+
+    #[test]
+    fn test_compare_func_variants() {
+        let funcs = [
+            CompareFunc::NEVER,
+            CompareFunc::LESS,
+            CompareFunc::EQUAL,
+            CompareFunc::LEQUAL,
+            CompareFunc::GREATER,
+            CompareFunc::NOTEQUAL,
+            CompareFunc::GEQUAL,
+            CompareFunc::ALWAYS,
+        ];
+        assert_eq!(funcs.len(), 8);
+    }
+}

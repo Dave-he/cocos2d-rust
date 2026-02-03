@@ -13,7 +13,11 @@ log = "0.4.29"
 plist = "1.7"
 rand = "0.8"
 raw-window-handle = "0.5"
+regex = "1.10"
 rodio = "0.21"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+url = "2.5"
 winit = "0.29"
 
 [[example]]
@@ -27,4 +31,8 @@ path = "examples/sprite_demo.rs"
 [[example]]
 name = "physics_demo"
 path = "examples/physics_demo.rs"
+
+[[example]]
+name = "phase7_demo"
+path = "examples/phase7_demo.rs"
 

@@ -505,3 +505,77 @@ impl LayoutParameter {
         self.margin_bottom = bottom;
     }
 }
+
+impl Default for LayoutParameter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Widget {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_widget_new() {
+        let widget = Widget::new();
+        assert_eq!(widget.get_name(), "");
+        assert_eq!(widget.get_tag(), 0);
+        assert!(widget.is_enabled());
+        assert!(widget.is_bright());
+    }
+
+    #[test]
+    fn test_widget_default() {
+        let widget = Widget::default();
+        assert_eq!(widget.get_name(), "");
+    }
+
+    #[test]
+    fn test_widget_name() {
+        let mut widget = Widget::new();
+        widget.set_name("test_widget");
+        assert_eq!(widget.get_name(), "test_widget");
+    }
+
+    #[test]
+    fn test_widget_tag() {
+        let mut widget = Widget::new();
+        widget.set_tag(123);
+        assert_eq!(widget.get_tag(), 123);
+    }
+
+    #[test]
+    fn test_widget_position() {
+        let mut widget = Widget::new();
+        widget.set_position(Vec2::new(100.0, 200.0));
+        assert_eq!(widget.get_position(), Vec2::new(100.0, 200.0));
+    }
+
+    #[test]
+    fn test_widget_size() {
+        let mut widget = Widget::new();
+        widget.set_size(Vec2::new(150.0, 100.0));
+        assert_eq!(widget.get_size(), Vec2::new(150.0, 100.0));
+    }
+
+    #[test]
+    fn test_widget_enabled() {
+        let mut widget = Widget::new();
+        assert!(widget.is_enabled());
+        widget.set_enabled(false);
+        assert!(!widget.is_enabled());
+    }
+
+    #[test]
+    fn test_layout_parameter_new() {
+        let param = LayoutParameter::new();
+        assert_eq!(param.margin_left, 0.0);
+    }
+}

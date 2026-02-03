@@ -1,18 +1,13 @@
 use std::collections::LinkedList;
 use crate::base::{Ref, RefPtr};
 
-/// Autorelease pool manages objects that are autoreleased
-///
-/// In Rust, we use Rc for automatic reference counting, so this is primarily
-/// for compatibility with the C++ API and for objects that need delayed cleanup.
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct AutoreleasePool {
     managed_objects: LinkedList<RefPtr<Ref>>,
     name: String,
 }
 
 impl AutoreleasePool {
-    /// Creates a new autorelease pool with a default name
     pub fn new() -> AutoreleasePool {
         AutoreleasePool {
             managed_objects: LinkedList::new(),
@@ -20,7 +15,6 @@ impl AutoreleasePool {
         }
     }
 
-    /// Creates a new autorelease pool with a custom name
     pub fn with_name(name: &str) -> AutoreleasePool {
         AutoreleasePool {
             managed_objects: LinkedList::new(),
@@ -28,34 +22,28 @@ impl AutoreleasePool {
         }
     }
 
-    /// Adds an object to the pool
     pub fn add_object(&mut self, obj: RefPtr<Ref>) {
         self.managed_objects.push_back(obj);
     }
 
-    /// Removes an object from the pool
     pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {
     }
 
-    /// Clears the pool
     pub fn clear(&mut self) {
         self.managed_objects.clear();
     }
 
-    /// Gets the name of the pool
     pub fn get_name(&self) -> &str {
         &self.name
     }
 }
 
-/// Pool manager manages all autorelease pools
 #[derive(Debug)]
 pub struct PoolManager {
     pools: LinkedList<AutoreleasePool>,
 }
 
 impl PoolManager {
-    /// Gets the singleton instance
     pub fn get_instance() -> &'static mut PoolManager {
         static mut POOL_MANAGER: Option<PoolManager> = None;
         unsafe {
@@ -66,14 +54,12 @@ impl PoolManager {
         }
     }
 
-    /// Creates a new pool manager
     pub fn new() -> PoolManager {
         PoolManager {
             pools: LinkedList::new(),
         }
     }
 
-    /// Gets the current pool
     pub fn get_current_pool(&mut self) -> &mut AutoreleasePool {
         if self.pools.is_empty() {
             self.pools.push_back(AutoreleasePool::new());
@@ -81,21 +67,112 @@ impl PoolManager {
         self.pools.back_mut().unwrap()
     }
 
-    /// Pushes a new pool onto the stack
     pub fn push_pool(&mut self, pool: AutoreleasePool) {
         self.pools.push_back(pool);
     }
 
-    /// Pops the current pool
     pub fn pop_pool(&mut self) {
         if let Some(pool) = self.pools.pop_back() {
         }
     }
 
-    /// Clears all pools
     pub fn clear_all_pools(&mut self) {
         for pool in &mut self.pools {
             pool.clear();
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_autorelease_pool_new() {
+        let pool = AutoreleasePool::new();
+        assert_eq!(pool.get_name(), "autorelease");
+    }
+
+    #[test]
+    fn test_autorelease_pool_with_name() {
+        let pool = AutoreleasePool::with_name("custom_pool");
+        assert_eq!(pool.get_name(), "custom_pool");
+    }
+
+    #[test]
+    fn test_autorelease_pool_add_object() {
+        let mut pool = AutoreleasePool::new();
+        let obj = RefPtr::new(Ref::new());
+        pool.add_object(obj);
+    }
+
+    #[test]
+    fn test_autorelease_pool_clear() {
+        let mut pool = AutoreleasePool::new();
+        let obj = RefPtr::new(Ref::new());
+        pool.add_object(obj);
+        pool.clear();
+    }
+
+    #[test]
+    fn test_pool_manager_new() {
+        let manager = PoolManager::new();
+        assert!(manager.pools.is_empty());
+    }
+
+    #[test]
+    fn test_pool_manager_get_current_pool() {
+        let mut manager = PoolManager::new();
+        let pool = manager.get_current_pool();
+        assert_eq!(pool.get_name(), "autorelease");
+    }
+
+    #[test]
+    fn test_pool_manager_push_pool() {
+        let mut manager = PoolManager::new();
+        let custom_pool = AutoreleasePool::with_name("custom");
+        manager.push_pool(custom_pool);
+        assert_eq!(manager.pools.len(), 1);
+    }
+
+    #[test]
+    fn test_pool_manager_pop_pool() {
+        let mut manager = PoolManager::new();
+        let pool = AutoreleasePool::with_name("test");
+        manager.push_pool(pool);
+        assert_eq!(manager.pools.len(), 1);
+
+        manager.pop_pool();
+        assert_eq!(manager.pools.len(), 0);
+    }
+
+    #[test]
+    fn test_pool_manager_clear_all_pools() {
+        let mut manager = PoolManager::new();
+        manager.push_pool(AutoreleasePool::with_name("pool1"));
+        manager.push_pool(AutoreleasePool::with_name("pool2"));
+        assert_eq!(manager.pools.len(), 2);
+
+        manager.clear_all_pools();
+        assert_eq!(manager.pools.len(), 2);
+    }
+
+    #[test]
+    fn test_autorelease_pool_default() {
+        let pool = AutoreleasePool::new();
+        assert_eq!(pool.get_name(), "autorelease");
+    }
+
+    #[test]
+    fn test_pool_manager_multiple_pools() {
+        let mut manager = PoolManager::new();
+        manager.push_pool(AutoreleasePool::with_name("pool1"));
+        manager.push_pool(AutoreleasePool::with_name("pool2"));
+        manager.push_pool(AutoreleasePool::with_name("pool3"));
+
+        assert_eq!(manager.pools.len(), 3);
+
+        manager.pop_pool();
+        assert_eq!(manager.pools.len(), 2);
     }
 }

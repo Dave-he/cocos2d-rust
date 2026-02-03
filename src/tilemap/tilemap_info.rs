@@ -244,3 +244,85 @@ impl TileMapInfo {
         self.properties.get(key).map(|s| s.as_str())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tileset_new() {
+        let tileset = TileSet::new();
+        assert_eq!(tileset.get_first_gid(), 1);
+        assert_eq!(tileset.get_tile_size(), Vec2::new(64.0, 64.0));
+    }
+
+    #[test]
+    fn test_tileset_name() {
+        let mut tileset = TileSet::new();
+        tileset.set_name("Terrain");
+        assert_eq!(tileset.get_name(), "Terrain");
+    }
+
+    #[test]
+    fn test_tileset_first_gid() {
+        let mut tileset = TileSet::new();
+        tileset.set_first_gid(10);
+        assert_eq!(tileset.get_first_gid(), 10);
+    }
+
+    #[test]
+    fn test_rect_new() {
+        let rect = Rect::new(10.0, 20.0, 100.0, 200.0);
+        assert_eq!(rect.get_x(), 10.0);
+        assert_eq!(rect.get_y(), 20.0);
+        assert_eq!(rect.get_width(), 100.0);
+        assert_eq!(rect.get_height(), 200.0);
+    }
+
+    #[test]
+    fn test_layer_info_new() {
+        let layer = LayerInfo::new("Background", 5, 5);
+        assert_eq!(layer.name, "Background");
+        assert_eq!(layer.size, Vec2::new(5.0, 5.0));
+    }
+
+    #[test]
+    fn test_layer_get_set_tile() {
+        let mut layer = LayerInfo::new("Test", 3, 3);
+        layer.set_tile(1, 1, 42);
+        assert_eq!(layer.get_tile(1, 1), 42);
+    }
+
+    #[test]
+    fn test_tilemap_info_new() {
+        let info = TileMapInfo::new();
+        assert_eq!(info.map_size, Vec2::ZERO);
+        assert_eq!(info.tile_size, Vec2::ZERO);
+    }
+
+    #[test]
+    fn test_tilemap_info_add_layer() {
+        let mut info = TileMapInfo::new();
+        let layer = LayerInfo::new("Layer1", 10, 10);
+        info.add_layer(layer);
+        assert_eq!(info.get_layers().len(), 1);
+    }
+
+    #[test]
+    fn test_tilemap_info_add_tileset() {
+        let mut info = TileMapInfo::new();
+        let tileset = TileSet::new();
+        info.add_tileset(tileset);
+        assert_eq!(info.get_tilesets().len(), 1);
+    }
+
+    #[test]
+    fn test_get_layer_by_name() {
+        let mut info = TileMapInfo::new();
+        let layer = LayerInfo::new("Ground", 10, 10);
+        info.add_layer(layer);
+        let found = info.get_layer_by_name("Ground");
+        assert!(found.is_some());
+        assert_eq!(found.unwrap().name, "Ground");
+    }
+}
