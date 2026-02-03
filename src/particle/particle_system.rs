@@ -390,4 +390,162 @@ mod tests {
         let system = ParticleSystem::new();
         assert_eq!(system.get_capacity(), 100);
     }
+    
+    #[test]
+    fn test_particle_system_update() {
+        let mut system = ParticleSystem::new();
+        system.start();
+        
+        system.update(0.016);
+        
+        // 应该发射一些粒子
+        assert!(system.get_particle_count() > 0 || system.is_active());
+    }
+    
+    #[test]
+    fn test_particle_emission() {
+        let mut system = ParticleSystem::new();
+        system.config.total_particles = 10;
+        system.config.emission_rate = 10.0;
+        
+        system.start();
+        system.update(0.1);
+        
+        assert!(system.get_particle_count() > 0);
+    }
+    
+    #[test]
+    fn test_particle_lifecycle() {
+        let mut particle = Particle::new();
+        particle.max_life = 1.0;
+        particle.life = 1.0;
+        
+        // 更新多次直到粒子死亡
+        for _ in 0..100 {
+            particle.update(0.02);
+        }
+        
+        assert!(particle.life <= 0.0);
+    }
+    
+    #[test]
+    fn test_particle_color_transition() {
+        let mut particle = Particle::new();
+        particle.max_life = 1.0;
+        particle.life = 1.0;
+        particle.start_color = Color4F::new(1.0, 0.0, 0.0, 1.0);
+        particle.end_color = Color4F::new(0.0, 1.0, 0.0, 0.5);
+        
+        particle.update(0.5);
+        
+        // 颜色应该在起始和结束之间
+        assert!(particle.color.r < 1.0 || particle.color.g > 0.0);
+    }
+    
+    #[test]
+    fn test_particle_size_transition() {
+        let mut particle = Particle::new();
+        particle.max_life = 1.0;
+        particle.life = 1.0;
+        particle.start_size = 50.0;
+        particle.end_size = 10.0;
+        
+        particle.update(0.5);
+        
+        // 大小应该在起始和结束之间
+        assert!(particle.size > 10.0 && particle.size < 50.0);
+    }
+    
+    #[test]
+    fn test_emitter_types() {
+        let mut system = ParticleSystem::new();
+        
+        // 测试重力模式
+        system.config.emitter_type = EmitterType::GRAVITY;
+        system.config.gravity = Vec3::new(0.0, -9.8, 0.0);
+        system.start();
+        system.update(0.016);
+        
+        // 测试半径模式
+        system.config.emitter_type = EmitterType::RADIUS;
+        system.config.start_radius = 100.0;
+        system.reset();
+        system.start();
+        system.update(0.016);
+    }
+    
+    #[test]
+    fn test_blend_types() {
+        let mut config = ParticleEmitterConfig::default();
+        
+        config.blend_type = BlendType::ADD;
+        assert_eq!(config.blend_type, BlendType::ADD);
+        
+        config.blend_type = BlendType::SUBTRACT;
+        assert_eq!(config.blend_type, BlendType::SUBTRACT);
+        
+        config.blend_type = BlendType::SCREEN;
+        assert_eq!(config.blend_type, BlendType::SCREEN);
+    }
+    
+    #[test]
+    fn test_particle_auto_remove() {
+        let mut system = ParticleSystem::new();
+        system.config.total_particles = 1;
+        system.config.life = 0.1;
+        system.auto_remove = true;
+        
+        system.start();
+        
+        // 更新足够长时间让所有粒子死亡
+        for _ in 0..20 {
+            system.update(0.016);
+        }
+        
+        // 自动移除应该停止系统
+        assert!(!system.is_active() || system.get_particle_count() == 0);
+    }
+    
+    #[test]
+    fn test_particle_duration() {
+        let mut system = ParticleSystem::new();
+        system.duration = 1.0;
+        
+        system.start();
+        assert_eq!(system.elapsed, 0.0);
+        
+        system.update(0.5);
+        assert_eq!(system.elapsed, 0.5);
+        
+        system.update(0.6);
+        assert_eq!(system.elapsed, 1.1);
+    }
+    
+    #[test]
+    fn test_particle_variance() {
+        let mut config = ParticleEmitterConfig::default();
+        config.life = 1.0;
+        config.life_var = 0.2;
+        config.start_size = 50.0;
+        config.start_size_var = 10.0;
+        config.angle = 90.0;
+        config.angle_var = 30.0;
+        config.speed = 100.0;
+        config.speed_var = 20.0;
+        
+        // 验证配置设置正确
+        assert_eq!(config.life_var, 0.2);
+        assert_eq!(config.start_size_var, 10.0);
+    }
+    
+    #[test]
+    fn test_particle_rotation() {
+        let mut particle = Particle::new();
+        particle.rotation = 0.0;
+        particle.rotation_delta = 90.0; // 每秒90度
+        
+        particle.update(1.0);
+        
+        assert_eq!(particle.rotation, 90.0);
+    }
 }

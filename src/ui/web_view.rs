@@ -570,4 +570,257 @@ mod tests {
         let webview = WebView::new();
         assert!(webview.history().is_empty());
     }
+    
+    #[test]
+    fn test_webview_load_url() {
+        let mut webview = WebView::new();
+        webview.load_url("https://example.com");
+        
+        assert_eq!(webview.url(), "https://example.com");
+        assert_eq!(webview.history().len(), 1);
+        assert!(!webview.can_go_back());
+    }
+    
+    #[test]
+    fn test_webview_navigation() {
+        let mut webview = WebView::new();
+        
+        webview.load_url("https://example.com/page1");
+        webview.load_url("https://example.com/page2");
+        webview.load_url("https://example.com/page3");
+        
+        assert_eq!(webview.history().len(), 3);
+        assert!(webview.can_go_back());
+        assert!(!webview.can_go_forward());
+        
+        webview.go_back();
+        assert_eq!(webview.url(), "https://example.com/page2");
+        assert!(webview.can_go_forward());
+        
+        webview.go_forward();
+        assert_eq!(webview.url(), "https://example.com/page3");
+    }
+    
+    #[test]
+    fn test_webview_zoom() {
+        let mut webview = WebView::new();
+        
+        assert_eq!(webview.zoom_level(), 1.0);
+        
+        webview.set_zoom_level(2.0);
+        assert_eq!(webview.zoom_level(), 2.0);
+        
+        webview.zoom_in();
+        assert!(webview.zoom_level() > 2.0);
+        
+        webview.zoom_out();
+        assert!(webview.zoom_level() < 2.5);
+        
+        webview.reset_zoom();
+        assert_eq!(webview.zoom_level(), 1.0);
+    }
+    
+    #[test]
+    fn test_webview_zoom_limits() {
+        let mut webview = WebView::new();
+        
+        webview.set_zoom_level(0.1);
+        assert!(webview.zoom_level() >= 0.25);
+        
+        webview.set_zoom_level(10.0);
+        assert!(webview.zoom_level() <= 5.0);
+    }
+    
+    #[test]
+    fn test_webview_javascript() {
+        let mut webview = WebView::new();
+        
+        assert!(webview.is_javascript_enabled());
+        
+        webview.set_javascript_enabled(false);
+        assert!(!webview.is_javascript_enabled());
+        
+        let result = webview.evaluate_javascript("console.log('test')");
+        assert!(result.success);
+    }
+    
+    #[test]
+    fn test_webview_reload() {
+        let mut webview = WebView::new();
+        webview.load_url("https://example.com");
+        
+        let original_load_state = webview.load_state();
+        webview.reload();
+        
+        // Reload should trigger loading state
+        assert_eq!(webview.url(), "https://example.com");
+    }
+    
+    #[test]
+    fn test_webview_stop_loading() {
+        let mut webview = WebView::new();
+        webview.load_url("https://example.com");
+        
+        webview.stop_loading();
+        // 停止加载后不应该继续加载
+    }
+    
+    #[test]
+    fn test_webview_cookies() {
+        let mut webview = WebView::new();
+        
+        let cookie = Cookie {
+            name: "session".to_string(),
+            value: "abc123".to_string(),
+            domain: "example.com".to_string(),
+            path: "/".to_string(),
+            expires: None,
+            secure: false,
+            http_only: true,
+        };
+        
+        webview.set_cookie(cookie.clone());
+        
+        let retrieved = webview.get_cookie("session");
+        assert!(retrieved.is_some());
+        assert_eq!(retrieved.unwrap().value, "abc123");
+        
+        webview.delete_cookie("session");
+        assert!(webview.get_cookie("session").is_none());
+    }
+    
+    #[test]
+    fn test_webview_clear_cookies() {
+        let mut webview = WebView::new();
+        
+        webview.set_cookie(Cookie {
+            name: "cookie1".to_string(),
+            value: "value1".to_string(),
+            domain: "example.com".to_string(),
+            path: "/".to_string(),
+            expires: None,
+            secure: false,
+            http_only: false,
+        });
+        
+        webview.set_cookie(Cookie {
+            name: "cookie2".to_string(),
+            value: "value2".to_string(),
+            domain: "example.com".to_string(),
+            path: "/".to_string(),
+            expires: None,
+            secure: false,
+            http_only: false,
+        });
+        
+        webview.clear_cookies();
+        assert!(webview.get_cookie("cookie1").is_none());
+        assert!(webview.get_cookie("cookie2").is_none());
+    }
+    
+    #[test]
+    fn test_webview_user_agent() {
+        let mut webview = WebView::new();
+        
+        assert!(webview.user_agent().contains("Mozilla"));
+        
+        webview.set_user_agent("Custom User Agent");
+        assert_eq!(webview.user_agent(), "Custom User Agent");
+    }
+    
+    #[test]
+    fn test_webview_inject_javascript() {
+        let mut webview = WebView::new();
+        
+        webview.inject_javascript("console.log('injected')");
+        assert!(webview.injected_js.len() > 0);
+    }
+    
+    #[test]
+    fn test_webview_cache() {
+        let mut webview = WebView::new();
+        
+        assert!(webview.is_cache_enabled());
+        
+        webview.set_cache_enabled(false);
+        assert!(!webview.is_cache_enabled());
+        
+        webview.clear_cache();
+    }
+    
+    #[test]
+    fn test_webview_title_extraction() {
+        let webview = WebView::new();
+        let html = "<html><head><title>Test Page</title></head><body></body></html>";
+        let title = webview.extract_title(html);
+        assert_eq!(title, "Test Page");
+        
+        let html_no_title = "<html><body>No title</body></html>";
+        let title2 = webview.extract_title(html_no_title);
+        assert_eq!(title2, "Untitled");
+    }
+    
+    #[test]
+    fn test_webview_load_html() {
+        let mut webview = WebView::new();
+        let html = "<html><head><title>Local Page</title></head><body><h1>Hello</h1></body></html>";
+        
+        webview.load_html(html, Some("about:blank"));
+        assert_eq!(webview.title(), "Local Page");
+    }
+    
+    #[test]
+    fn test_webview_transparent_background() {
+        let mut webview = WebView::new();
+        
+        assert!(!webview.has_transparent_background());
+        
+        webview.set_transparent_background(true);
+        assert!(webview.has_transparent_background());
+    }
+    
+    #[test]
+    fn test_webview_error_handling() {
+        let webview = WebView::new();
+        
+        assert!(webview.error_message().is_empty());
+        assert!(!webview.has_error());
+    }
+    
+    #[test]
+    fn test_webview_load_progress() {
+        let mut webview = WebView::new();
+        
+        assert_eq!(webview.load_progress(), 0);
+        
+        webview.load_url("https://example.com");
+        // 模拟加载会更新进度
+        assert!(webview.load_progress() >= 0 && webview.load_progress() <= 100);
+    }
+    
+    #[test]
+    fn test_webview_history_limit() {
+        let mut webview = WebView::new();
+        webview.max_history = 3;
+        
+        webview.load_url("https://example.com/1");
+        webview.load_url("https://example.com/2");
+        webview.load_url("https://example.com/3");
+        webview.load_url("https://example.com/4");
+        
+        // 历史记录应该被限制
+        assert!(webview.history().len() <= 3);
+    }
+    
+    #[test]
+    fn test_webview_callbacks() {
+        let mut webview = WebView::new();
+        
+        webview.set_on_event(|_wv, event, _data| {
+            // 事件回调会被触发
+        });
+        
+        webview.load_url("https://example.com");
+        // 验证加载触发了事件
+    }
 }

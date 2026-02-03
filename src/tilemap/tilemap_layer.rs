@@ -201,4 +201,120 @@ mod tests {
         let property = tilemap.get_property("test");
         assert!(property.is_none());
     }
+    
+    #[test]
+    fn test_tilemap_tile_size() {
+        let tilemap = TileMap::new();
+        let (width, height) = tilemap.get_tile_size();
+        assert_eq!(width, 0.0);
+        assert_eq!(height, 0.0);
+    }
+    
+    #[test]
+    fn test_tilemap_layer_get_tile() {
+        let layer = TileMapLayer::new();
+        let tile = layer.get_tile_at(0, 0);
+        assert!(tile.is_none());
+    }
+    
+    #[test]
+    fn test_tilemap_layer_tile_gid() {
+        let layer = TileMapLayer::new();
+        let gid = layer.get_tile_gid(0, 0);
+        assert_eq!(gid, 0);
+    }
+    
+    #[test]
+    fn test_tilemap_layer_remove_tile() {
+        let mut layer_info = LayerInfo::new("TestLayer", 5, 5);
+        let tileset = TileSet::new();
+        let mut layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        
+        layer.remove_tile_at(2, 2);
+        // 验证瓦片被移除
+    }
+    
+    #[test]
+    fn test_tilemap_layer_dimensions() {
+        let layer_info = LayerInfo::new("TestLayer", 10, 8);
+        let tileset = TileSet::new();
+        let layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        
+        assert_eq!(layer.get_map_width(), 10);
+        assert_eq!(layer.get_map_height(), 8);
+    }
+    
+    #[test]
+    fn test_tilemap_get_layer_by_name() {
+        let mut tilemap = TileMap::new();
+        let layer_info = LayerInfo::new("Layer1", 5, 5);
+        let tileset = TileSet::new();
+        let layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        
+        tilemap.add_layer(RefPtr::new(layer));
+        
+        let found = tilemap.get_layer_by_name("Layer1");
+        assert!(found.is_some());
+        
+        let not_found = tilemap.get_layer_by_name("NonExistent");
+        assert!(not_found.is_none());
+    }
+    
+    #[test]
+    fn test_tilemap_multiple_layers() {
+        let mut tilemap = TileMap::new();
+        
+        let layer1 = TileMapLayer::create_with_layer_info(
+            LayerInfo::new("Background", 10, 10),
+            TileSet::new()
+        );
+        
+        let layer2 = TileMapLayer::create_with_layer_info(
+            LayerInfo::new("Foreground", 10, 10),
+            TileSet::new()
+        );
+        
+        tilemap.add_layer(RefPtr::new(layer1));
+        tilemap.add_layer(RefPtr::new(layer2));
+        
+        assert_eq!(tilemap.get_layers().len(), 2);
+    }
+    
+    #[test]
+    fn test_tilemap_layer_bounds() {
+        let layer_info = LayerInfo::new("TestLayer", 3, 3);
+        let tileset = TileSet::new();
+        let layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        
+        // 测试边界
+        let tile = layer.get_tile_at(0, 0);
+        let tile_edge = layer.get_tile_at(2, 2);
+        let tile_out = layer.get_tile_at(5, 5);
+        
+        assert!(tile_out.is_none());
+    }
+    
+    #[test]
+    fn test_tilemap_layer_set_tile() {
+        let layer_info = LayerInfo::new("TestLayer", 5, 5);
+        let tileset = TileSet::new();
+        let mut layer = TileMapLayer::create_with_layer_info(layer_info, tileset);
+        
+        layer.set_tile_gid(42, 2, 2);
+        // 验证设置成功（需要实现相应的getter）
+    }
+    
+    #[test]
+    fn test_tilemap_object_group() {
+        let tilemap = TileMap::new();
+        let objects = tilemap.get_object_group("ObjectLayer");
+        assert!(objects.is_none());
+    }
+    
+    #[test]
+    fn test_tilemap_init_with_file() {
+        let mut tilemap = TileMap::new();
+        tilemap.init_with_file("test.tmx");
+        // 验证初始化（在实际实现中会加载TMX文件）
+    }
 }

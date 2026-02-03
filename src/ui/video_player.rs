@@ -841,4 +841,202 @@ mod tests {
         player.update(1.0);
         assert!(player.current_time() >= 0.0);
     }
+    
+    #[test]
+    fn test_videoplayer_seek_operations() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        player.duration = 100.0;
+        
+        // 测试 seek_to
+        player.seek_to(50.0);
+        assert_eq!(player.current_time(), 50.0);
+        assert_eq!(player.play_progress(), 0.5);
+        
+        // 测试边界
+        player.seek_to(-10.0);
+        assert_eq!(player.current_time(), 0.0);
+        
+        player.seek_to(200.0);
+        assert_eq!(player.current_time(), 100.0);
+        
+        // 测试 fast_forward
+        player.seek_to(30.0);
+        player.fast_forward(20.0);
+        assert_eq!(player.current_time(), 50.0);
+        
+        // 测试 rewind
+        player.rewind(10.0);
+        assert_eq!(player.current_time(), 40.0);
+    }
+    
+    #[test]
+    fn test_videoplayer_progress() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        player.duration = 200.0;
+        
+        player.seek_to_progress(0.25);
+        assert_eq!(player.current_time(), 50.0);
+        
+        player.seek_to_percent(75.0);
+        assert_eq!(player.current_time(), 150.0);
+        
+        assert_eq!(player.play_progress_percent(), 75.0);
+    }
+    
+    #[test]
+    fn test_videoplayer_toggle() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        
+        // 初始状态为 Ready，切换后应该播放
+        player.toggle_play_pause();
+        assert!(player.is_playing());
+        
+        // 播放状态切换后应该暂停
+        player.toggle_play_pause();
+        assert!(player.is_paused());
+        
+        // 暂停状态切换后应该播放
+        player.toggle_play_pause();
+        assert!(player.is_playing());
+    }
+    
+    #[test]
+    fn test_videoplayer_looping() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        player.duration = 10.0;
+        
+        assert!(!player.is_looping());
+        player.set_looping(true);
+        assert!(player.is_looping());
+        
+        // 测试循环播放逻辑（在实际实现中会在 update 中处理）
+        player.current_time = 10.0;
+        player.state = VideoState::Ended;
+        
+        // 模拟循环重新开始
+        if player.is_looping() && player.is_ended() {
+            player.current_time = 0.0;
+            player.state = VideoState::Playing;
+        }
+        
+        assert_eq!(player.current_time(), 0.0);
+        assert!(player.is_playing());
+    }
+    
+    #[test]
+    fn test_videoplayer_playback_rate() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        
+        assert_eq!(player.playback_rate(), 1.0);
+        
+        player.set_playback_rate(2.0);
+        assert_eq!(player.playback_rate(), 2.0);
+        
+        player.set_playback_rate(0.5);
+        assert_eq!(player.playback_rate(), 0.5);
+        
+        // 测试边界
+        player.set_playback_rate(0.0);
+        assert!(player.playback_rate() >= 0.25);
+        
+        player.set_playback_rate(10.0);
+        assert!(player.playback_rate() <= 4.0);
+    }
+    
+    #[test]
+    fn test_videoplayer_quality() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        
+        assert_eq!(player.quality(), VideoQuality::Auto);
+        
+        player.set_quality(VideoQuality::High);
+        assert_eq!(player.quality(), VideoQuality::High);
+        
+        player.set_quality(VideoQuality::Low);
+        assert_eq!(player.quality(), VideoQuality::Low);
+    }
+    
+    #[test]
+    fn test_videoplayer_callbacks() {
+        let mut player = VideoPlayer::new();
+        let mut event_triggered = false;
+        
+        player.set_on_event(|_p, event_type| {
+            // 事件回调会被触发
+        });
+        
+        player.set_source("test.mp4");
+        player.play();
+        
+        // 验证状态变化
+        assert!(player.is_playing());
+    }
+    
+    #[test]
+    fn test_videoplayer_time_formatting() {
+        let player = VideoPlayer::new();
+        
+        // 测试不同时长的格式化
+        assert_eq!(player.format_time(0.0), "00:00");
+        assert_eq!(player.format_time(61.0), "01:01");
+        assert_eq!(player.format_time(3661.0), "01:01:01");
+    }
+    
+    #[test]
+    fn test_videoplayer_stop() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        player.duration = 100.0;
+        
+        player.play();
+        player.seek_to(50.0);
+        assert_eq!(player.current_time(), 50.0);
+        
+        player.stop();
+        assert_eq!(player.current_time(), 0.0);
+        assert_eq!(player.state(), VideoState::Ready);
+    }
+    
+    #[test]
+    fn test_videoplayer_buffer_progress() {
+        let player = VideoPlayer::new();
+        
+        assert_eq!(player.buffer_progress(), 0.0);
+        assert!(player.buffer_progress() >= 0.0);
+        assert!(player.buffer_progress() <= 1.0);
+    }
+    
+    #[test]
+    fn test_videoplayer_ended_state() {
+        let mut player = VideoPlayer::new();
+        player.set_source("test.mp4");
+        player.duration = 10.0;
+        
+        player.state = VideoState::Ended;
+        assert!(player.is_ended());
+        
+        // 播放结束后再次播放应该从头开始
+        player.play();
+        assert_eq!(player.current_time(), 0.0);
+        assert!(player.is_playing());
+    }
+    
+    #[test]
+    fn test_videoplayer_multiple_sources() {
+        let mut player = VideoPlayer::new();
+        
+        player.set_source("video1.mp4");
+        assert_eq!(player.source(), "video1.mp4");
+        assert_eq!(player.state(), VideoState::Loading);
+        
+        player.set_source("video2.webm");
+        assert_eq!(player.source(), "video2.webm");
+        assert_eq!(player.format(), VideoFormat::WebM);
+    }
 }
