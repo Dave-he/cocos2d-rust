@@ -1,8 +1,8 @@
-use crate::base::{Node, Ref, RefPtr};
 use crate::base::types::Color3B;
+use crate::base::{Node, Ref, RefPtr};
+use crate::label::Label;
 use crate::math::Vec2;
 use crate::sprite::Sprite;
-use crate::label::Label;
 
 /// Callback function type for menu items
 pub type MenuCallback = Box<dyn Fn(&MenuItem)>;

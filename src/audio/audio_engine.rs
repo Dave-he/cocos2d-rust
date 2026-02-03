@@ -1,9 +1,12 @@
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
+use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
+use std::time::Duration;
 use rodio::{Decoder, Source};
 
-use super::audio_player::{AudioState, AudioListener};
+use super::audio_player::{AudioBuffer, AudioListener, AudioPlayer, AudioSource, AudioState};
 
 struct AudioEntry {
     sink: rodio::Sink,
@@ -14,7 +17,11 @@ struct AudioEntry {
 pub struct AudioEngine {
     stream: rodio::OutputStream,
     active_audios: HashMap<i32, AudioEntry>,
+    audio_players: HashMap<i32, Arc<Mutex<AudioPlayer>>>,
+    audio_sources: HashMap<String, Arc<Mutex<AudioSource>>>,
+    audio_buffers: HashMap<String, Arc<Mutex<AudioBuffer>>>,
     next_audio_id: i32,
+    current_audio_id: i32,
     volume: f32,
     listener: AudioListener,
 }
@@ -37,7 +44,11 @@ impl AudioEngine {
         AudioEngine {
             stream,
             active_audios: HashMap::new(),
+            audio_players: HashMap::new(),
+            audio_sources: HashMap::new(),
+            audio_buffers: HashMap::new(),
             next_audio_id: 0,
+            current_audio_id: 0,
             volume: 1.0,
             listener: AudioListener::new(),
         }
@@ -61,7 +72,19 @@ impl AudioEngine {
         }
     }
 
-    pub fn preload(_file_path: &str) {
+    pub fn preload(file_path: &str) {
+        let engine = Self::get_instance();
+        engine.preload_internal(file_path);
+    }
+
+    fn preload_internal(&mut self, file_path: &str) {
+        let path = PathBuf::from(file_path);
+        if path.exists() {
+            self.audio_buffers.insert(
+                file_path.to_string(),
+                Arc::new(Mutex::new(AudioBuffer::new())),
+            );
+        }
     }
 
     pub fn play2d(file_path: &str, loop_enabled: bool, volume: f32) -> i32 {
@@ -70,6 +93,7 @@ impl AudioEngine {
     }
 
     fn play2d_internal(&mut self, file_path: &str, loop_enabled: bool, volume: f32) -> i32 {
+        // 使用 rodio 实现
         if !std::path::Path::new(file_path).exists() {
             log::error!("Audio file not found: {}", file_path);
             return -1;
@@ -92,7 +116,6 @@ impl AudioEngine {
         };
 
         let sink = rodio::Sink::connect_new(&self.stream.mixer());
-
         sink.set_volume(volume * self.volume);
         
         if loop_enabled {
@@ -109,6 +132,28 @@ impl AudioEngine {
             volume,
             loop_enabled,
         });
+
+        // 创建 AudioPlayer 和 AudioSource 实例
+        self.current_audio_id += 1;
+        let player_id = self.current_audio_id;
+
+        let mut player = AudioPlayer::new();
+        player.set_id(player_id);
+        player.set_volume(volume);
+        player.set_current_time(Duration::ZERO);
+
+        let mut source = AudioSource::new(file_path);
+        source.set_loop_enabled(loop_enabled);
+        source.set_volume(volume);
+
+        self.audio_players.insert(player_id, Arc::new(Mutex::new(player)));
+        self.audio_sources
+            .insert(file_path.to_string(), Arc::new(Mutex::new(source)));
+
+        if let Some(player_arc) = self.audio_players.get(&player_id) {
+            let mut player = player_arc.lock().unwrap();
+            player.play();
+        }
 
         self.cleanup_finished_audios();
 

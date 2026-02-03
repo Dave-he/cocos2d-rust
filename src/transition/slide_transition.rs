@@ -1,8 +1,8 @@
-use super::transition_scene::{TransitionScene, TransitionOrientation};
-use crate::Scene;
+use super::transition_scene::{TransitionOrientation, TransitionScene};
 use crate::math::Vec2;
-use std::rc::Rc;
+use crate::Scene;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 滑动过渡
 pub struct SlideTransition {
@@ -42,18 +42,10 @@ impl SlideTransition {
         let screen_height = 768.0;
 
         match orientation {
-            TransitionOrientation::LeftToRight => {
-                (Vec2::new(-screen_width, 0.0), Vec2::ZERO)
-            }
-            TransitionOrientation::RightToLeft => {
-                (Vec2::new(screen_width, 0.0), Vec2::ZERO)
-            }
-            TransitionOrientation::UpToDown => {
-                (Vec2::new(0.0, screen_height), Vec2::ZERO)
-            }
-            TransitionOrientation::DownToUp => {
-                (Vec2::new(0.0, -screen_height), Vec2::ZERO)
-            }
+            TransitionOrientation::LeftToRight => (Vec2::new(-screen_width, 0.0), Vec2::ZERO),
+            TransitionOrientation::RightToLeft => (Vec2::new(screen_width, 0.0), Vec2::ZERO),
+            TransitionOrientation::UpToDown => (Vec2::new(0.0, screen_height), Vec2::ZERO),
+            TransitionOrientation::DownToUp => (Vec2::new(0.0, -screen_height), Vec2::ZERO),
         }
     }
 
@@ -75,7 +67,7 @@ impl SlideTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         if !self.transition.is_finished() {
             let progress = self.transition.progress();
             let offset = self.start_offset + (self.end_offset - self.start_offset) * progress;
@@ -106,12 +98,8 @@ mod tests {
     #[test]
     fn test_slide_transition_creation() {
         let in_scene = create_test_scene();
-        let slide = SlideTransition::new(
-            1.0,
-            in_scene,
-            TransitionOrientation::LeftToRight,
-        );
-        
+        let slide = SlideTransition::new(1.0, in_scene, TransitionOrientation::LeftToRight);
+
         assert_eq!(slide.transition().duration(), 1.0);
         assert_eq!(
             slide.transition().orientation(),
@@ -122,56 +110,36 @@ mod tests {
     #[test]
     fn test_slide_offsets() {
         let in_scene = create_test_scene();
-        
+
         // 左到右
-        let slide = SlideTransition::new(
-            1.0,
-            in_scene.clone(),
-            TransitionOrientation::LeftToRight,
-        );
+        let slide = SlideTransition::new(1.0, in_scene.clone(), TransitionOrientation::LeftToRight);
         assert!(slide.start_offset.x < 0.0);
         assert_eq!(slide.end_offset, Vec2::ZERO);
-        
+
         // 右到左
-        let slide = SlideTransition::new(
-            1.0,
-            in_scene.clone(),
-            TransitionOrientation::RightToLeft,
-        );
+        let slide = SlideTransition::new(1.0, in_scene.clone(), TransitionOrientation::RightToLeft);
         assert!(slide.start_offset.x > 0.0);
-        
+
         // 上到下
-        let slide = SlideTransition::new(
-            1.0,
-            in_scene.clone(),
-            TransitionOrientation::UpToDown,
-        );
+        let slide = SlideTransition::new(1.0, in_scene.clone(), TransitionOrientation::UpToDown);
         assert!(slide.start_offset.y > 0.0);
-        
+
         // 下到上
-        let slide = SlideTransition::new(
-            1.0,
-            in_scene,
-            TransitionOrientation::DownToUp,
-        );
+        let slide = SlideTransition::new(1.0, in_scene, TransitionOrientation::DownToUp);
         assert!(slide.start_offset.y < 0.0);
     }
 
     #[test]
     fn test_slide_transition_update() {
         let in_scene = create_test_scene();
-        let mut slide = SlideTransition::new(
-            2.0,
-            in_scene,
-            TransitionOrientation::LeftToRight,
-        );
-        
+        let mut slide = SlideTransition::new(2.0, in_scene, TransitionOrientation::LeftToRight);
+
         slide.start();
         slide.update(1.0);
-        
+
         assert!(!slide.is_finished());
         assert_eq!(slide.transition().progress(), 0.5);
-        
+
         slide.update(1.0);
         assert!(slide.is_finished());
     }

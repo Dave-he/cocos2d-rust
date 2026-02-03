@@ -1,7 +1,7 @@
 use super::animation::Animation;
 use super::sprite_frame::SpriteFrame;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// Animate 动作
 /// 播放动画序列的动作
@@ -55,7 +55,7 @@ impl Animate {
     /// 停止播放
     pub fn stop(&mut self) {
         self.done = true;
-        
+
         // 恢复原始帧
         if self.animation.borrow().restore_original_frame() {
             // 这里需要在实际使用时将 original_frame 应用到精灵上
@@ -70,7 +70,7 @@ impl Animate {
         }
 
         let animation = self.animation.borrow();
-        
+
         // 检查是否有帧
         if animation.frame_count() == 0 {
             self.done = true;
@@ -78,7 +78,7 @@ impl Animate {
         }
 
         self.elapsed += dt;
-        
+
         // 计算当前循环内的时间
         let duration = animation.duration();
         if duration <= 0.0 {
@@ -87,18 +87,18 @@ impl Animate {
         }
 
         let loops = animation.loops();
-        
+
         // 检查是否完成所有循环
         if loops > 0 && self.elapsed >= duration * loops as f32 {
             self.done = true;
             // 更新最终的循环计数
             self.executed_loops = loops;
-            
+
             // 恢复原始帧
             if animation.restore_original_frame() {
                 return self.original_frame.clone();
             }
-            
+
             // 否则返回最后一帧
             return animation.get_frame(animation.frame_count() - 1);
         }
@@ -106,7 +106,7 @@ impl Animate {
         // 计算当前帧索引
         let loop_time = self.elapsed % duration;
         let new_frame_index = animation.get_frame_index_at_time(loop_time);
-        
+
         // 更新循环计数 - 应该向上取整以表示"已完成的循环"
         let current_loop = (self.elapsed / duration).ceil() as u32;
         if current_loop > self.executed_loops {
@@ -136,11 +136,11 @@ impl Animate {
     pub fn progress(&self) -> f32 {
         let animation = self.animation.borrow();
         let total_duration = animation.total_duration();
-        
+
         if total_duration.is_infinite() {
             return 0.0;
         }
-        
+
         if total_duration <= 0.0 {
             return 1.0;
         }
@@ -159,10 +159,10 @@ impl Animate {
     /// 跳转到指定时间
     pub fn seek(&mut self, time: f32) {
         self.elapsed = time.max(0.0);
-        
+
         let animation = self.animation.borrow();
         let duration = animation.duration();
-        
+
         if duration > 0.0 {
             let loop_time = self.elapsed % duration;
             self.current_frame_index = animation.get_frame_index_at_time(loop_time);
@@ -202,7 +202,7 @@ mod tests {
         let frames: Vec<Rc<RefCell<SpriteFrame>>> = (0..frame_count)
             .map(|i| Rc::new(RefCell::new(SpriteFrame::new(format!("frame_{}", i)))))
             .collect();
-        
+
         let mut anim = Animation::with_frames(frames, delay);
         anim.set_loops(loops);
         anim
@@ -212,7 +212,7 @@ mod tests {
     fn test_animate_creation() {
         let anim = create_test_animation(5, 0.1, 1);
         let animate = Animate::create(anim);
-        
+
         assert!(!animate.is_done());
         assert_eq!(animate.current_frame_index(), 0);
     }
@@ -222,17 +222,17 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         // 第一帧
         let frame = animate.update(0.05);
         assert!(frame.is_some());
         assert_eq!(animate.current_frame_index(), 0);
-        
+
         // 第二帧
         let frame = animate.update(0.1);
         assert!(frame.is_some());
         assert_eq!(animate.current_frame_index(), 1);
-        
+
         // 第三帧
         let frame = animate.update(0.1);
         assert!(frame.is_some());
@@ -244,10 +244,10 @@ mod tests {
         let anim = create_test_animation(3, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         // 播放完整动画
         animate.update(0.3);
-        
+
         assert!(animate.is_done());
     }
 
@@ -256,12 +256,12 @@ mod tests {
         let anim = create_test_animation(3, 0.1, 2);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         // 第一次循环
         animate.update(0.3);
         assert!(!animate.is_done());
         assert_eq!(animate.executed_loops(), 1);
-        
+
         // 第二次循环
         animate.update(0.3);
         assert!(animate.is_done());
@@ -273,12 +273,12 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         assert_eq!(animate.progress(), 0.0);
-        
+
         animate.update(0.25); // 50%
         assert!((animate.progress() - 0.5).abs() < 0.01);
-        
+
         animate.update(0.25); // 100%
         assert!((animate.progress() - 1.0).abs() < 0.01);
     }
@@ -288,10 +288,10 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         animate.update(0.25);
         assert_eq!(animate.current_frame_index(), 2);
-        
+
         animate.reset();
         assert_eq!(animate.current_frame_index(), 0);
         assert_eq!(animate.executed_loops(), 0);
@@ -303,10 +303,10 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         animate.seek(0.25);
         assert_eq!(animate.current_frame_index(), 2);
-        
+
         animate.seek(0.0);
         assert_eq!(animate.current_frame_index(), 0);
     }
@@ -316,13 +316,13 @@ mod tests {
         let anim = create_test_animation(3, 0.1, 0); // 无限循环
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         // 播放多次循环
         for _ in 0..10 {
             animate.update(0.3);
             assert!(!animate.is_done()); // 永远不会完成
         }
-        
+
         assert_eq!(animate.progress(), 0.0); // 无限循环进度为 0
     }
 
@@ -331,10 +331,10 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         animate.update(0.15);
         assert!(!animate.is_done());
-        
+
         animate.stop();
         assert!(animate.is_done());
     }
@@ -344,9 +344,9 @@ mod tests {
         let anim = create_test_animation(5, 0.1, 1);
         let mut animate = Animate::create(anim);
         animate.start(None);
-        
+
         animate.update(0.15);
-        
+
         let cloned = animate.clone_action();
         assert_eq!(cloned.current_frame_index(), 0); // 克隆后重置
         assert!(!cloned.is_done());

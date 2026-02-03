@@ -1,9 +1,11 @@
 use std::cell::{Cell, RefCell};
-use std::rc::Rc;
 use std::fmt;
+use std::rc::Rc;
 
 pub trait Clonable {
-    fn clone(&self) -> RefPtr<Self> where Self: Sized;
+    fn clone(&self) -> RefPtr<Self>
+    where
+        Self: Sized;
 }
 
 #[derive(Debug, Clone)]

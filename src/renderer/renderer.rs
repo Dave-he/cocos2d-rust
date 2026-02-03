@@ -1,14 +1,16 @@
-use crate::base::{Ref, RefPtr};
+use crate::backend::opengl::OpenGLBackend;
 use crate::base::types::Color4F;
+use crate::base::{Ref, RefPtr};
 use crate::math::Mat4;
-use crate::renderer::command::{RenderCommand, CommandType, Triangles, Quad, MeshCommand, GroupCommand};
+use crate::platform::Image;
+use crate::renderer::command::{
+    CommandType, GroupCommand, MeshCommand, Quad, RenderCommand, Triangles,
+};
 use crate::renderer::material::Material;
 use crate::renderer::pipeline::PipelineState;
-use crate::backend::opengl::OpenGLBackend;
-use std::rc::Rc;
+use crate::renderer::texture::{PixelFormat, Texture2D};
 use glow::Context;
-use crate::platform::Image;
-use crate::renderer::texture::{Texture2D, PixelFormat};
+use std::rc::Rc;
 
 pub struct Renderer {
     commands: Vec<Box<dyn RenderCommand>>,
@@ -44,7 +46,7 @@ impl Renderer {
     pub fn init_backend(&mut self, context: Rc<Context>) {
         let mut backend = OpenGLBackend::new(context);
         backend.init();
-        
+
         // Create default resources
         self.default_program = self.create_default_shader(&mut backend);
         let vbo = backend.create_buffer();
@@ -72,7 +74,7 @@ impl Renderer {
             v_color = a_color;
         }
         "#;
-        
+
         let fs_source = r#"#version 410 core
         in vec2 v_texCoord;
         in vec4 v_color;
@@ -109,10 +111,9 @@ impl Renderer {
             log::error!("Failed to link default program");
             return 0;
         }
-        
+
         prog_id
     }
-
 
     pub fn start_frame(&mut self) {
         self.commands.clear();
@@ -148,7 +149,9 @@ impl Renderer {
 
         // Sort commands by global order
         self.command_queue.sort_by(|a, b| {
-            a.get_global_order().partial_cmp(&b.get_global_order()).unwrap()
+            a.get_global_order()
+                .partial_cmp(&b.get_global_order())
+                .unwrap()
         });
 
         // Execute all commands
@@ -184,24 +187,25 @@ impl Renderer {
             backend.use_program(self.default_program);
 
             // Set MVP matrix (Identity for now, or view_projection)
-            // Need to locate uniform first. 
+            // Need to locate uniform first.
             let mvp_loc = backend.get_program_uniform_location(self.default_program, "u_MVPMatrix");
             backend.set_uniform_matrix4fv(mvp_loc, false, &self.view_projection);
-            
+
             // Bind buffers
             backend.bind_buffer(crate::backend::device::BufferType::VERTEX, self.dynamic_vbo);
-            
+
             let vert_bytes = unsafe {
                 std::slice::from_raw_parts(
                     triangles.vertices.as_ptr() as *const u8,
-                    triangles.vertices.len() * std::mem::size_of::<crate::renderer::command::Vertex>()
+                    triangles.vertices.len()
+                        * std::mem::size_of::<crate::renderer::command::Vertex>(),
                 )
             };
             backend.buffer_data(
-                crate::backend::device::BufferType::VERTEX, 
-                vert_bytes.len(), 
-                vert_bytes, 
-                crate::backend::device::BufferUsage::DYNAMIC
+                crate::backend::device::BufferType::VERTEX,
+                vert_bytes.len(),
+                vert_bytes,
+                crate::backend::device::BufferUsage::DYNAMIC,
             );
 
             // Enable attributes
@@ -220,18 +224,23 @@ impl Renderer {
             let idx_bytes = unsafe {
                 std::slice::from_raw_parts(
                     triangles.indices.as_ptr() as *const u8,
-                    triangles.indices.len() * 2
+                    triangles.indices.len() * 2,
                 )
             };
             backend.buffer_data(
                 crate::backend::device::BufferType::INDEX,
                 idx_bytes.len(),
                 idx_bytes,
-                crate::backend::device::BufferUsage::DYNAMIC
+                crate::backend::device::BufferUsage::DYNAMIC,
             );
 
             // Draw
-            backend.draw_elements(glow::TRIANGLES, triangles.indices.len() as i32, glow::UNSIGNED_SHORT, 0);
+            backend.draw_elements(
+                glow::TRIANGLES,
+                triangles.indices.len() as i32,
+                glow::UNSIGNED_SHORT,
+                0,
+            );
         }
     }
 
@@ -239,11 +248,9 @@ impl Renderer {
         self.current_material = Some(material);
     }
 
-    pub fn draw_mesh(&mut self, mesh: &MeshCommand) {
-    }
+    pub fn draw_mesh(&mut self, mesh: &MeshCommand) {}
 
-    pub fn draw_group(&mut self, group: &GroupCommand) {
-    }
+    pub fn draw_group(&mut self, group: &GroupCommand) {}
 
     pub fn set_pipeline(&mut self, pipeline: RefPtr<PipelineState>) {
         self.current_pipeline = Some(pipeline);
@@ -253,14 +260,11 @@ impl Renderer {
         self.current_pipeline.as_ref()
     }
 
-    pub fn set_depth_test_enabled(&mut self, enabled: bool) {
-    }
+    pub fn set_depth_test_enabled(&mut self, enabled: bool) {}
 
-    pub fn set_cull_mode(&mut self, mode: CullMode) {
-    }
+    pub fn set_cull_mode(&mut self, mode: CullMode) {}
 
-    pub fn set_blend_func(&mut self, src: u32, dst: u32) {
-    }
+    pub fn set_blend_func(&mut self, src: u32, dst: u32) {}
 
     pub fn get_rendertarget_size(&self) -> (u32, u32) {
         (1920, 1080)
@@ -292,21 +296,21 @@ impl Renderer {
     pub fn create_texture_from_image(&mut self, image: &Image) -> Option<Texture2D> {
         if let Some(backend) = &mut self.backend {
             let texture_obj = backend.create_texture();
-            
+
             // Map Image format to PixelFormat/GL format
             // For now assume RGBA8888
             let pixel_format = PixelFormat::RGBA8888;
-            
+
             backend.bind_texture(glow::TEXTURE_2D, texture_obj.get_id());
-            
+
             // Upload data
             backend.set_texture_params(
-                glow::LINEAR, 
-                glow::LINEAR, 
-                glow::CLAMP_TO_EDGE, 
-                glow::CLAMP_TO_EDGE
+                glow::LINEAR,
+                glow::LINEAR,
+                glow::CLAMP_TO_EDGE,
+                glow::CLAMP_TO_EDGE,
             );
-            
+
             backend.tex_image_2d(
                 glow::TEXTURE_2D,
                 0,
@@ -315,18 +319,18 @@ impl Renderer {
                 image.get_height(),
                 0,
                 glow::RGBA,
-                Some(image.get_data())
+                Some(image.get_data()),
             );
-            
+
             let mut texture = Texture2D::new();
             texture.set_name(texture_obj.get_id());
             texture.update(
-                image.get_data(), 
-                image.get_width(), 
-                image.get_height(), 
-                pixel_format
+                image.get_data(),
+                image.get_width(),
+                image.get_height(),
+                pixel_format,
             );
-            
+
             Some(texture)
         } else {
             None
@@ -372,7 +376,12 @@ pub struct ScissorRect {
 
 impl ScissorRect {
     pub fn new(x: i32, y: i32, width: u32, height: u32) -> ScissorRect {
-        ScissorRect { x, y, width, height }
+        ScissorRect {
+            x,
+            y,
+            width,
+            height,
+        }
     }
 
     pub fn get_x(&self) -> i32 {
@@ -407,7 +416,13 @@ pub struct ViewPort {
 
 impl ViewPort {
     pub fn new(left: f32, bottom: f32, width: f32, height: f32) -> ViewPort {
-        ViewPort { left, bottom, width, height, scale: 1.0 }
+        ViewPort {
+            left,
+            bottom,
+            width,
+            height,
+            scale: 1.0,
+        }
     }
 
     pub fn get_left(&self) -> f32 {

@@ -1,11 +1,11 @@
-use std::cell::RefCell;
-use crate::base::{Size, Ref, RefPtr};
-use crate::base::scheduler::Scheduler;
 use crate::base::event::EventDispatcher;
+use crate::base::scheduler::Scheduler;
+use crate::base::{Ref, RefPtr, Size};
+use std::cell::RefCell;
 
 use crate::renderer::Renderer;
-use std::rc::Rc;
 use glow::Context;
+use std::rc::Rc;
 
 #[derive(Debug)]
 pub struct Director {
@@ -87,6 +87,7 @@ impl Director {
         self.next_scene = Some(scene);
     }
 
+    /// Pops the running scene
     pub fn pop_scene(&mut self) {
     }
 
@@ -110,7 +111,16 @@ impl Director {
             self.running_scene = scene;
         }
 
+<<<<<<< HEAD
         self.running_scene.borrow().visit(&mut self.renderer.borrow_mut(), &crate::math::Mat4::IDENTITY, 0);
+=======
+        // Render the current scene
+        self.running_scene.borrow().visit(
+            &mut self.renderer.borrow_mut(),
+            &crate::math::Mat4::IDENTITY,
+            0,
+        );
+>>>>>>> feature/warning-cleanup
         self.renderer.borrow_mut().render();
         log::info!("Director loop running. Delta: {}", self.delta_time);
     }
@@ -164,7 +174,8 @@ impl Scene {
     }
 
     pub fn remove_child(&mut self, child: &RefPtr<Node>) {
-        self.children.retain(|c| !c.borrow().get_id() == child.borrow().get_id());
+        self.children
+            .retain(|c| !c.borrow().get_id() == child.borrow().get_id());
     }
 
     pub fn update(&mut self, delta_time: f32) {
@@ -173,9 +184,16 @@ impl Scene {
         }
     }
 
-    pub fn visit(&self, renderer: &mut Renderer, parent_transform: &crate::math::Mat4, parent_flags: u32) {
+    pub fn visit(
+        &self,
+        renderer: &mut Renderer,
+        parent_transform: &crate::math::Mat4,
+        parent_flags: u32,
+    ) {
         for child in &self.children {
-            child.borrow_mut().visit(renderer, parent_transform, parent_flags);
+            child
+                .borrow_mut()
+                .visit(renderer, parent_transform, parent_flags);
         }
     }
 }
@@ -261,7 +279,12 @@ impl Node {
         self.on_draw = Some(callback);
     }
 
-    pub fn visit(&mut self, renderer: &mut Renderer, parent_transform: &crate::math::Mat4, _parent_flags: u32) {
+    pub fn visit(
+        &mut self,
+        renderer: &mut Renderer,
+        parent_transform: &crate::math::Mat4,
+        _parent_flags: u32,
+    ) {
         if !self.visible {
             return;
         }
@@ -269,7 +292,9 @@ impl Node {
         self.global_transform = *parent_transform * self.local_transform;
 
         for child in &self.children {
-            child.borrow_mut().visit(renderer, &self.global_transform, _parent_flags);
+            child
+                .borrow_mut()
+                .visit(renderer, &self.global_transform, _parent_flags);
         }
 
         if let Some(callback) = &self.on_draw {
@@ -294,7 +319,8 @@ impl Node {
     }
 
     pub fn remove_child(&mut self, child: &RefPtr<Node>) {
-        self.children.retain(|c| c.borrow().get_id() != child.borrow().get_id());
+        self.children
+            .retain(|c| c.borrow().get_id() != child.borrow().get_id());
     }
 
     pub fn remove_all_children(&mut self) {
@@ -380,11 +406,20 @@ impl Node {
     }
 
     fn update_local_transform(&mut self) {
-        self.local_transform = crate::math::Mat4::create_translation(&crate::math::Vec3::new(self.position.x, self.position.y, 0.0));
+        self.local_transform = crate::math::Mat4::create_translation(&crate::math::Vec3::new(
+            self.position.x,
+            self.position.y,
+            0.0,
+        ));
     }
 
+<<<<<<< HEAD
     pub fn update(&mut self, delta_time: f32) {
     }
+=======
+    /// Updates the node
+    pub fn update(&mut self, delta_time: f32) {}
+>>>>>>> feature/warning-cleanup
 
     pub fn get_id(&self) -> usize {
         let ptr = &self.base as *const Ref as *const u8 as usize;

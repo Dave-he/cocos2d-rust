@@ -1,7 +1,7 @@
 use super::transition_scene::TransitionScene;
 use crate::Scene;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 淡入淡出过渡
 pub struct FadeTransition {
@@ -59,7 +59,7 @@ impl FadeTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         if !self.transition.is_finished() {
             let progress = self.transition.progress();
             let opacity = self.start_opacity + (self.end_opacity - self.start_opacity) * progress;
@@ -115,10 +115,10 @@ impl FadeWhiteTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         if !self.transition.is_finished() {
             let progress = self.transition.progress();
-            
+
             // 前半段：淡出到白色
             // 后半段：从白色淡入新场景
             if progress < 0.5 {
@@ -126,7 +126,7 @@ impl FadeWhiteTransition {
             } else {
                 self.white_opacity = (1.0 - progress) * 2.0;
             }
-            
+
             self.apply_white_overlay(self.white_opacity);
         }
     }
@@ -155,7 +155,7 @@ mod tests {
     fn test_fade_transition_creation() {
         let in_scene = create_test_scene();
         let fade = FadeTransition::new(1.0, in_scene);
-        
+
         assert_eq!(fade.transition().duration(), 1.0);
     }
 
@@ -163,7 +163,7 @@ mod tests {
     fn test_fade_in() {
         let in_scene = create_test_scene();
         let fade = FadeTransition::fade_in(1.0, in_scene);
-        
+
         assert_eq!(fade.start_opacity, 0.0);
         assert_eq!(fade.end_opacity, 1.0);
     }
@@ -172,7 +172,7 @@ mod tests {
     fn test_fade_out() {
         let in_scene = create_test_scene();
         let fade = FadeTransition::fade_out(1.0, in_scene);
-        
+
         assert_eq!(fade.start_opacity, 1.0);
         assert_eq!(fade.end_opacity, 0.0);
     }
@@ -181,10 +181,10 @@ mod tests {
     fn test_fade_transition_update() {
         let in_scene = create_test_scene();
         let mut fade = FadeTransition::new(2.0, in_scene);
-        
+
         fade.start();
         fade.update(1.0);
-        
+
         assert!(!fade.is_finished());
         assert_eq!(fade.transition().progress(), 0.5);
     }
@@ -193,19 +193,19 @@ mod tests {
     fn test_fade_white_transition() {
         let in_scene = create_test_scene();
         let mut fade = FadeWhiteTransition::new(2.0, in_scene);
-        
+
         fade.start();
-        
+
         // 前半段：白色覆盖增加
         fade.update(0.5);
         assert!(fade.white_opacity > 0.0);
-        
+
         // 中点：白色覆盖最大
         fade.update(0.5);
-        
+
         // 后半段：白色覆盖减少
         fade.update(0.5);
-        
+
         // 结束
         fade.update(0.5);
         assert!(fade.is_finished());

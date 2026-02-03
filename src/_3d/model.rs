@@ -1,6 +1,6 @@
+use super::mesh::{Mesh, MeshSkin, AABB};
 use crate::base::{Ref, RefPtr};
-use crate::math::{Vec3, Mat4};
-use super::mesh::{Mesh, AABB, MeshSkin};
+use crate::math::{Mat4, Vec3};
 
 #[derive(Debug)]
 pub struct Sprite3D {
@@ -24,8 +24,7 @@ impl Sprite3D {
         Some(sprite)
     }
 
-    pub fn init(&mut self, file_name: &str) {
-    }
+    pub fn init(&mut self, file_name: &str) {}
 
     pub fn get_mesh(&self) -> Option<&RefPtr<Mesh>> {
         self.mesh.as_ref()

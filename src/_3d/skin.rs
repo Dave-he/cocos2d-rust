@@ -1,5 +1,5 @@
 use crate::base::{Ref, RefPtr};
-use crate::math::{Vec3, Mat4, Quaternion};
+use crate::math::{Mat4, Quaternion, Vec3};
 
 #[derive(Debug)]
 pub struct Bone3D {
@@ -101,7 +101,8 @@ impl Skeleton3D {
     pub fn add_bone(&mut self, bone: RefPtr<Bone3D>) {
         let index = self.bones.len();
         self.bones.push(bone.clone());
-        self.bone_index_by_name.insert(bone.borrow().get_name().to_string(), index);
+        self.bone_index_by_name
+            .insert(bone.borrow().get_name().to_string(), index);
     }
 
     pub fn get_bones(&self) -> &Vec<RefPtr<Bone3D>> {

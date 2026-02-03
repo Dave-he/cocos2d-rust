@@ -1,5 +1,5 @@
-use std::ops::{Add, Sub};
 use crate::math::Vec2;
+use std::ops::{Add, Sub};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Color3B {
@@ -9,15 +9,35 @@ pub struct Color3B {
 }
 
 impl Color3B {
-    pub const WHITE: Color3B = Color3B { r: 255, g: 255, b: 255 };
-    pub const YELLOW: Color3B = Color3B { r: 255, g: 255, b: 0 };
+    pub const WHITE: Color3B = Color3B {
+        r: 255,
+        g: 255,
+        b: 255,
+    };
+    pub const YELLOW: Color3B = Color3B {
+        r: 255,
+        g: 255,
+        b: 0,
+    };
     pub const GREEN: Color3B = Color3B { r: 0, g: 255, b: 0 };
     pub const BLUE: Color3B = Color3B { r: 0, g: 0, b: 255 };
     pub const RED: Color3B = Color3B { r: 255, g: 0, b: 0 };
-    pub const MAGENTA: Color3B = Color3B { r: 255, g: 0, b: 255 };
+    pub const MAGENTA: Color3B = Color3B {
+        r: 255,
+        g: 0,
+        b: 255,
+    };
     pub const BLACK: Color3B = Color3B { r: 0, g: 0, b: 0 };
-    pub const ORANGE: Color3B = Color3B { r: 255, g: 128, b: 0 };
-    pub const GRAY: Color3B = Color3B { r: 166, g: 166, b: 166 };
+    pub const ORANGE: Color3B = Color3B {
+        r: 255,
+        g: 128,
+        b: 0,
+    };
+    pub const GRAY: Color3B = Color3B {
+        r: 166,
+        g: 166,
+        b: 166,
+    };
 
     #[inline]
     pub fn new(r: u8, g: u8, b: u8) -> Self {
@@ -35,7 +55,12 @@ impl Color3B {
 
     #[inline]
     pub fn to_color4f(&self, a: u8) -> Color4F {
-        Color4F::new(self.r as f32 / 255.0, self.g as f32 / 255.0, self.b as f32 / 255.0, a as f32 / 255.0)
+        Color4F::new(
+            self.r as f32 / 255.0,
+            self.g as f32 / 255.0,
+            self.b as f32 / 255.0,
+            a as f32 / 255.0,
+        )
     }
 }
 
@@ -48,16 +73,66 @@ pub struct Color4B {
 }
 
 impl Color4B {
-    pub const WHITE: Color4B = Color4B { r: 255, g: 255, b: 255, a: 255 };
-    pub const YELLOW: Color4B = Color4B { r: 255, g: 255, b: 0, a: 255 };
-    pub const GREEN: Color4B = Color4B { r: 0, g: 255, b: 0, a: 255 };
-    pub const BLUE: Color4B = Color4B { r: 0, g: 0, b: 255, a: 255 };
-    pub const RED: Color4B = Color4B { r: 255, g: 0, b: 0, a: 255 };
-    pub const MAGENTA: Color4B = Color4B { r: 255, g: 0, b: 255, a: 255 };
-    pub const BLACK: Color4B = Color4B { r: 0, g: 0, b: 0, a: 255 };
-    pub const ORANGE: Color4B = Color4B { r: 255, g: 128, b: 0, a: 255 };
-    pub const GRAY: Color4B = Color4B { r: 166, g: 166, b: 166, a: 255 };
-    pub const TRANSPARENT: Color4B = Color4B { r: 0, g: 0, b: 0, a: 0 };
+    pub const WHITE: Color4B = Color4B {
+        r: 255,
+        g: 255,
+        b: 255,
+        a: 255,
+    };
+    pub const YELLOW: Color4B = Color4B {
+        r: 255,
+        g: 255,
+        b: 0,
+        a: 255,
+    };
+    pub const GREEN: Color4B = Color4B {
+        r: 0,
+        g: 255,
+        b: 0,
+        a: 255,
+    };
+    pub const BLUE: Color4B = Color4B {
+        r: 0,
+        g: 0,
+        b: 255,
+        a: 255,
+    };
+    pub const RED: Color4B = Color4B {
+        r: 255,
+        g: 0,
+        b: 0,
+        a: 255,
+    };
+    pub const MAGENTA: Color4B = Color4B {
+        r: 255,
+        g: 0,
+        b: 255,
+        a: 255,
+    };
+    pub const BLACK: Color4B = Color4B {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 255,
+    };
+    pub const ORANGE: Color4B = Color4B {
+        r: 255,
+        g: 128,
+        b: 0,
+        a: 255,
+    };
+    pub const GRAY: Color4B = Color4B {
+        r: 166,
+        g: 166,
+        b: 166,
+        a: 255,
+    };
+    pub const TRANSPARENT: Color4B = Color4B {
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0,
+    };
 
     #[inline]
     pub fn new(r: u8, g: u8, b: u8, a: u8) -> Self {
@@ -66,12 +141,22 @@ impl Color4B {
 
     #[inline]
     pub fn from_color3b(color: Color3B, a: u8) -> Self {
-        Color4B { r: color.r, g: color.g, b: color.b, a }
+        Color4B {
+            r: color.r,
+            g: color.g,
+            b: color.b,
+            a,
+        }
     }
 
     #[inline]
     pub fn to_color4f(&self) -> Color4F {
-        Color4F::new(self.r as f32 / 255.0, self.g as f32 / 255.0, self.b as f32 / 255.0, self.a as f32 / 255.0)
+        Color4F::new(
+            self.r as f32 / 255.0,
+            self.g as f32 / 255.0,
+            self.b as f32 / 255.0,
+            self.a as f32 / 255.0,
+        )
     }
 }
 
@@ -84,14 +169,54 @@ pub struct Color4F {
 }
 
 impl Color4F {
-    pub const WHITE: Color4F = Color4F { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };
-    pub const YELLOW: Color4F = Color4F { r: 1.0, g: 1.0, b: 0.0, a: 1.0 };
-    pub const GREEN: Color4F = Color4F { r: 0.0, g: 1.0, b: 0.0, a: 1.0 };
-    pub const BLUE: Color4F = Color4F { r: 0.0, g: 0.0, b: 1.0, a: 1.0 };
-    pub const RED: Color4F = Color4F { r: 1.0, g: 0.0, b: 0.0, a: 1.0 };
-    pub const MAGENTA: Color4F = Color4F { r: 1.0, g: 0.0, b: 1.0, a: 1.0 };
-    pub const BLACK: Color4F = Color4F { r: 0.0, g: 0.0, b: 0.0, a: 1.0 };
-    pub const TRANSPARENT: Color4F = Color4F { r: 0.0, g: 0.0, b: 0.0, a: 0.0 };
+    pub const WHITE: Color4F = Color4F {
+        r: 1.0,
+        g: 1.0,
+        b: 1.0,
+        a: 1.0,
+    };
+    pub const YELLOW: Color4F = Color4F {
+        r: 1.0,
+        g: 1.0,
+        b: 0.0,
+        a: 1.0,
+    };
+    pub const GREEN: Color4F = Color4F {
+        r: 0.0,
+        g: 1.0,
+        b: 0.0,
+        a: 1.0,
+    };
+    pub const BLUE: Color4F = Color4F {
+        r: 0.0,
+        g: 0.0,
+        b: 1.0,
+        a: 1.0,
+    };
+    pub const RED: Color4F = Color4F {
+        r: 1.0,
+        g: 0.0,
+        b: 0.0,
+        a: 1.0,
+    };
+    pub const MAGENTA: Color4F = Color4F {
+        r: 1.0,
+        g: 0.0,
+        b: 1.0,
+        a: 1.0,
+    };
+    pub const BLACK: Color4F = Color4F {
+        r: 0.0,
+        g: 0.0,
+        b: 0.0,
+        a: 1.0,
+    };
+    pub const TRANSPARENT: Color4F = Color4F {
+        r: 0.0,
+        g: 0.0,
+        b: 0.0,
+        a: 0.0,
+    };
 
     #[inline]
     pub fn new(r: f32, g: f32, b: f32, a: f32) -> Self {
@@ -100,7 +225,12 @@ impl Color4F {
 
     #[inline]
     pub fn from_color4b(color: Color4B) -> Self {
-        Color4F::new(color.r as f32 / 255.0, color.g as f32 / 255.0, color.b as f32 / 255.0, color.a as f32 / 255.0)
+        Color4F::new(
+            color.r as f32 / 255.0,
+            color.g as f32 / 255.0,
+            color.b as f32 / 255.0,
+            color.a as f32 / 255.0,
+        )
     }
 
     #[inline]
@@ -121,7 +251,10 @@ pub struct Size {
 }
 
 impl Size {
-    pub const ZERO: Size = Size { width: 0.0, height: 0.0 };
+    pub const ZERO: Size = Size {
+        width: 0.0,
+        height: 0.0,
+    };
 
     #[inline]
     pub fn new(width: f32, height: f32) -> Self {
@@ -247,6 +380,7 @@ impl Rect {
     }
 }
 
+<<<<<<< HEAD
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -580,5 +714,23 @@ mod tests {
 
         let debug_str = format!("{:?}", color1);
         assert!(debug_str.contains("100"));
+    }
+}
+
+/// Blend function for rendering
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct BlendFunc {
+    pub src: u32,
+    pub dst: u32,
+}
+
+impl BlendFunc {
+    pub const DISABLE: BlendFunc = BlendFunc { src: 0, dst: 0 };
+    pub const ALPHA_NON_PREMULTIPLIED: BlendFunc = BlendFunc { src: 770, dst: 771 };
+    pub const ALPHA_PREMULTIPLIED: BlendFunc = BlendFunc { src: 1, dst: 771 };
+    pub const ADDITIVE: BlendFunc = BlendFunc { src: 1, dst: 1 };
+
+    pub fn new(src: u32, dst: u32) -> Self {
+        BlendFunc { src, dst }
     }
 }

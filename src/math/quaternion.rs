@@ -1,6 +1,6 @@
-use std::ops::{Mul, MulAssign};
-use std::f32;
 use crate::math::Vec3;
+use std::f32;
+use std::ops::{Mul, MulAssign};
 // use crate::math::Mat4; // Cyclic dependency handling will be needed
 
 #[derive(Copy, Clone, Debug, PartialEq)]
@@ -12,8 +12,18 @@ pub struct Quaternion {
 }
 
 impl Quaternion {
-    pub const ZERO: Quaternion = Quaternion { x: 0.0, y: 0.0, z: 0.0, w: 0.0 };
-    pub const IDENTITY: Quaternion = Quaternion { x: 0.0, y: 0.0, z: 0.0, w: 1.0 };
+    pub const ZERO: Quaternion = Quaternion {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        w: 0.0,
+    };
+    pub const IDENTITY: Quaternion = Quaternion {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+        w: 1.0,
+    };
 
     pub fn identity() -> Self {
         Self::IDENTITY
@@ -22,18 +32,23 @@ impl Quaternion {
     pub fn new(x: f32, y: f32, z: f32, w: f32) -> Self {
         Quaternion { x, y, z, w }
     }
-    
+
     pub fn from_array(array: &[f32; 4]) -> Self {
-        Quaternion { x: array[0], y: array[1], z: array[2], w: array[3] }
+        Quaternion {
+            x: array[0],
+            y: array[1],
+            z: array[2],
+            w: array[3],
+        }
     }
-    
+
     pub fn from_axis_angle(axis: Vec3, angle: f32) -> Self {
         let half_angle = angle * 0.5;
         let sin_half_angle = half_angle.sin();
-        
+
         let mut normal_axis = axis;
         normal_axis.normalize();
-        
+
         Quaternion {
             x: normal_axis.x * sin_half_angle,
             y: normal_axis.y * sin_half_angle,
@@ -49,7 +64,7 @@ impl Quaternion {
     pub fn is_zero(&self) -> bool {
         self.x == 0.0 && self.y == 0.0 && self.z == 0.0 && self.w == 0.0
     }
-    
+
     pub fn conjugate(&mut self) {
         self.x = -self.x;
         self.y = -self.y;
@@ -57,7 +72,12 @@ impl Quaternion {
     }
 
     pub fn get_conjugated(&self) -> Self {
-        Quaternion { x: -self.x, y: -self.y, z: -self.z, w: self.w }
+        Quaternion {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+            w: self.w,
+        }
     }
 
     pub fn inverse(&mut self) -> bool {
@@ -118,20 +138,21 @@ impl Quaternion {
         self.z = z;
         self.w = w;
     }
-    
+
     pub fn to_axis_angle(&self) -> (Vec3, f32) {
         let mut q = *self;
         if q.w > 1.0 {
             q.normalize();
         }
-        
+
         let angle = 2.0 * q.w.acos();
         let s = (1.0 - q.w * q.w).sqrt();
-        
-        if s < 0.001 { // Divide by zero check
-             (Vec3::new(q.x, q.y, q.z), angle) // x,y,z should be 0 if s is 0? C++ impl usually defaults to x=1 or similar if angle is 0
+
+        if s < 0.001 {
+            // Divide by zero check
+            (Vec3::new(q.x, q.y, q.z), angle) // x,y,z should be 0 if s is 0? C++ impl usually defaults to x=1 or similar if angle is 0
         } else {
-             (Vec3::new(q.x / s, q.y / s, q.z / s), angle)
+            (Vec3::new(q.x / s, q.y / s, q.z / s), angle)
         }
     }
 
@@ -149,7 +170,7 @@ impl Quaternion {
     pub fn slerp(q1: &Quaternion, q2: &Quaternion, t: f32) -> Quaternion {
         let mut q2 = *q2;
         let mut dot = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
-        
+
         if dot < 0.0 {
             dot = -dot;
             q2.x = -q2.x;
@@ -157,22 +178,22 @@ impl Quaternion {
             q2.z = -q2.z;
             q2.w = -q2.w;
         }
-        
+
         if dot > 0.9995 {
-             return Quaternion::lerp(q1, &q2, t);
+            return Quaternion::lerp(q1, &q2, t);
         }
-        
+
         let theta_0 = dot.acos();
         let theta = theta_0 * t;
         let sin_theta = theta.sin();
         let sin_theta_0 = theta_0.sin();
-        
+
         let s1 = (theta_0 - theta).sin() / sin_theta_0; // wait, standard formula is different?
-        // Standard: sin((1-t)*theta)/sin(theta) * q1 + sin(t*theta)/sin(theta) * q2
-        
+                                                        // Standard: sin((1-t)*theta)/sin(theta) * q1 + sin(t*theta)/sin(theta) * q2
+
         let s0 = ((1.0 - t) * theta_0).sin() / sin_theta_0;
         let s1 = (t * theta_0).sin() / sin_theta_0;
-        
+
         Quaternion {
             x: q1.x * s0 + q2.x * s1,
             y: q1.y * s0 + q2.y * s1,

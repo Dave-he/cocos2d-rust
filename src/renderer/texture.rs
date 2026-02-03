@@ -1,5 +1,5 @@
-use std::collections::HashMap;
 use crate::base::{Ref, RefPtr};
+use std::collections::HashMap;
 
 pub trait Texture {
     fn get_name(&self) -> u32;
@@ -69,16 +69,27 @@ impl PixelFormat {
     }
 
     pub fn is_float(&self) -> bool {
-        matches!(self,
-            PixelFormat::RGBA16F | PixelFormat::RGB16F |
-            PixelFormat::R16F | PixelFormat::RGBA32F | PixelFormat::RGB32F)
+        matches!(
+            self,
+            PixelFormat::RGBA16F
+                | PixelFormat::RGB16F
+                | PixelFormat::R16F
+                | PixelFormat::RGBA32F
+                | PixelFormat::RGB32F
+        )
     }
 
     pub fn has_alpha(&self) -> bool {
-        matches!(self,
-            PixelFormat::RGBA8888 | PixelFormat::RGBA4444 |
-            PixelFormat::RGB5A1 | PixelFormat::AI88 | PixelFormat::SRGB8_A8 |
-            PixelFormat::RGBA16F | PixelFormat::RGBA32F)
+        matches!(
+            self,
+            PixelFormat::RGBA8888
+                | PixelFormat::RGBA4444
+                | PixelFormat::RGB5A1
+                | PixelFormat::AI88
+                | PixelFormat::SRGB8_A8
+                | PixelFormat::RGBA16F
+                | PixelFormat::RGBA32F
+        )
     }
 }
 
@@ -215,8 +226,7 @@ impl Texture for Texture2D {
         self.texture_type
     }
 
-    fn update_tex_image(&mut self) {
-    }
+    fn update_tex_image(&mut self) {}
 }
 
 #[derive(Debug)]
@@ -294,10 +304,34 @@ impl TextureAtlas {
 impl TextureQuad {
     pub fn new() -> TextureQuad {
         TextureQuad {
-            tl: TexturedVertex { x: 0.0, y: 0.0, z: 0.0, u: 0.0, v: 0.0 },
-            tr: TexturedVertex { x: 0.0, y: 0.0, z: 0.0, u: 1.0, v: 0.0 },
-            bl: TexturedVertex { x: 0.0, y: 0.0, z: 0.0, u: 0.0, v: 1.0 },
-            br: TexturedVertex { x: 0.0, y: 0.0, z: 0.0, u: 1.0, v: 1.0 },
+            tl: TexturedVertex {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+                u: 0.0,
+                v: 0.0,
+            },
+            tr: TexturedVertex {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+                u: 1.0,
+                v: 0.0,
+            },
+            bl: TexturedVertex {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+                u: 0.0,
+                v: 1.0,
+            },
+            br: TexturedVertex {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+                u: 1.0,
+                v: 1.0,
+            },
         }
     }
 }

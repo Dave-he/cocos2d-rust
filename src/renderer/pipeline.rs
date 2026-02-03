@@ -175,7 +175,13 @@ impl BlendState {
         self.dst_alpha = dst;
     }
 
-    pub fn set_blend_func_separate(&mut self, src_rgb: u32, dst_rgb: u32, src_alpha: u32, dst_alpha: u32) {
+    pub fn set_blend_func_separate(
+        &mut self,
+        src_rgb: u32,
+        dst_rgb: u32,
+        src_alpha: u32,
+        dst_alpha: u32,
+    ) {
         self.src_rgb = src_rgb;
         self.dst_rgb = dst_rgb;
         self.src_alpha = src_alpha;

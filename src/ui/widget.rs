@@ -1,5 +1,5 @@
-use crate::base::{Ref, RefPtr};
 use crate::base::types::Color3B;
+use crate::base::{Ref, RefPtr};
 use crate::math::Vec2;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -157,7 +157,8 @@ impl Widget {
     }
 
     pub fn remove_child(&mut self, child: &RefPtr<Widget>) {
-        self.children.retain(|c| c.borrow().get_tag() != child.borrow().get_tag());
+        self.children
+            .retain(|c| c.borrow().get_tag() != child.borrow().get_tag());
     }
 
     pub fn get_children(&self) -> &Vec<RefPtr<Widget>> {
@@ -168,14 +169,11 @@ impl Widget {
         false
     }
 
-    pub fn on_touch_moved(&mut self, touch: &Vec2) {
-    }
+    pub fn on_touch_moved(&mut self, touch: &Vec2) {}
 
-    pub fn on_touch_ended(&mut self, touch: &Vec2) {
-    }
+    pub fn on_touch_ended(&mut self, touch: &Vec2) {}
 
-    pub fn on_touch_canceled(&mut self, touch: &Vec2) {
-    }
+    pub fn on_touch_canceled(&mut self, touch: &Vec2) {}
 }
 
 #[derive(Debug)]
@@ -369,7 +367,14 @@ impl CheckBox {
         self.on_off
     }
 
-    pub fn loadTextures(&mut self, off_normal: &str, on_normal: &str, off_disabled: &str, on_disabled: &str, check_mark: &str) {
+    pub fn loadTextures(
+        &mut self,
+        off_normal: &str,
+        on_normal: &str,
+        off_disabled: &str,
+        on_disabled: &str,
+        check_mark: &str,
+    ) {
         self.off_normal_image = off_normal.to_string();
         self.on_normal_image = on_normal.to_string();
         self.off_disabled_image = off_disabled.to_string();

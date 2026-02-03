@@ -1,8 +1,8 @@
-use crate::renderer::Texture2D;
-use crate::renderer::Texture;
 use crate::math::Rect;
-use std::rc::Rc;
+use crate::renderer::Texture;
+use crate::renderer::Texture2D;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 渲染纹理
 /// 允许将渲染结果输出到纹理而不是屏幕
@@ -72,11 +72,11 @@ impl RenderTexture {
 
         // 模拟成功初始化
         self.framebuffer_id = 1;
-        
+
         if self.depth_enabled {
             self.depth_buffer_id = 1;
         }
-        
+
         if self.stencil_enabled {
             self.stencil_buffer_id = 1;
         }
@@ -141,7 +141,7 @@ impl RenderTexture {
         // 1. 保存当前帧缓冲
         // 2. glBindFramebuffer(GL_FRAMEBUFFER, self.framebuffer_id)
         // 3. glViewport(0, 0, self.width as i32, self.height as i32)
-        
+
         if self.auto_clear {
             self.clear();
         }
@@ -169,14 +169,14 @@ impl RenderTexture {
     pub fn save_to_file(&self, filename: &str) -> Result<(), String> {
         // 获取像素数据
         let pixels = self.get_pixels()?;
-        
+
         // 注意：实际实现需要使用 image crate 保存为文件
         // 例如：
         // use image::{RgbaImage, ImageBuffer};
         // let img = ImageBuffer::from_raw(self.width, self.height, pixels)
         //     .ok_or("Failed to create image buffer")?;
         // img.save(filename).map_err(|e| e.to_string())?;
-        
+
         let _ = (filename, pixels);
         Err("Save to file requires image crate (not yet added)".to_string())
     }
@@ -190,7 +190,7 @@ impl RenderTexture {
         // 3. 创建足够大小的缓冲区
         // 4. glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
         // 5. 恢复之前的帧缓冲
-        
+
         let size = (self.width * self.height * 4) as usize; // RGBA
         Ok(vec![0; size]) // 返回空数据作为占位
     }
@@ -240,9 +240,9 @@ impl RenderTexture {
     pub fn create_snapshot(width: u32, height: u32) -> Result<Self, String> {
         let mut rt = Self::new(width, height);
         rt.init()?;
-        
+
         // TODO: 捕获当前屏幕内容到纹理
-        
+
         Ok(rt)
     }
 
@@ -307,7 +307,7 @@ mod tests {
     #[test]
     fn test_clear_color() {
         let mut rt = RenderTexture::new(512, 512);
-        
+
         rt.set_clear_color(1.0, 0.5, 0.2, 1.0);
         assert_eq!(rt.clear_color(), [1.0, 0.5, 0.2, 1.0]);
     }
@@ -315,9 +315,9 @@ mod tests {
     #[test]
     fn test_auto_clear() {
         let mut rt = RenderTexture::new(512, 512);
-        
+
         assert!(rt.is_auto_clear());
-        
+
         rt.set_auto_clear(false);
         assert!(!rt.is_auto_clear());
     }
@@ -326,7 +326,7 @@ mod tests {
     fn test_resize() {
         let mut rt = RenderTexture::new(512, 512);
         rt.init().unwrap();
-        
+
         let result = rt.resize(1024, 768);
         assert!(result.is_ok());
         assert_eq!(rt.width(), 1024);
@@ -337,7 +337,7 @@ mod tests {
     fn test_resize_same_size() {
         let mut rt = RenderTexture::new(512, 512);
         rt.init().unwrap();
-        
+
         let result = rt.resize(512, 512);
         assert!(result.is_ok());
     }
@@ -346,12 +346,12 @@ mod tests {
     fn test_render_to_texture() {
         let mut rt = RenderTexture::new(512, 512);
         rt.init().unwrap();
-        
+
         let mut called = false;
         rt.render_to_texture(|| {
             called = true;
         });
-        
+
         assert!(called);
     }
 

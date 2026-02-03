@@ -1,7 +1,7 @@
-use super::transition_scene::{TransitionScene, TransitionOrientation};
+use super::transition_scene::{TransitionOrientation, TransitionScene};
 use crate::Scene;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 翻转过渡
 pub struct FlipTransition {
@@ -46,13 +46,13 @@ impl FlipTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         // 总是更新角度，即使已经完成（需要显示最终状态）
         let progress = self.transition.progress();
-        
+
         // 计算翻转角度（0 到 180 度）
         self.flip_angle = progress * 180.0;
-        
+
         if !self.transition.is_finished() {
             self.apply_flip(self.flip_angle);
         }
@@ -82,12 +82,8 @@ mod tests {
     #[test]
     fn test_flip_transition_creation() {
         let in_scene = create_test_scene();
-        let flip = FlipTransition::new(
-            1.0,
-            in_scene,
-            TransitionOrientation::LeftToRight,
-        );
-        
+        let flip = FlipTransition::new(1.0, in_scene, TransitionOrientation::LeftToRight);
+
         assert_eq!(flip.transition().duration(), 1.0);
         assert_eq!(flip.flip_angle, 0.0);
     }
@@ -95,21 +91,25 @@ mod tests {
     #[test]
     fn test_flip_transition_update() {
         let in_scene = create_test_scene();
-        let mut flip = FlipTransition::new(
-            2.0,
-            in_scene,
-            TransitionOrientation::LeftToRight,
-        );
-        
+        let mut flip = FlipTransition::new(2.0, in_scene, TransitionOrientation::LeftToRight);
+
         flip.start();
-        
+
         flip.update(1.0); // 50% 进度
         println!("After first update: flip_angle = {}", flip.flip_angle);
-        assert!((flip.flip_angle - 90.0).abs() < 0.01, "Expected 90.0, got {}", flip.flip_angle);
-        
+        assert!(
+            (flip.flip_angle - 90.0).abs() < 0.01,
+            "Expected 90.0, got {}",
+            flip.flip_angle
+        );
+
         flip.update(1.0); // 100% 进度
         println!("After second update: flip_angle = {}", flip.flip_angle);
-        assert!((flip.flip_angle - 180.0).abs() < 0.01, "Expected 180.0, got {}", flip.flip_angle);
+        assert!(
+            (flip.flip_angle - 180.0).abs() < 0.01,
+            "Expected 180.0, got {}",
+            flip.flip_angle
+        );
         assert!(flip.is_finished());
     }
 }

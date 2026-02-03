@@ -1,7 +1,7 @@
 use super::shader_program::ShaderProgram;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::RefCell;
 
 /// 着色器缓存
 /// 管理所有加载的着色器程序，避免重复编译
@@ -68,22 +68,26 @@ impl ShaderCache {
         fragment_file: &str,
     ) -> Result<Rc<RefCell<ShaderProgram>>, String> {
         use std::fs;
-        
+
         let name = name.into();
-        
+
         // 检查是否已存在
         if let Some(program) = self.get_program(&name) {
             return Ok(program);
         }
-        
+
         // 读取顶点着色器源码
         let vertex_source = fs::read_to_string(vertex_file)
             .map_err(|e| format!("Failed to read vertex shader file '{}': {}", vertex_file, e))?;
-        
+
         // 读取片段着色器源码
-        let fragment_source = fs::read_to_string(fragment_file)
-            .map_err(|e| format!("Failed to read fragment shader file '{}': {}", fragment_file, e))?;
-        
+        let fragment_source = fs::read_to_string(fragment_file).map_err(|e| {
+            format!(
+                "Failed to read fragment shader file '{}': {}",
+                fragment_file, e
+            )
+        })?;
+
         // 创建并编译着色器程序
         self.load_program_from_source(name, vertex_source, fragment_source)
     }
@@ -96,24 +100,20 @@ impl ShaderCache {
         fragment_source: impl Into<String>,
     ) -> Result<Rc<RefCell<ShaderProgram>>, String> {
         let name = name.into();
-        
+
         // 检查是否已存在
         if let Some(program) = self.get_program(&name) {
             return Ok(program);
         }
 
         // 创建并编译新程序
-        let mut program = ShaderProgram::from_source(
-            name.clone(),
-            vertex_source,
-            fragment_source,
-        );
-        
+        let mut program = ShaderProgram::from_source(name.clone(), vertex_source, fragment_source);
+
         program.compile()?;
-        
+
         let program = Rc::new(RefCell::new(program));
         self.programs.insert(name, program.clone());
-        
+
         Ok(program)
     }
 
@@ -150,10 +150,12 @@ impl ShaderCache {
     /// 预加载内置着色器
     pub fn preload_built_in_shaders(&mut self) {
         use super::built_in_shaders::BuiltInShaders;
-        
+
         // 遍历所有内置着色器并加载
         for shader_name in BuiltInShaders::shader_names() {
-            if let Some((vertex_source, fragment_source)) = BuiltInShaders::get_shader_source(shader_name) {
+            if let Some((vertex_source, fragment_source)) =
+                BuiltInShaders::get_shader_source(shader_name)
+            {
                 match self.load_program_from_source(shader_name, vertex_source, fragment_source) {
                     Ok(_) => {
                         // 着色器加载成功
@@ -203,10 +205,10 @@ mod tests {
     fn test_add_and_get_program() {
         let mut cache = ShaderCache::new();
         let program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
-        
+
         cache.add_program(program);
         assert_eq!(cache.program_count(), 1);
-        
+
         let retrieved = cache.get_program("test");
         assert!(retrieved.is_some());
     }
@@ -214,22 +216,34 @@ mod tests {
     #[test]
     fn test_remove_program() {
         let mut cache = ShaderCache::new();
-        cache.add_program(ShaderProgram::from_source("test1", VERTEX_SHADER, FRAGMENT_SHADER));
-        cache.add_program(ShaderProgram::from_source("test2", VERTEX_SHADER, FRAGMENT_SHADER));
-        
+        cache.add_program(ShaderProgram::from_source(
+            "test1",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+        cache.add_program(ShaderProgram::from_source(
+            "test2",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+
         assert_eq!(cache.program_count(), 2);
-        
+
         assert!(cache.remove_program("test1"));
         assert_eq!(cache.program_count(), 1);
-        
+
         assert!(!cache.remove_program("nonexistent"));
     }
 
     #[test]
     fn test_has_program() {
         let mut cache = ShaderCache::new();
-        cache.add_program(ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER));
-        
+        cache.add_program(ShaderProgram::from_source(
+            "test",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+
         assert!(cache.has_program("test"));
         assert!(!cache.has_program("nonexistent"));
     }
@@ -237,11 +251,19 @@ mod tests {
     #[test]
     fn test_clear() {
         let mut cache = ShaderCache::new();
-        cache.add_program(ShaderProgram::from_source("test1", VERTEX_SHADER, FRAGMENT_SHADER));
-        cache.add_program(ShaderProgram::from_source("test2", VERTEX_SHADER, FRAGMENT_SHADER));
-        
+        cache.add_program(ShaderProgram::from_source(
+            "test1",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+        cache.add_program(ShaderProgram::from_source(
+            "test2",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+
         assert_eq!(cache.program_count(), 2);
-        
+
         cache.clear();
         assert_eq!(cache.program_count(), 0);
     }
@@ -249,9 +271,17 @@ mod tests {
     #[test]
     fn test_program_names() {
         let mut cache = ShaderCache::new();
-        cache.add_program(ShaderProgram::from_source("shader1", VERTEX_SHADER, FRAGMENT_SHADER));
-        cache.add_program(ShaderProgram::from_source("shader2", VERTEX_SHADER, FRAGMENT_SHADER));
-        
+        cache.add_program(ShaderProgram::from_source(
+            "shader1",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+        cache.add_program(ShaderProgram::from_source(
+            "shader2",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
+
         let names = cache.program_names();
         assert_eq!(names.len(), 2);
         assert!(names.contains(&"shader1".to_string()));
@@ -261,18 +291,18 @@ mod tests {
     #[test]
     fn test_load_program_from_source() {
         let mut cache = ShaderCache::new();
-        
+
         let result = cache.load_program_from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
         assert!(result.is_ok());
-        
+
         let program = result.unwrap();
         assert_eq!(program.borrow().name(), "test");
         assert!(program.borrow().is_ready());
-        
+
         // 再次加载应该返回缓存的版本
         let result2 = cache.load_program_from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
         assert!(result2.is_ok());
-        
+
         // 验证是同一个实例
         assert!(Rc::ptr_eq(&program, &result2.unwrap()));
     }
@@ -281,13 +311,15 @@ mod tests {
     fn test_shared_instance() {
         let cache1 = ShaderCache::shared();
         let cache2 = ShaderCache::shared();
-        
+
         // 验证是同一个实例
-        cache1.borrow_mut().add_program(
-            ShaderProgram::from_source("shared", VERTEX_SHADER, FRAGMENT_SHADER)
-        );
+        cache1.borrow_mut().add_program(ShaderProgram::from_source(
+            "shared",
+            VERTEX_SHADER,
+            FRAGMENT_SHADER,
+        ));
         assert!(cache2.borrow().has_program("shared"));
-        
+
         // 清理
         cache1.borrow_mut().clear();
     }

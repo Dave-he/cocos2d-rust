@@ -531,6 +531,7 @@ impl PhysicsWorld {
         self.speed = speed;
     }
 
+
     pub fn get_substeps(&self) -> i32 {
         self.substeps
     }
@@ -731,11 +732,19 @@ impl PhysicsContact {
     }
 
     pub fn get_body_a(&self) -> Option<&PhysicsBody> {
-        if self.body_a.is_null() { None } else { Some(unsafe { &*self.body_a }) }
+        if self.body_a.is_null() {
+            None
+        } else {
+            Some(unsafe { &*self.body_a })
+        }
     }
 
     pub fn get_body_b(&self) -> Option<&PhysicsBody> {
-        if self.body_b.is_null() { None } else { Some(unsafe { &*self.body_b }) }
+        if self.body_b.is_null() {
+            None
+        } else {
+            Some(unsafe { &*self.body_b })
+        }
     }
 
     pub fn get_contact_point(&self) -> Vec2 {

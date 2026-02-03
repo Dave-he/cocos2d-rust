@@ -1,6 +1,6 @@
+use crate::platform::file_utils::FileUtils;
 use image::GenericImageView;
 use std::path::Path;
-use crate::platform::file_utils::FileUtils;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ImageFormat {
@@ -75,7 +75,7 @@ impl Image {
 
         self.width = img.width();
         self.height = img.height();
-        
+
         // Convert to RGBA8
         let rgba = img.to_rgba8();
         self.data = rgba.into_raw();

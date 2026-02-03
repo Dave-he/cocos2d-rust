@@ -1,7 +1,7 @@
-use std::collections::HashMap;
-use crate::base::{Ref, RefPtr};
 use crate::base::types::Color4F;
-use crate::math::{Vec4, Mat4};
+use crate::base::{Ref, RefPtr};
+use crate::math::{Mat4, Vec4};
+use std::collections::HashMap;
 
 #[derive(Debug, Clone)]
 pub struct Material {
@@ -560,6 +560,7 @@ mod tests {
         assert_eq!(program.get_name(), "");
     }
 
+
     #[test]
     fn test_program_with_name() {
         let program = Program::with_name("default");
@@ -608,5 +609,23 @@ mod tests {
         material.add_technique("forward", technique.clone());
         assert!(material.get_technique_by_name("forward").is_some());
         assert!(material.get_technique_by_name("deferred").is_none());
+    }
+}
+
+impl UniformType {
+    pub fn get_size(&self) -> u32 {
+        match self {
+            UniformType::Float
+            | UniformType::Int
+            | UniformType::Bool
+            | UniformType::Sampler2D
+            | UniformType::SamplerCube => 4,
+            UniformType::Vec2 | UniformType::IVec2 | UniformType::BVec2 => 8,
+            UniformType::Vec3 | UniformType::IVec3 | UniformType::BVec3 => 12,
+            UniformType::Vec4 | UniformType::IVec4 | UniformType::BVec4 => 16,
+            UniformType::Mat2 => 16,
+            UniformType::Mat3 => 36,
+            UniformType::Mat4 => 64,
+        }
     }
 }

@@ -1,7 +1,7 @@
 use super::transition_scene::TransitionScene;
 use crate::Scene;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 旋转过渡
 pub struct RotateTransition {
@@ -75,11 +75,11 @@ impl RotateTransition {
     /// 更新过渡
     pub fn update(&mut self, dt: f32) {
         self.transition.update(dt);
-        
+
         // 总是更新角度，即使已经完成
         let progress = self.transition.progress();
         self.current_angle = self.start_angle + (self.end_angle - self.start_angle) * progress;
-        
+
         if !self.transition.is_finished() {
             self.apply_rotation(self.current_angle);
         }
@@ -114,7 +114,7 @@ mod tests {
     fn test_rotate_transition_creation() {
         let in_scene = create_test_scene();
         let rotate = RotateTransition::new(1.0, in_scene);
-        
+
         assert_eq!(rotate.start_angle, 0.0);
         assert_eq!(rotate.end_angle, 360.0);
     }
@@ -123,7 +123,7 @@ mod tests {
     fn test_clockwise() {
         let in_scene = create_test_scene();
         let rotate = RotateTransition::clockwise(1.0, in_scene);
-        
+
         assert_eq!(rotate.end_angle, 360.0);
     }
 
@@ -131,7 +131,7 @@ mod tests {
     fn test_counter_clockwise() {
         let in_scene = create_test_scene();
         let rotate = RotateTransition::counter_clockwise(1.0, in_scene);
-        
+
         assert_eq!(rotate.end_angle, -360.0);
     }
 
@@ -139,7 +139,7 @@ mod tests {
     fn test_with_angles() {
         let in_scene = create_test_scene();
         let rotate = RotateTransition::with_angles(1.0, in_scene, 45.0, 180.0);
-        
+
         assert_eq!(rotate.start_angle, 45.0);
         assert_eq!(rotate.end_angle, 180.0);
     }
@@ -148,13 +148,13 @@ mod tests {
     fn test_rotate_transition_update() {
         let in_scene = create_test_scene();
         let mut rotate = RotateTransition::new(2.0, in_scene);
-        
+
         rotate.start();
         assert_eq!(rotate.current_angle(), 0.0);
-        
+
         rotate.update(1.0); // 50% 进度
         assert!((rotate.current_angle() - 180.0).abs() < 0.01);
-        
+
         rotate.update(1.0); // 100% 进度
         assert!((rotate.current_angle() - 360.0).abs() < 0.01);
         assert!(rotate.is_finished());

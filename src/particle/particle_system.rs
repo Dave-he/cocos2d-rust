@@ -1,5 +1,5 @@
-use crate::math::{Vec2, Vec3, Vec4};
 use crate::base::types::Color4F;
+use crate::math::{Vec2, Vec3, Vec4};
 use std::f32::consts::PI;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -72,10 +72,14 @@ impl Particle {
         self.rotation += self.rotation_delta * delta;
 
         let life_ratio = self.life / self.max_life;
-        self.color.r = self.start_color.r + (self.end_color.r - self.start_color.r) * (1.0 - life_ratio);
-        self.color.g = self.start_color.g + (self.end_color.g - self.start_color.g) * (1.0 - life_ratio);
-        self.color.b = self.start_color.b + (self.end_color.b - self.start_color.b) * (1.0 - life_ratio);
-        self.color.a = self.start_color.a + (self.end_color.a - self.start_color.a) * (1.0 - life_ratio);
+        self.color.r =
+            self.start_color.r + (self.end_color.r - self.start_color.r) * (1.0 - life_ratio);
+        self.color.g =
+            self.start_color.g + (self.end_color.g - self.start_color.g) * (1.0 - life_ratio);
+        self.color.b =
+            self.start_color.b + (self.end_color.b - self.start_color.b) * (1.0 - life_ratio);
+        self.color.a =
+            self.start_color.a + (self.end_color.a - self.start_color.a) * (1.0 - life_ratio);
 
         let size_ratio = 1.0 - life_ratio;
         self.size = self.start_size + (self.end_size - self.start_size) * size_ratio;
@@ -230,7 +234,8 @@ impl ParticleSystem {
         self.elapsed += delta;
 
         while self.emission_count < self.config.total_particles
-            && (self.duration < 0.0 || self.elapsed < self.duration) {
+            && (self.duration < 0.0 || self.elapsed < self.duration)
+        {
             self.emit_particle();
             self.emission_count += 1;
         }
@@ -241,7 +246,10 @@ impl ParticleSystem {
 
         self.particles.retain(|p| p.life > 0.0);
 
-        if self.auto_remove && self.particles.is_empty() && self.emission_count >= self.config.total_particles {
+        if self.auto_remove
+            && self.particles.is_empty()
+            && self.emission_count >= self.config.total_particles
+        {
             self.is_active = false;
         }
     }
@@ -250,15 +258,21 @@ impl ParticleSystem {
         let mut particle = Particle::new();
         particle.max_life = self.config.life + self.config.life_var * (rand::random::<f32>() - 0.5);
         particle.life = particle.max_life;
-        particle.start_size = self.config.start_size + self.config.start_size_var * (rand::random::<f32>() - 0.5);
-        particle.end_size = self.config.end_size + self.config.end_size_var * (rand::random::<f32>() - 0.5);
+        particle.start_size =
+            self.config.start_size + self.config.start_size_var * (rand::random::<f32>() - 0.5);
+        particle.end_size =
+            self.config.end_size + self.config.end_size_var * (rand::random::<f32>() - 0.5);
         particle.size = particle.start_size;
 
         // Calculate initial velocity based on emitter type
         match self.config.emitter_type {
             EmitterType::GRAVITY => {
-                let angle = (self.config.angle + self.config.angle_var * (rand::random::<f32>() - 0.5)) * PI / 180.0;
-                let speed = self.config.speed + self.config.speed_var * (rand::random::<f32>() - 0.5);
+                let angle = (self.config.angle
+                    + self.config.angle_var * (rand::random::<f32>() - 0.5))
+                    * PI
+                    / 180.0;
+                let speed =
+                    self.config.speed + self.config.speed_var * (rand::random::<f32>() - 0.5);
                 particle.velocity.x = angle.cos() * speed;
                 particle.velocity.y = angle.sin() * speed;
                 particle.velocity.z = 0.0;
@@ -266,7 +280,8 @@ impl ParticleSystem {
             }
             EmitterType::RADIUS => {
                 particle.position.x = self.config.start_radius;
-                particle.velocity.z = (rand::random::<f32>() - 0.5) * self.config.rotate_per_second * PI / 180.0;
+                particle.velocity.z =
+                    (rand::random::<f32>() - 0.5) * self.config.rotate_per_second * PI / 180.0;
             }
         }
 

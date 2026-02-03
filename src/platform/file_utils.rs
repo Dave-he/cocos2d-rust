@@ -1,6 +1,6 @@
 use std::collections::HashMap;
-use std::path::PathBuf;
 use std::fs;
+use std::path::PathBuf;
 
 /// FileUtils provides file system operations
 #[derive(Debug)]
@@ -77,7 +77,8 @@ impl FileUtils {
             full_path.push(filename);
 
             if full_path.exists() {
-                self.full_path_cache.insert(filename.to_string(), full_path.clone());
+                self.full_path_cache
+                    .insert(filename.to_string(), full_path.clone());
                 return Some(full_path);
             }
         }

@@ -1,9 +1,9 @@
-use cocos2d_rust::platform::application::{Application, ApplicationDelegate};
-use cocos2d_rust::{Director, Scene};
+use cocos2d_rust::base::types::{Color3B, Rect};
 use cocos2d_rust::base::RefPtr;
-use cocos2d_rust::sprite::Sprite;
-use cocos2d_rust::base::types::{Rect, Color3B};
 use cocos2d_rust::math::Vec2;
+use cocos2d_rust::platform::application::{Application, ApplicationDelegate};
+use cocos2d_rust::sprite::Sprite;
+use cocos2d_rust::{Director, Scene};
 use cocos2d_rust::audio::{AudioEngine, generate_beep, generate_click};
 
 struct AppDelegate;
@@ -12,12 +12,15 @@ impl ApplicationDelegate for AppDelegate {
     fn application_did_finish_launching(&mut self) -> bool {
         let director = Director::get_instance();
         let scene = Scene::new();
-        
+
         let mut sprite = Sprite::new();
         sprite.set_texture_rect(Rect::new(0.0, 0.0, 200.0, 200.0));
         sprite.set_color(Color3B::new(255, 0, 0));
-        sprite.get_node_mut().borrow_mut().set_position(Vec2::new(480.0, 320.0));
-        
+        sprite
+            .get_node_mut()
+            .borrow_mut()
+            .set_position(Vec2::new(480.0, 320.0));
+
         let mut scene = scene;
         scene.add_child(sprite.get_node().clone());
 

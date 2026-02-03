@@ -1,9 +1,9 @@
 use crate::base::{Ref, RefPtr};
-use crate::ui::Widget;
-use crate::input::{Touch, KeyCode, KeyboardEvent, KeyEventType};
+use crate::input::{KeyCode, KeyEventType, KeyboardEvent, Touch};
 use crate::math::Vec2;
-use std::rc::Rc;
+use crate::ui::Widget;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 文本对齐方式
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -109,7 +109,7 @@ impl TextField {
     /// 设置文本
     pub fn set_text(&mut self, text: impl Into<String>) {
         let new_text = text.into();
-        
+
         // 检查最大长度
         let text_to_set = if self.max_length > 0 && new_text.len() > self.max_length {
             new_text[..self.max_length].to_string()
@@ -146,7 +146,7 @@ impl TextField {
     /// 设置最大长度
     pub fn set_max_length(&mut self, max_length: usize) {
         self.max_length = max_length;
-        
+
         // 截断现有文本
         if max_length > 0 && self.text.len() > max_length {
             self.text.truncate(max_length);
@@ -214,7 +214,7 @@ impl TextField {
         }
 
         self.is_editing = true;
-        
+
         if let Some(mut callback) = self.on_editing_began.take() {
             callback(self);
             self.on_editing_began = Some(callback);
@@ -229,7 +229,7 @@ impl TextField {
 
         self.is_editing = false;
         self.clear_selection();
-        
+
         if let Some(mut callback) = self.on_editing_ended.take() {
             callback(self);
             self.on_editing_ended = Some(callback);
@@ -404,7 +404,9 @@ impl TextField {
         match self.input_type {
             TextInputType::Text | TextInputType::Password => true,
             TextInputType::Number => ch.is_ascii_digit() || ch == '.' || ch == '-',
-            TextInputType::Email => ch.is_alphanumeric() || ch == '@' || ch == '.' || ch == '_' || ch == '-',
+            TextInputType::Email => {
+                ch.is_alphanumeric() || ch == '@' || ch == '.' || ch == '_' || ch == '-'
+            }
         }
     }
 
@@ -416,10 +418,10 @@ impl TextField {
         let touch_pos = touch.location();
 
         // 检查是否在输入框内
-        let inside = touch_pos.x >= pos.x - half_size.x &&
-                    touch_pos.x <= pos.x + half_size.x &&
-                    touch_pos.y >= pos.y - half_size.y &&
-                    touch_pos.y <= pos.y + half_size.y;
+        let inside = touch_pos.x >= pos.x - half_size.x
+            && touch_pos.x <= pos.x + half_size.x
+            && touch_pos.y >= pos.y - half_size.y
+            && touch_pos.y <= pos.y + half_size.y;
 
         if inside {
             self.begin_editing();
@@ -515,10 +517,10 @@ mod tests {
         field.set_text("Hello");
         field.begin_editing();
         field.move_cursor_to_end();
-        
+
         field.delete_backward();
         assert_eq!(field.text(), "Hell");
-        
+
         field.delete_backward();
         assert_eq!(field.text(), "Hel");
     }
@@ -528,13 +530,13 @@ mod tests {
         let mut field = TextField::new();
         field.set_text("Hello");
         field.begin_editing();
-        
+
         field.move_cursor_to_end();
         assert_eq!(field.cursor_position, 5);
-        
+
         field.move_cursor(-2);
         assert_eq!(field.cursor_position, 3);
-        
+
         field.move_cursor_to_start();
         assert_eq!(field.cursor_position, 0);
     }
@@ -544,10 +546,10 @@ mod tests {
         let mut field = TextField::new();
         field.set_text("Hello");
         field.begin_editing();
-        
+
         field.select_all();
         assert!(field.has_selection());
-        
+
         field.clear_selection();
         assert!(!field.has_selection());
     }
@@ -557,7 +559,7 @@ mod tests {
         let mut field = TextField::new();
         field.set_input_type(TextInputType::Password);
         field.set_text("secret");
-        
+
         assert_eq!(field.text(), "secret");
         assert_eq!(field.display_text(), "••••••");
     }

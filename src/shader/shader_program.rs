@@ -128,7 +128,7 @@ impl ShaderProgram {
         }
 
         self.state = ShaderProgramState::Compiling;
-        
+
         // TODO: 实现实际的 OpenGL 编译逻辑
         // 这里需要调用 OpenGL API：
         // 1. glCreateShader
@@ -153,7 +153,7 @@ impl ShaderProgram {
         if self.state != ShaderProgramState::Ready {
             return;
         }
-        
+
         // TODO: 调用 glUseProgram(self.program_id)
     }
 
@@ -300,12 +300,8 @@ mod tests {
 
     #[test]
     fn test_shader_program_from_source() {
-        let program = ShaderProgram::from_source(
-            "test",
-            VERTEX_SHADER,
-            FRAGMENT_SHADER,
-        );
-        
+        let program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
+
         assert_eq!(program.name(), "test");
         assert!(!program.vertex_source().is_empty());
         assert!(!program.fragment_source().is_empty());
@@ -313,12 +309,8 @@ mod tests {
 
     #[test]
     fn test_shader_program_compile() {
-        let mut program = ShaderProgram::from_source(
-            "test",
-            VERTEX_SHADER,
-            FRAGMENT_SHADER,
-        );
-        
+        let mut program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
+
         let result = program.compile();
         assert!(result.is_ok());
         assert_eq!(program.state(), ShaderProgramState::Ready);
@@ -327,24 +319,20 @@ mod tests {
     #[test]
     fn test_shader_program_compile_error() {
         let mut program = ShaderProgram::new("test");
-        
+
         let result = program.compile();
         assert!(result.is_err());
     }
 
     #[test]
     fn test_get_uniform_location() {
-        let mut program = ShaderProgram::from_source(
-            "test",
-            VERTEX_SHADER,
-            FRAGMENT_SHADER,
-        );
-        
+        let mut program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
+
         program.compile().unwrap();
-        
+
         let location1 = program.get_uniform_location("uMVP");
         assert!(location1.is_some());
-        
+
         // 第二次应该从缓存获取
         let location2 = program.get_uniform_location("uMVP");
         assert_eq!(location1, location2);
@@ -352,14 +340,10 @@ mod tests {
 
     #[test]
     fn test_get_attribute_location() {
-        let mut program = ShaderProgram::from_source(
-            "test",
-            VERTEX_SHADER,
-            FRAGMENT_SHADER,
-        );
-        
+        let mut program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
+
         program.compile().unwrap();
-        
+
         let location = program.get_attribute_location("aPosition");
         assert!(location.is_some());
     }
@@ -368,7 +352,7 @@ mod tests {
     fn test_shader_program_state() {
         let program = ShaderProgram::new("test");
         assert!(!program.is_ready());
-        
+
         let mut program = ShaderProgram::from_source("test", VERTEX_SHADER, FRAGMENT_SHADER);
         program.compile().unwrap();
         assert!(program.is_ready());

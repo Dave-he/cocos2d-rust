@@ -1,8 +1,8 @@
-use std::collections::HashMap;
-use crate::base::RefPtr;
-use crate::renderer::texture::Texture2D;
-use crate::platform::Image;
 use crate::base::Director;
+use crate::base::RefPtr;
+use crate::platform::Image;
+use crate::renderer::texture::Texture2D;
+use std::collections::HashMap;
 
 /// TextureCache manages all textures
 #[derive(Debug)]
@@ -36,18 +36,18 @@ impl TextureCache {
         }
 
         let image = Image::with_file(path)?;
-        
+
         // Create texture from image via Renderer/Backend
         // This requires access to the Director -> Renderer
         let director = Director::get_instance();
         let mut director = director.borrow_mut();
         let renderer = director.get_renderer();
         let mut renderer = renderer.borrow_mut();
-        
+
         if let Some(texture) = renderer.create_texture_from_image(&image) {
-             let texture_ptr = RefPtr::new(texture);
-             self.textures.insert(path.to_string(), texture_ptr.clone());
-             Some(texture_ptr)
+            let texture_ptr = RefPtr::new(texture);
+            self.textures.insert(path.to_string(), texture_ptr.clone());
+            Some(texture_ptr)
         } else {
             None
         }

@@ -1,8 +1,8 @@
-use crate::base::{Ref, Node, RefPtr};
+use super::{TextHAlignment, TextVAlignment};
 use crate::base::types::Color3B;
+use crate::base::{Node, Ref, RefPtr};
 use crate::math::Vec2;
 use crate::renderer::Texture2D;
-use super::{TextHAlignment, TextVAlignment};
 
 /// LabelTTF renders text using TrueType fonts
 #[derive(Debug)]
@@ -51,7 +51,14 @@ impl LabelTTF {
         v_alignment: TextVAlignment,
     ) -> LabelTTF {
         let mut label = LabelTTF::new();
-        label.init_with_string_and_dimensions(text, font_name, font_size, dimensions, h_alignment, v_alignment);
+        label.init_with_string_and_dimensions(
+            text,
+            font_name,
+            font_size,
+            dimensions,
+            h_alignment,
+            v_alignment,
+        );
         label
     }
 

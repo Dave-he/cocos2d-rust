@@ -471,16 +471,16 @@ impl Physics3DWorld {
         self.substeps
     }
 
-    pub fn set_substeps(&mut self, substeps: i32) {
-        self.substeps = substeps.max(1);
-    }
-
-    pub fn add_body(&mut self, _body: &Physics3DBody) {
+    pub fn add_body(&mut self, body: &Physics3DBody) {
         // In real implementation, add to physics engine
     }
 
-    pub fn remove_body(&mut self, _body: &Physics3DBody) {
+    pub fn remove_body(&mut self, body: &Physics3DBody) {
         // In real implementation, remove from physics engine
+    }
+
+    pub fn set_substeps(&mut self, substeps: i32) {
+        self.substeps = substeps.max(1);
     }
 
     pub fn add_constraint(&mut self, _constraint: &Physics3DConstraint) {

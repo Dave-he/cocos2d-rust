@@ -1,5 +1,5 @@
 use cocos2d_rust::{
-    PhysicsWorld, PhysicsBody, PhysicsShape, PhysicsBodyType, PhysicsShapeType,
+    PhysicsBody, PhysicsWorld, PhysicsShape, PhysicsBodyType, PhysicsShapeType,
     PhysicsMaterial, Vec2,
     Physics3DWorld, Physics3DBody, Physics3DShape, Physics3DConstraint,
     Physics3DConstraintType, Vec3,

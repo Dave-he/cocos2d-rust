@@ -1,4 +1,4 @@
-use crate::math::{Vec3, Mat4};
+use crate::math::{Mat4, Vec3};
 use crate::renderer::renderer::ViewPort;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -47,7 +47,12 @@ impl Camera {
         }
     }
 
-    pub fn create_perspective(fov_y: f32, aspect_ratio: f32, near_clip: f32, far_clip: f32) -> Camera {
+    pub fn create_perspective(
+        fov_y: f32,
+        aspect_ratio: f32,
+        near_clip: f32,
+        far_clip: f32,
+    ) -> Camera {
         let mut camera = Camera::new();
         camera.fov_y = fov_y;
         camera.aspect_ratio = aspect_ratio;
@@ -176,32 +181,65 @@ impl Camera {
         let (px, py, pz) = (self.position.x, self.position.y, self.position.z);
 
         self.view_matrix = Mat4::new(
-            rx, ux, -fx, 0.0,
-            ry, uy, -fy, 0.0,
-            rz, uz, -fz, 0.0,
+            rx,
+            ux,
+            -fx,
+            0.0,
+            ry,
+            uy,
+            -fy,
+            0.0,
+            rz,
+            uz,
+            -fz,
+            0.0,
             -(rx * px + ry * py + rz * pz),
             -(ux * px + uy * py + uz * pz),
             fx * px + fy * py + fz * pz,
-            1.0
+            1.0,
         );
 
         // Update projection matrix
         if self.projection == CameraProjection::PERSPECTIVE {
             let f = 1.0 / (self.fov_y * 0.5).tan();
             self.projection_matrix = Mat4::new(
-                f / self.aspect_ratio, 0.0, 0.0, 0.0,
-                0.0, f, 0.0, 0.0,
-                0.0, 0.0, (self.far_clip + self.near_clip) / (self.near_clip - self.far_clip), -1.0,
-                0.0, 0.0, (2.0 * self.far_clip * self.near_clip) / (self.near_clip - self.far_clip), 0.0
+                f / self.aspect_ratio,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                f,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                (self.far_clip + self.near_clip) / (self.near_clip - self.far_clip),
+                -1.0,
+                0.0,
+                0.0,
+                (2.0 * self.far_clip * self.near_clip) / (self.near_clip - self.far_clip),
+                0.0,
             );
         } else {
             let width = self.view_port.get_width();
             let height = self.view_port.get_height();
             self.projection_matrix = Mat4::new(
-                2.0 / width, 0.0, 0.0, 0.0,
-                0.0, 2.0 / height, 0.0, 0.0,
-                0.0, 0.0, -2.0 / (self.far_clip - self.near_clip), 0.0,
-                -1.0, -1.0, -(self.far_clip + self.near_clip) / (self.far_clip - self.near_clip), 1.0
+                2.0 / width,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                2.0 / height,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                -2.0 / (self.far_clip - self.near_clip),
+                0.0,
+                -1.0,
+                -1.0,
+                -(self.far_clip + self.near_clip) / (self.far_clip - self.near_clip),
+                1.0,
             );
         }
 

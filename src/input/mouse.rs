@@ -183,20 +183,14 @@ mod tests {
 
     #[test]
     fn test_mouse_move_event() {
-        let event = MouseEvent::move_event(
-            Vec2::new(150.0, 250.0),
-            Vec2::new(100.0, 200.0),
-        );
+        let event = MouseEvent::move_event(Vec2::new(150.0, 250.0), Vec2::new(100.0, 200.0));
         assert_eq!(event.event_type, MouseEventType::Move);
         assert_eq!(event.delta(), Vec2::new(50.0, 50.0));
     }
 
     #[test]
     fn test_mouse_scroll_event() {
-        let event = MouseEvent::scroll(
-            Vec2::new(100.0, 200.0),
-            Vec2::new(0.0, 10.0),
-        );
+        let event = MouseEvent::scroll(Vec2::new(100.0, 200.0), Vec2::new(0.0, 10.0));
         assert_eq!(event.event_type, MouseEventType::Scroll);
         assert_eq!(event.scroll_delta, Vec2::new(0.0, 10.0));
     }

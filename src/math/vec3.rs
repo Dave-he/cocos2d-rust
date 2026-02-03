@@ -1,5 +1,5 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::f32;
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3 {
@@ -9,21 +9,45 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub const ZERO: Vec3 = Vec3 { x: 0.0, y: 0.0, z: 0.0 };
-    pub const ONE: Vec3 = Vec3 { x: 1.0, y: 1.0, z: 1.0 };
-    pub const UNIT_X: Vec3 = Vec3 { x: 1.0, y: 0.0, z: 0.0 };
-    pub const UNIT_Y: Vec3 = Vec3 { x: 0.0, y: 1.0, z: 0.0 };
-    pub const UNIT_Z: Vec3 = Vec3 { x: 0.0, y: 0.0, z: 1.0 };
+    pub const ZERO: Vec3 = Vec3 {
+        x: 0.0,
+        y: 0.0,
+        z: 0.0,
+    };
+    pub const ONE: Vec3 = Vec3 {
+        x: 1.0,
+        y: 1.0,
+        z: 1.0,
+    };
+    pub const UNIT_X: Vec3 = Vec3 {
+        x: 1.0,
+        y: 0.0,
+        z: 0.0,
+    };
+    pub const UNIT_Y: Vec3 = Vec3 {
+        x: 0.0,
+        y: 1.0,
+        z: 0.0,
+    };
+    pub const UNIT_Z: Vec3 = Vec3 {
+        x: 0.0,
+        y: 0.0,
+        z: 1.0,
+    };
 
     pub fn new(x: f32, y: f32, z: f32) -> Self {
         Vec3 { x, y, z }
     }
 
     pub fn from_array(array: &[f32; 3]) -> Self {
-        Vec3 { x: array[0], y: array[1], z: array[2] }
+        Vec3 {
+            x: array[0],
+            y: array[1],
+            z: array[2],
+        }
     }
-    
-    // Simplification: Color conversion is usually dependent on format (RGBA vs ARGB), 
+
+    // Simplification: Color conversion is usually dependent on format (RGBA vs ARGB),
     // but the header implies 0xRRGGBB.
     pub fn from_color(color: u32) -> Self {
         let r = ((color >> 16) & 0xFF) as f32 / 255.0;
@@ -51,7 +75,7 @@ impl Vec3 {
         self.y += v.y;
         self.z += v.z;
     }
-    
+
     pub fn add_components(&mut self, x: f32, y: f32, z: f32) {
         self.x += x;
         self.y += y;
@@ -144,7 +168,7 @@ impl Vec3 {
             *self += (*target - *self) * (elapsed_time / (elapsed_time + response_time));
         }
     }
-    
+
     pub fn lerp(&self, target: &Vec3, alpha: f32) -> Vec3 {
         *self * (1.0 - alpha) + *target * alpha
     }
@@ -155,7 +179,11 @@ impl Vec3 {
 impl Add for Vec3 {
     type Output = Vec3;
     fn add(self, other: Vec3) -> Vec3 {
-        Vec3 { x: self.x + other.x, y: self.y + other.y, z: self.z + other.z }
+        Vec3 {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
     }
 }
 
@@ -170,7 +198,11 @@ impl AddAssign for Vec3 {
 impl Sub for Vec3 {
     type Output = Vec3;
     fn sub(self, other: Vec3) -> Vec3 {
-        Vec3 { x: self.x - other.x, y: self.y - other.y, z: self.z - other.z }
+        Vec3 {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
     }
 }
 
@@ -185,14 +217,22 @@ impl SubAssign for Vec3 {
 impl Neg for Vec3 {
     type Output = Vec3;
     fn neg(self) -> Vec3 {
-        Vec3 { x: -self.x, y: -self.y, z: -self.z }
+        Vec3 {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
     }
 }
 
 impl Mul<f32> for Vec3 {
     type Output = Vec3;
     fn mul(self, scalar: f32) -> Vec3 {
-        Vec3 { x: self.x * scalar, y: self.y * scalar, z: self.z * scalar }
+        Vec3 {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+        }
     }
 }
 
@@ -207,7 +247,11 @@ impl MulAssign<f32> for Vec3 {
 impl Div<f32> for Vec3 {
     type Output = Vec3;
     fn div(self, scalar: f32) -> Vec3 {
-        Vec3 { x: self.x / scalar, y: self.y / scalar, z: self.z / scalar }
+        Vec3 {
+            x: self.x / scalar,
+            y: self.y / scalar,
+            z: self.z / scalar,
+        }
     }
 }
 

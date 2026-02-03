@@ -1,6 +1,6 @@
 use super::sprite_frame::SpriteFrame;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 动画
 /// 包含一系列精灵帧，定义了帧序列和播放速度
@@ -46,7 +46,11 @@ impl Animation {
     }
 
     /// 从帧序列创建动画（带名称）
-    pub fn with_sprite_frames(name: String, frames: Vec<Rc<RefCell<SpriteFrame>>>, delay: f32) -> Self {
+    pub fn with_sprite_frames(
+        name: String,
+        frames: Vec<Rc<RefCell<SpriteFrame>>>,
+        delay: f32,
+    ) -> Self {
         let duration = frames.len() as f32 * delay;
         Self {
             name,
@@ -68,7 +72,7 @@ impl Animation {
         }
 
         let duration: f32 = delays.iter().sum();
-        
+
         Ok(Self {
             name: String::new(),
             frames,
@@ -229,7 +233,7 @@ mod tests {
     fn test_animation_with_frames() {
         let frames = create_test_frames(5);
         let anim = Animation::with_frames(frames, 0.1);
-        
+
         assert_eq!(anim.frame_count(), 5);
         assert_eq!(anim.delay_per_unit(), 0.1);
         assert_eq!(anim.duration(), 0.5);
@@ -239,10 +243,10 @@ mod tests {
     fn test_add_frames() {
         let mut anim = Animation::new();
         anim.set_delay_per_unit(0.1);
-        
+
         let frame = Rc::new(RefCell::new(SpriteFrame::new("frame1")));
         anim.add_frame(frame);
-        
+
         assert_eq!(anim.frame_count(), 1);
         assert_eq!(anim.duration(), 0.1);
     }
@@ -251,11 +255,11 @@ mod tests {
     fn test_animation_loops() {
         let frames = create_test_frames(5);
         let mut anim = Animation::with_frames(frames, 0.1);
-        
+
         anim.set_loops(3);
         assert_eq!(anim.loops(), 3);
         assert_eq!(anim.total_duration(), 1.5); // 0.5 * 3
-        
+
         anim.set_loops(0); // 无限循环
         assert_eq!(anim.total_duration(), f32::INFINITY);
     }
@@ -264,13 +268,13 @@ mod tests {
     fn test_get_frame_index_at_time() {
         let frames = create_test_frames(5);
         let anim = Animation::with_frames(frames, 0.1);
-        
+
         assert_eq!(anim.get_frame_index_at_time(0.0), 0);
         assert_eq!(anim.get_frame_index_at_time(0.05), 0);
         assert_eq!(anim.get_frame_index_at_time(0.1), 1);
         assert_eq!(anim.get_frame_index_at_time(0.2), 2);
         assert_eq!(anim.get_frame_index_at_time(0.45), 4);
-        
+
         // 循环测试
         assert_eq!(anim.get_frame_index_at_time(0.5), 0); // 回到开始
         assert_eq!(anim.get_frame_index_at_time(0.6), 1);
@@ -280,7 +284,7 @@ mod tests {
     fn test_restore_original_frame() {
         let mut anim = Animation::new();
         assert!(!anim.restore_original_frame());
-        
+
         anim.set_restore_original_frame(true);
         assert!(anim.restore_original_frame());
     }
@@ -296,11 +300,11 @@ mod tests {
     fn test_get_frame() {
         let frames = create_test_frames(3);
         let anim = Animation::with_frames(frames, 0.1);
-        
+
         let frame = anim.get_frame(1);
         assert!(frame.is_some());
         assert_eq!(frame.unwrap().borrow().name(), "frame_1");
-        
+
         assert!(anim.get_frame(10).is_none());
     }
 
@@ -308,7 +312,7 @@ mod tests {
     fn test_animation_with_frame_delays() {
         let frames = create_test_frames(3);
         let delays = vec![0.1, 0.2, 0.15];
-        
+
         let anim = Animation::with_frame_delays(frames, delays).unwrap();
         assert_eq!(anim.frame_count(), 3);
         assert!((anim.duration() - 0.45).abs() < 0.0001); // 使用浮点容差
@@ -318,7 +322,7 @@ mod tests {
     fn test_animation_with_frame_delays_error() {
         let frames = create_test_frames(3);
         let delays = vec![0.1, 0.2]; // 长度不匹配
-        
+
         let result = Animation::with_frame_delays(frames, delays);
         assert!(result.is_err());
     }
@@ -329,7 +333,7 @@ mod tests {
         let mut anim = Animation::with_frames(frames, 0.1);
         anim.set_name("test");
         anim.set_loops(3);
-        
+
         let cloned = anim.clone_animation();
         assert_eq!(cloned.name(), "test");
         assert_eq!(cloned.frame_count(), 5);

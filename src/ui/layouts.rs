@@ -1,4 +1,4 @@
-use super::widget::{Widget, LayoutParameter, WidgetSizeType};
+use super::widget::{LayoutParameter, Widget, WidgetSizeType};
 use crate::base::RefPtr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -51,15 +51,15 @@ impl Layout {
     }
 
     pub fn remove_child(&mut self, child: &RefPtr<Widget>) {
-        self.children.retain(|c| c.borrow().get_tag() != child.borrow().get_tag());
+        self.children
+            .retain(|c| c.borrow().get_tag() != child.borrow().get_tag());
     }
 
     pub fn get_children(&self) -> &Vec<RefPtr<Widget>> {
         &self.children
     }
 
-    pub fn request_layout(&mut self) {
-    }
+    pub fn request_layout(&mut self) {}
 }
 
 #[derive(Debug)]

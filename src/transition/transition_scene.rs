@@ -1,6 +1,6 @@
 use crate::Scene;
-use std::rc::Rc;
 use std::cell::RefCell;
+use std::rc::Rc;
 
 /// 过渡方向
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -168,7 +168,7 @@ mod tests {
     fn test_transition_creation() {
         let in_scene = create_test_scene();
         let transition = TransitionScene::new(1.0, in_scene);
-        
+
         assert_eq!(transition.duration(), 1.0);
         assert_eq!(transition.elapsed(), 0.0);
         assert!(!transition.is_finished());
@@ -178,12 +178,12 @@ mod tests {
     fn test_transition_progress() {
         let in_scene = create_test_scene();
         let mut transition = TransitionScene::new(2.0, in_scene);
-        
+
         assert_eq!(transition.progress(), 0.0);
-        
+
         transition.update(1.0);
         assert!((transition.progress() - 0.5).abs() < 0.01);
-        
+
         transition.update(1.0);
         assert_eq!(transition.progress(), 1.0);
         assert!(transition.is_finished());
@@ -193,9 +193,9 @@ mod tests {
     fn test_transition_orientation() {
         let in_scene = create_test_scene();
         let mut transition = TransitionScene::new(1.0, in_scene);
-        
+
         assert_eq!(transition.orientation(), TransitionOrientation::LeftToRight);
-        
+
         transition.set_orientation(TransitionOrientation::RightToLeft);
         assert_eq!(transition.orientation(), TransitionOrientation::RightToLeft);
     }
@@ -204,13 +204,13 @@ mod tests {
     fn test_transition_start_stop() {
         let in_scene = create_test_scene();
         let mut transition = TransitionScene::new(1.0, in_scene);
-        
+
         transition.start();
         assert!(!transition.is_finished());
-        
+
         transition.update(0.5);
         assert!(!transition.is_finished());
-        
+
         transition.stop();
         assert!(transition.is_finished());
     }
@@ -219,10 +219,10 @@ mod tests {
     fn test_transition_reset() {
         let in_scene = create_test_scene();
         let mut transition = TransitionScene::new(1.0, in_scene);
-        
+
         transition.update(0.5);
         assert_eq!(transition.elapsed(), 0.5);
-        
+
         transition.reset();
         assert_eq!(transition.elapsed(), 0.0);
         assert!(!transition.is_finished());
@@ -233,9 +233,9 @@ mod tests {
         let in_scene = create_test_scene();
         let out_scene = create_test_scene();
         let mut transition = TransitionScene::new(1.0, in_scene.clone());
-        
+
         transition.set_out_scene(out_scene.clone());
-        
+
         assert!(transition.in_scene().is_some());
         assert!(transition.out_scene().is_some());
     }
@@ -244,7 +244,7 @@ mod tests {
     fn test_zero_duration() {
         let in_scene = create_test_scene();
         let transition = TransitionScene::new(0.0, in_scene);
-        
+
         assert_eq!(transition.progress(), 1.0);
     }
 
@@ -252,7 +252,7 @@ mod tests {
     fn test_negative_duration() {
         let in_scene = create_test_scene();
         let transition = TransitionScene::new(-1.0, in_scene);
-        
+
         // 负数持续时间应该被修正为 0
         assert_eq!(transition.duration(), 0.0);
     }

@@ -1,5 +1,5 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 use std::f32;
+use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec2 {
@@ -27,7 +27,10 @@ impl Vec2 {
     }
 
     pub fn from_array(array: &[f32; 2]) -> Self {
-        Vec2 { x: array[0], y: array[1] }
+        Vec2 {
+            x: array[0],
+            y: array[1],
+        }
     }
 
     pub fn is_zero(&self) -> bool {
@@ -141,7 +144,7 @@ impl Vec2 {
             *self += (*target - *self) * (elapsed_time / (elapsed_time + response_time));
         }
     }
-    
+
     pub fn fuzzy_equals(&self, target: &Vec2, variance: f32) -> bool {
         if self.x - variance <= target.x && target.x <= self.x + variance {
             if self.y - variance <= target.y && target.y <= self.y + variance {
@@ -150,7 +153,7 @@ impl Vec2 {
         }
         false
     }
-    
+
     pub fn get_angle(&self) -> f32 {
         self.y.atan2(self.x)
     }
@@ -158,29 +161,29 @@ impl Vec2 {
     pub fn cross(&self, other: &Vec2) -> f32 {
         self.x * other.y - self.y * other.x
     }
-    
+
     pub fn get_perp(&self) -> Vec2 {
         Vec2::new(-self.y, self.x)
     }
-    
+
     pub fn get_r_perp(&self) -> Vec2 {
         Vec2::new(self.y, -self.x)
     }
-    
+
     pub fn project(&self, other: &Vec2) -> Vec2 {
         *other * (self.dot(other) / other.dot(other))
     }
-    
+
     pub fn rotate_by_angle(&self, pivot: &Vec2, angle: f32) -> Vec2 {
         let mut res = *self;
         res.rotate(pivot, angle);
         res
     }
-    
+
     pub fn for_angle(a: f32) -> Vec2 {
         Vec2::new(a.cos(), a.sin())
     }
-    
+
     pub fn lerp(&self, other: &Vec2, alpha: f32) -> Vec2 {
         *self * (1.0 - alpha) + *other * alpha
     }
@@ -191,7 +194,10 @@ impl Vec2 {
 impl Add for Vec2 {
     type Output = Vec2;
     fn add(self, other: Vec2) -> Vec2 {
-        Vec2 { x: self.x + other.x, y: self.y + other.y }
+        Vec2 {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
     }
 }
 
@@ -205,7 +211,10 @@ impl AddAssign for Vec2 {
 impl Sub for Vec2 {
     type Output = Vec2;
     fn sub(self, other: Vec2) -> Vec2 {
-        Vec2 { x: self.x - other.x, y: self.y - other.y }
+        Vec2 {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
     }
 }
 
@@ -219,14 +228,20 @@ impl SubAssign for Vec2 {
 impl Neg for Vec2 {
     type Output = Vec2;
     fn neg(self) -> Vec2 {
-        Vec2 { x: -self.x, y: -self.y }
+        Vec2 {
+            x: -self.x,
+            y: -self.y,
+        }
     }
 }
 
 impl Mul<f32> for Vec2 {
     type Output = Vec2;
     fn mul(self, scalar: f32) -> Vec2 {
-        Vec2 { x: self.x * scalar, y: self.y * scalar }
+        Vec2 {
+            x: self.x * scalar,
+            y: self.y * scalar,
+        }
     }
 }
 
@@ -238,7 +253,7 @@ impl MulAssign<f32> for Vec2 {
 }
 
 // Element-wise multiplication (if needed, or dot product?)
-// C++ didn't seem to have element-wise * for Vec2 * Vec2 in the operator overload section shown, 
+// C++ didn't seem to have element-wise * for Vec2 * Vec2 in the operator overload section shown,
 // but it had `scale(const Vec2& scale)`.
 // We'll leave Vec2 * Vec2 undefined for now unless we see it in C++ implementation as element-wise.
 // Actually, C++ `inline void scale(const Vec2& scale);` exists.
@@ -246,7 +261,10 @@ impl MulAssign<f32> for Vec2 {
 impl Div<f32> for Vec2 {
     type Output = Vec2;
     fn div(self, scalar: f32) -> Vec2 {
-        Vec2 { x: self.x / scalar, y: self.y / scalar }
+        Vec2 {
+            x: self.x / scalar,
+            y: self.y / scalar,
+        }
     }
 }
 

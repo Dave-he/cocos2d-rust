@@ -1,23 +1,23 @@
-use winit::{
-    event::{Event, WindowEvent},
-    event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
-};
 use glutin::{
     config::{ConfigTemplateBuilder, GlConfig},
     context::{ContextAttributesBuilder, GlProfile, NotCurrentGlContext},
     display::GetGlDisplay,
     prelude::*,
-    surface::{SurfaceAttributesBuilder, WindowSurface, GlSurface},
+    surface::{GlSurface, SurfaceAttributesBuilder, WindowSurface},
 };
 use glutin_winit::DisplayBuilder;
 use raw_window_handle::HasRawWindowHandle;
+use std::ffi::CString;
 use std::num::NonZeroU32;
 use std::rc::Rc;
-use std::ffi::CString;
+use winit::{
+    event::{Event, WindowEvent},
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
+};
 
-use crate::base::Director;
 use crate::backend::opengl::OpenGLBackend;
+use crate::base::Director;
 
 /// Keyboard state
 #[derive(Debug, Clone)]
@@ -45,7 +45,6 @@ impl KeyboardState {
     }
 }
 
-
 /// Platform types
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(non_camel_case_types)]
@@ -71,7 +70,13 @@ impl Platform {
         return Platform::iOS;
         #[cfg(target_os = "android")]
         return Platform::Android;
-        #[cfg(not(any(target_os = "windows", target_os = "linux", target_os = "macos", target_os = "ios", target_os = "android")))]
+        #[cfg(not(any(
+            target_os = "windows",
+            target_os = "linux",
+            target_os = "macos",
+            target_os = "ios",
+            target_os = "android"
+        )))]
         return Platform::Unknown;
     }
 }
@@ -91,9 +96,7 @@ pub struct Application {
 impl Application {
     /// Creates a new Application
     pub fn new() -> Application {
-        Application {
-            delegate: None,
-        }
+        Application { delegate: None }
     }
 
     /// Sets the application delegate
@@ -112,8 +115,7 @@ impl Application {
             .with_alpha_size(8)
             .with_transparency(true);
 
-        let display_builder = DisplayBuilder::new()
-            .with_window_builder(Some(window_builder));
+        let display_builder = DisplayBuilder::new().with_window_builder(Some(window_builder));
 
         let (window, gl_config) = display_builder
             .build(&event_loop, template, |configs| {
@@ -130,7 +132,7 @@ impl Application {
             .unwrap();
 
         let window = window.unwrap();
-        
+
         let raw_window_handle = window.raw_window_handle();
         let gl_display = gl_config.display();
 
@@ -179,41 +181,43 @@ impl Application {
                 return;
             }
         }
-        
-        event_loop.run(move |event, target| {
-            target.set_control_flow(ControlFlow::Poll);
 
-            match event {
-                Event::WindowEvent { event, .. } => match event {
-                    WindowEvent::CloseRequested => target.exit(),
-                    WindowEvent::Resized(size) => {
-                        if size.width != 0 && size.height != 0 {
-                            gl_surface.resize(
-                                &gl_context,
-                                NonZeroU32::new(size.width).unwrap(),
-                                NonZeroU32::new(size.height).unwrap(),
-                            );
-                            // director.update_view_port(...)
+        event_loop
+            .run(move |event, target| {
+                target.set_control_flow(ControlFlow::Poll);
+
+                match event {
+                    Event::WindowEvent { event, .. } => match event {
+                        WindowEvent::CloseRequested => target.exit(),
+                        WindowEvent::Resized(size) => {
+                            if size.width != 0 && size.height != 0 {
+                                gl_surface.resize(
+                                    &gl_context,
+                                    NonZeroU32::new(size.width).unwrap(),
+                                    NonZeroU32::new(size.height).unwrap(),
+                                );
+                                // director.update_view_port(...)
+                            }
                         }
+                        WindowEvent::RedrawRequested => {
+                            // Main Loop
+                            director.borrow_mut().main_loop();
+
+                            // Swap buffers
+                            gl_surface.swap_buffers(&gl_context).unwrap();
+
+                            // Request next frame
+                            window.request_redraw();
+                        }
+                        _ => (),
                     },
-                    WindowEvent::RedrawRequested => {
-                        // Main Loop
-                        director.borrow_mut().main_loop();
-                        
-                        // Swap buffers
-                        gl_surface.swap_buffers(&gl_context).unwrap();
-                        
-                        // Request next frame
+                    Event::AboutToWait => {
                         window.request_redraw();
-                    },
+                    }
                     _ => (),
-                },
-                Event::AboutToWait => {
-                    window.request_redraw();
-                },
-                _ => (),
-            }
-        }).unwrap();
+                }
+            })
+            .unwrap();
     }
 
     pub fn get_target_platform() -> Platform {

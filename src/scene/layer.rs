@@ -1,15 +1,17 @@
-/// Layer - 图层类
-///
-/// Layer 是 Scene 中的可交互容器，继承自 Node。
-/// 它提供触摸和键盘事件处理功能。
+use crate::action::{Action, FiniteTimeAction};
+use crate::base::{Color3B, Color4F, Director, Node, Ref, RefPtr, Scene};
+use crate::math::Vec2;
+use crate::sprite::Sprite;
 
 use std::rc::Rc;
 use std::cell::RefCell;
 
 use super::node::{Node, NodeType};
-use crate::math::Vec2;
 
 /// Layer - 图层类
+///
+/// Layer 是 Scene 中的可交互容器，继承自 Node。
+/// 它提供触摸和键盘事件处理功能。
 pub struct Layer {
     node: Node,
     touch_enabled: bool,
@@ -84,6 +86,10 @@ impl Layer {
         self.mouse_enabled
     }
 
+    pub fn on_enter(&mut self) {}
+
+    pub fn on_exit(&mut self) {}
+
     pub fn set_keyboard_enabled(&mut self, enabled: bool) {
         self.keyboard_enabled = enabled;
     }
@@ -106,9 +112,9 @@ impl Layer {
         false
     }
 
-    pub fn on_touch_moved(&mut self, _location: &Vec2) {
-    }
+    pub fn on_touch_moved(&mut self, _location: &Vec2) {}
 
+<<<<<<< HEAD
     pub fn on_touch_ended(&mut self, _location: &Vec2) {
     }
 
@@ -159,6 +165,9 @@ impl Layer {
 
     pub fn on_exit_transition_did_start(&mut self) {
     }
+=======
+    pub fn on_touch_ended(&mut self, _location: &Vec2) {}
+>>>>>>> feature/warning-cleanup
 }
 
 impl Default for Layer {

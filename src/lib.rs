@@ -1,32 +1,38 @@
-pub mod math;
-pub mod base;
-pub mod platform;
-pub mod sprite;
-pub mod scene;
-pub mod action;
-pub mod renderer;
-pub mod audio; // 恢复
-pub mod network;
-pub mod physics;
-pub mod ui;
-pub mod particle;
-pub mod tilemap;
-pub mod backend;
 pub mod _3d;
-pub mod label;
-pub mod menu;
-pub mod input;
+pub mod action;
 pub mod animation;
+pub mod audio; // 恢复
+pub mod backend;
+pub mod base;
+pub mod input;
+pub mod label;
+pub mod math;
+pub mod menu;
+pub mod network;
+pub mod particle;
+pub mod physics;
+pub mod platform;
+pub mod renderer;
+pub mod scene;
 pub mod shader;
+pub mod sprite;
+pub mod tilemap;
 pub mod transition;
 pub mod camera;
 pub mod effects;
+pub mod ui;
 
 pub use base::{Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect, DebugStats, DebugConsole, DebugProfiler, DebugLayer, LogLevel, LogEntry, ConsoleCommand, ProfilerScope, ProfilerCategory, ProfilerEntry, DebugPanel, DebugPanelConfig, NotificationCenter, Notification, DefaultNotification, NotificationObserver, NotificationPriority, AsyncTask, AsyncTaskResult, AsyncTaskHandler, TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager};
 pub use math::{Vec2, Vec3, Vec4, Mat4, Quaternion};
 pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
 pub use audio::AudioEngine; // 恢复
+pub use animation::{Animate, Animation, AnimationCache, SpriteFrame, SpriteFrameCache};
+pub use audio::AudioEngine;
+pub use base::{Color3B, Color4B, Color4F, Director, Node, Rect, Scene, Size};
+pub use input::{KeyCode, MouseButton, Touch, TouchDispatcher};
+pub use label::{Label, LabelAtlas, LabelTTF};
+pub use menu::{Menu, MenuItem, MenuItemImage, MenuItemLabel};
 pub use network::network::HttpClient;
 pub use platform::{UserDefault, UserDefaultStats};
 pub use physics::{
@@ -49,12 +55,15 @@ pub use ui::{
     EnhancedWebView, WebViewState, CacheMode, WebViewDelegate, Cookie, WebViewHistoryItem,
 };
 pub use particle::ParticleSystem;
+pub use physics::{PhysicsBody, PhysicsWorld};
+pub use renderer::{Material, RenderTexture, Renderer, Texture};
+pub use scene::{Layer, LayerColor};
+pub use shader::{BuiltInShaders, ShaderCache, ShaderProgram};
 pub use tilemap::tilemap_layer::TileMap;
-pub use label::{Label, LabelTTF, LabelAtlas};
-pub use menu::{Menu, MenuItem, MenuItemLabel, MenuItemImage};
-pub use input::{Touch, TouchDispatcher, KeyCode, MouseButton};
-pub use animation::{Animation, AnimationCache, SpriteFrame, SpriteFrameCache, Animate};
-pub use shader::{ShaderProgram, ShaderCache, BuiltInShaders};
-pub use transition::{TransitionScene, FadeTransition, SlideTransition, FlipTransition, ZoomTransition, RotateTransition};
+pub use transition::{
+    FadeTransition, FlipTransition, RotateTransition, SlideTransition, TransitionScene,
+    ZoomTransition,
+};
+pub use ui::{Button, Layout, Slider, TextField, Widget};
 pub use camera::Camera2D;
 pub use effects::{ProgressTimer, ProgressTimerType, MotionStreak};

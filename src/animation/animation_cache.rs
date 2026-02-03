@@ -1,7 +1,7 @@
 use super::animation::Animation;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
-use std::cell::RefCell;
 
 /// 动画缓存
 /// 管理所有加载的动画，避免重复创建
@@ -21,7 +21,8 @@ impl AnimationCache {
     /// 添加动画
     pub fn add_animation(&mut self, animation: Animation) {
         let name = animation.name().to_string();
-        self.animations.insert(name, Rc::new(RefCell::new(animation)));
+        self.animations
+            .insert(name, Rc::new(RefCell::new(animation)));
     }
 
     /// 添加动画（使用 Rc）
@@ -62,53 +63,54 @@ impl AnimationCache {
 
     /// 从 plist 文件加载动画
     pub fn load_animations_from_plist(&mut self, plist_file: &str) -> Result<(), String> {
+        use super::sprite_frame_cache::SpriteFrameCache;
         use std::fs::File;
         use std::io::BufReader;
-        use super::sprite_frame_cache::SpriteFrameCache;
-        
+
         // 读取 plist 文件
         let file = File::open(plist_file)
             .map_err(|e| format!("Failed to open plist file '{}': {}", plist_file, e))?;
-        
+
         let reader = BufReader::new(file);
-        let plist_data: plist::Value = plist::from_reader(reader)
-            .map_err(|e| format!("Failed to parse plist file: {}", e))?;
-        
+        let plist_data: plist::Value =
+            plist::from_reader(reader).map_err(|e| format!("Failed to parse plist file: {}", e))?;
+
         // 解析 animations 字典
         if let plist::Value::Dictionary(root) = plist_data {
             if let Some(plist::Value::Dictionary(animations)) = root.get("animations") {
                 let frame_cache = SpriteFrameCache::shared();
-                
+
                 for (anim_name, anim_data) in animations.iter() {
                     if let plist::Value::Dictionary(anim_dict) = anim_data {
                         // 解析延迟时间
-                        let delay = if let Some(plist::Value::Real(d)) = anim_dict.get("delayPerUnit") {
+                        let delay = if let Some(plist::Value::Real(d)) =
+                            anim_dict.get("delayPerUnit")
+                        {
                             *d as f32
-                        } else if let Some(plist::Value::Integer(d)) = anim_dict.get("delayPerUnit") {
+                        } else if let Some(plist::Value::Integer(d)) = anim_dict.get("delayPerUnit")
+                        {
                             d.as_unsigned().unwrap_or(0) as f32
                         } else {
                             0.1 // 默认延迟
                         };
-                        
+
                         // 解析帧名称数组
                         let mut frames = Vec::new();
                         if let Some(plist::Value::Array(frame_names)) = anim_dict.get("frames") {
                             for frame_name_val in frame_names {
                                 if let plist::Value::String(frame_name) = frame_name_val {
-                                    if let Some(frame) = frame_cache.borrow().get_frame(frame_name) {
+                                    if let Some(frame) = frame_cache.borrow().get_frame(frame_name)
+                                    {
                                         frames.push(frame);
                                     }
                                 }
                             }
                         }
-                        
+
                         // 创建动画
                         if !frames.is_empty() {
-                            let animation = Animation::with_sprite_frames(
-                                anim_name.clone(),
-                                frames,
-                                delay,
-                            );
+                            let animation =
+                                Animation::with_sprite_frames(anim_name.clone(), frames, delay);
                             self.add_animation(animation);
                         }
                     }
@@ -131,12 +133,13 @@ impl AnimationCache {
 
     /// 移除所有包含指定前缀的动画
     pub fn remove_animations_with_prefix(&mut self, prefix: &str) -> usize {
-        let keys_to_remove: Vec<String> = self.animations
+        let keys_to_remove: Vec<String> = self
+            .animations
             .keys()
             .filter(|k| k.starts_with(prefix))
             .cloned()
             .collect();
-        
+
         let count = keys_to_remove.len();
         for key in keys_to_remove {
             self.animations.remove(&key);
@@ -146,9 +149,9 @@ impl AnimationCache {
 
     /// 克隆动画（创建新实例）
     pub fn clone_animation(&self, name: &str) -> Option<Animation> {
-        self.animations.get(name).map(|anim| {
-            anim.borrow().clone_animation()
-        })
+        self.animations
+            .get(name)
+            .map(|anim| anim.borrow().clone_animation())
     }
 
     /// 获取共享实例（单例模式）
@@ -184,7 +187,7 @@ mod tests {
         let frames: Vec<Rc<RefCell<SpriteFrame>>> = (0..frame_count)
             .map(|i| Rc::new(RefCell::new(SpriteFrame::new(format!("frame_{}", i)))))
             .collect();
-        
+
         let mut anim = Animation::with_frames(frames, 0.1);
         anim.set_name(name);
         anim
@@ -200,10 +203,10 @@ mod tests {
     fn test_add_and_get_animation() {
         let mut cache = AnimationCache::new();
         let anim = create_test_animation("walk", 5);
-        
+
         cache.add_animation(anim);
         assert_eq!(cache.animation_count(), 1);
-        
+
         let retrieved = cache.get_animation("walk");
         assert!(retrieved.is_some());
         assert_eq!(retrieved.unwrap().borrow().name(), "walk");
@@ -214,12 +217,12 @@ mod tests {
         let mut cache = AnimationCache::new();
         cache.add_animation(create_test_animation("walk", 5));
         cache.add_animation(create_test_animation("run", 8));
-        
+
         assert_eq!(cache.animation_count(), 2);
-        
+
         assert!(cache.remove_animation("walk"));
         assert_eq!(cache.animation_count(), 1);
-        
+
         assert!(!cache.remove_animation("nonexistent"));
         assert_eq!(cache.animation_count(), 1);
     }
@@ -228,7 +231,7 @@ mod tests {
     fn test_has_animation() {
         let mut cache = AnimationCache::new();
         cache.add_animation(create_test_animation("walk", 5));
-        
+
         assert!(cache.has_animation("walk"));
         assert!(!cache.has_animation("run"));
     }
@@ -238,9 +241,9 @@ mod tests {
         let mut cache = AnimationCache::new();
         cache.add_animation(create_test_animation("walk", 5));
         cache.add_animation(create_test_animation("run", 8));
-        
+
         assert_eq!(cache.animation_count(), 2);
-        
+
         cache.clear();
         assert_eq!(cache.animation_count(), 0);
     }
@@ -251,7 +254,7 @@ mod tests {
         cache.add_animation(create_test_animation("walk", 5));
         cache.add_animation(create_test_animation("run", 8));
         cache.add_animation(create_test_animation("jump", 3));
-        
+
         let names = cache.animation_names();
         assert_eq!(names.len(), 3);
         assert!(names.contains(&"walk".to_string()));
@@ -267,7 +270,7 @@ mod tests {
             create_test_animation("run", 8),
             create_test_animation("jump", 3),
         ];
-        
+
         cache.add_animations(animations);
         assert_eq!(cache.animation_count(), 3);
     }
@@ -279,7 +282,7 @@ mod tests {
         cache.add_animation(create_test_animation("player_run", 8));
         cache.add_animation(create_test_animation("player_jump", 3));
         cache.add_animation(create_test_animation("enemy_idle", 4));
-        
+
         let removed = cache.remove_animations_with_prefix("player_");
         assert_eq!(removed, 3);
         assert_eq!(cache.animation_count(), 1);
@@ -290,10 +293,10 @@ mod tests {
     fn test_clone_animation() {
         let mut cache = AnimationCache::new();
         cache.add_animation(create_test_animation("walk", 5));
-        
+
         let cloned = cache.clone_animation("walk");
         assert!(cloned.is_some());
-        
+
         let cloned = cloned.unwrap();
         assert_eq!(cloned.name(), "walk");
         assert_eq!(cloned.frame_count(), 5);
@@ -303,11 +306,13 @@ mod tests {
     fn test_shared_instance() {
         let cache1 = AnimationCache::shared();
         let cache2 = AnimationCache::shared();
-        
+
         // 验证是同一个实例
-        cache1.borrow_mut().add_animation(create_test_animation("shared_anim", 5));
+        cache1
+            .borrow_mut()
+            .add_animation(create_test_animation("shared_anim", 5));
         assert!(cache2.borrow().has_animation("shared_anim"));
-        
+
         // 清理
         cache1.borrow_mut().clear();
     }

@@ -1,6 +1,6 @@
+use super::tilemap_info::{LayerInfo, Rect, TileMapInfo, TileSet};
 use crate::base::{Ref, RefPtr};
 use crate::sprite::Sprite;
-use super::tilemap_info::{TileMapInfo, LayerInfo, TileSet, Rect};
 
 #[derive(Debug)]
 pub struct TileMapLayer {
@@ -28,12 +28,12 @@ impl TileMapLayer {
 
     pub fn create_with_layer_info(layer_info: LayerInfo, tileset: TileSet) -> TileMapLayer {
         let mut layer = TileMapLayer::new();
-        
+
         let tile_width = tileset.get_tile_size().x;
         let tile_height = tileset.get_tile_size().y;
         let map_width = layer_info.size.x as u32;
         let map_height = layer_info.size.y as u32;
-        
+
         layer.layer_info = Some(layer_info);
         layer.tileset = Some(tileset);
         layer.tile_width = tile_width;
@@ -43,11 +43,13 @@ impl TileMapLayer {
         layer
     }
 
-    pub fn init(&mut self) {
-    }
+    pub fn init(&mut self) {}
 
     pub fn get_layer_name(&self) -> &str {
-        self.layer_info.as_ref().map(|l| l.name.as_str()).unwrap_or("")
+        self.layer_info
+            .as_ref()
+            .map(|l| l.name.as_str())
+            .unwrap_or("")
     }
 
     pub fn get_tile_at(&self, x: u32, y: u32) -> Option<&RefPtr<Sprite>> {
@@ -57,12 +59,14 @@ impl TileMapLayer {
 
     pub fn set_tile_gid(&mut self, gid: u32, x: u32, y: u32) {
         let index = (y * self.map_width + x) as usize;
-        if index < self.tiles.len() {
-        }
+        if index < self.tiles.len() {}
     }
 
     pub fn get_tile_gid(&self, x: u32, y: u32) -> u32 {
-        self.layer_info.as_ref().map(|l| l.get_tile(x, y)).unwrap_or(0)
+        self.layer_info
+            .as_ref()
+            .map(|l| l.get_tile(x, y))
+            .unwrap_or(0)
     }
 
     pub fn remove_tile_at(&mut self, x: u32, y: u32) {
@@ -109,15 +113,20 @@ impl TileMap {
         Some(tilemap)
     }
 
-    pub fn init_with_file(&mut self, file: &str) {
-    }
+    pub fn init_with_file(&mut self, file: &str) {}
 
     pub fn get_map_size(&self) -> (u32, u32) {
-        self.map_info.as_ref().map(|m| (m.map_size.x as u32, m.map_size.y as u32)).unwrap_or((0, 0))
+        self.map_info
+            .as_ref()
+            .map(|m| (m.map_size.x as u32, m.map_size.y as u32))
+            .unwrap_or((0, 0))
     }
 
     pub fn get_tile_size(&self) -> (f32, f32) {
-        self.map_info.as_ref().map(|m| (m.tile_size.x, m.tile_size.y)).unwrap_or((0.0, 0.0))
+        self.map_info
+            .as_ref()
+            .map(|m| (m.tile_size.x, m.tile_size.y))
+            .unwrap_or((0.0, 0.0))
     }
 
     pub fn add_layer(&mut self, layer: RefPtr<TileMapLayer>) {
@@ -129,7 +138,9 @@ impl TileMap {
     }
 
     pub fn get_layer_by_name(&self, name: &str) -> Option<&RefPtr<TileMapLayer>> {
-        self.layers.iter().find(|l| l.borrow().get_layer_name() == name)
+        self.layers
+            .iter()
+            .find(|l| l.borrow().get_layer_name() == name)
     }
 
     pub fn get_property(&self, key: &str) -> Option<&str> {
