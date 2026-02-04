@@ -366,6 +366,14 @@ impl Node {
         self.scale_y = scale_y;
         self.update_local_transform();
     }
+    
+    pub fn get_anchor_point(&self) -> crate::math::Vec2 {
+        crate::math::Vec2::ANCHOR_MIDDLE
+    }
+    
+    pub fn set_anchor_point(&mut self, _anchor: crate::math::Vec2) {
+        // TODO: implement anchor point logic
+    }
 
     pub fn get_tag(&self) -> i32 {
         self.tag
@@ -453,14 +461,6 @@ impl Node {
     
     pub fn on_exit(&mut self) {
         // Hook for when node exits the scene
-    }
-    
-    pub fn content_size(&self) -> crate::math::Vec2 {
-        self.content_size
-    }
-    
-    pub fn set_content_size(&mut self, size: crate::math::Vec2) {
-        self.content_size = size;
     }
 }
 

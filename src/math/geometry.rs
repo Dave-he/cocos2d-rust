@@ -16,6 +16,10 @@ impl Size {
     pub fn new(width: f32, height: f32) -> Self {
         Size { width, height }
     }
+    
+    pub fn zero() -> Self {
+        Self::ZERO
+    }
 
     pub fn from_vec2(point: Vec2) -> Self {
         Size {
@@ -119,6 +123,10 @@ impl Rect {
             origin: Vec2::new(x, y),
             size: Size::new(width, height),
         }
+    }
+    
+    pub fn zero() -> Self {
+        Self::ZERO
     }
 
     pub fn from_pos_size(pos: Vec2, size: Size) -> Self {

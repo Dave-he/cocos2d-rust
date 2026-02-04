@@ -732,24 +732,27 @@ impl Node {
             pos.x -= self.anchor_point_in_points.x;
             pos.y -= self.anchor_point_in_points.y;
         }
-        self.transform = self.transform.translate(Vec3::new(pos.x, pos.y, self.position_z));
+        let mut transform = self.transform;
+        transform.translate(pos.x, pos.y, self.position_z);
         
         // 旋转
         if self.rotation_x != 0.0 || self.rotation_y != 0.0 {
             // X 轴旋转
             if self.rotation_x != 0.0 {
                 let angle_x = self.rotation_x.to_radians();
-                self.transform = self.transform.rotate_x(-angle_x);
+                transform.rotate_x(-angle_x);
             }
             // Y 轴旋转
             if self.rotation_y != 0.0 {
                 let angle_y = self.rotation_y.to_radians();
-                self.transform = self.transform.rotate_y(-angle_y);
+                transform.rotate_y(-angle_y);
             }
         }
         
         // 缩放
-        self.transform = self.transform.scale(Vec3::new(self.scale_x, self.scale_y, 1.0));
+        transform.scale(self.scale_x, self.scale_y, 1.0);
+        
+        self.transform = transform;
         
         // 倾斜 (简化处理)
         if self.skew_x != 0.0 || self.skew_y != 0.0 {
@@ -779,7 +782,7 @@ impl Node {
 
     pub fn get_parent_to_node_transform(&self) -> Mat4 {
         let node_to_parent = self.get_node_to_parent_transform();
-        node_to_parent.inverted()
+        node_to_parent.inverted().unwrap_or(Mat4::IDENTITY)
     }
 
     pub fn get_node_to_world_transform(&self) -> Mat4 {
@@ -906,8 +909,7 @@ impl Node {
     
     pub fn get_bounding_box(&self) -> Rect {
         let size = self.content_size;
-        let origin = Vec2::zero();
-        Rect::new(origin, size)
+        Rect::new(0.0, 0.0, size.width, size.height)
     }
 
     pub fn get_bounding_box_in_parent(&self) -> Rect {
@@ -917,7 +919,7 @@ impl Node {
         let origin = Vec3::new(bbox.origin.x, bbox.origin.y, 0.0);
         let transformed = transform * origin;
         
-        Rect::new(Vec2::new(transformed.x, transformed.y), bbox.size)
+        Rect::new(transformed.x, transformed.y, bbox.size.width, bbox.size.height)
     }
 }
 

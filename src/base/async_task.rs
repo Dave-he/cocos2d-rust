@@ -21,6 +21,7 @@ use std::boxed::Box;
 use std::result::Result;
 use std::error::Error;
 
+#[derive(Debug)]
 pub enum TaskStatus {
     Pending,
     Running,
@@ -230,11 +231,11 @@ impl<T: Send + 'static> AsyncTask<T> {
     }
 
     pub fn get_status(&self) -> TaskStatus {
-        *self.status.lock().unwrap()
+        self.status.lock().unwrap().clone()
     }
 
     pub fn get_progress(&self) -> TaskProgress {
-        *self.progress.lock().unwrap()
+        self.progress.lock().unwrap().clone()
     }
 
     pub fn get_result(&self) -> AsyncTaskResult<T> {

@@ -1,5 +1,5 @@
 use crate::action::{Action, FiniteTimeAction};
-use crate::base::{Color3B, Color4F, Director, Node, Ref, RefPtr, Scene};
+use crate::base::{Color3B, Color4B, Color4F, Director, Node, Ref, RefPtr, Scene};
 use crate::math::Vec2;
 use crate::sprite::Sprite;
 
@@ -44,7 +44,7 @@ impl AsMut<Node> for Layer {
 
 impl Layer {
     pub fn new() -> Self {
-        let mut node = Node::with_type(NodeType::Layer);
+        let mut node = Node::new();
         node.set_anchor_point(Vec2::new(0.5, 0.5));
         
         Self {
@@ -85,10 +85,6 @@ impl Layer {
     pub fn is_mouse_enabled(&self) -> bool {
         self.mouse_enabled
     }
-
-    pub fn on_enter(&mut self) {}
-
-    pub fn on_exit(&mut self) {}
 
     pub fn set_keyboard_enabled(&mut self, enabled: bool) {
         self.keyboard_enabled = enabled;
@@ -273,11 +269,13 @@ impl LayerColor {
     }
 
     pub fn set_content_size(&mut self, size: Size) {
-        self.layer.node_mut().set_content_size(size);
+        let vec2_size = crate::math::Vec2::new(size.width, size.height);
+        self.layer.node_mut().set_content_size(vec2_size);
     }
 
     pub fn content_size(&self) -> Size {
-        self.layer.node().content_size()
+        let vec2_size = self.layer.node().get_content_size();
+        Size::new(vec2_size.x, vec2_size.y)
     }
 
     pub fn set_blend_func(&mut self, src: u32, dst: u32) {

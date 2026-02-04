@@ -164,10 +164,8 @@ impl NotificationCenter {
     }
 
     pub fn with_name(name: &str) -> Self {
-        let center = Self::new();
-        let name = name.to_string();
-        center.inner.lock().unwrap().name = name.clone();
-        center.name = name;
+        let mut center = Self::new();
+        center.name = name.to_string();
         center
     }
 
