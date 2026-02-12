@@ -40,8 +40,7 @@ impl Ref {
         let count = self.reference_count.get();
         if count > 1 {
             self.reference_count.set(count - 1);
-        } else {
-        }
+        } 
     }
 
     pub fn get_reference_count(&self) -> u32 {

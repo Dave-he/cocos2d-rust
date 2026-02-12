@@ -1,12 +1,17 @@
 use super::mesh::{Mesh, MeshSkin, AABB};
-use crate::base::{Ref, RefPtr};
-use crate::math::{Mat4, Vec3};
+use crate::base::RefPtr;
 
 #[derive(Debug)]
 pub struct Sprite3D {
     mesh: Option<RefPtr<Mesh>>,
     skin: Option<RefPtr<MeshSkin>>,
     aabb: AABB,
+}
+
+impl Default for Sprite3D {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Sprite3D {
@@ -52,6 +57,12 @@ pub struct Model {
     meshes: Vec<RefPtr<Mesh>>,
     materials: Vec<RefPtr<()>>,
     aabb: AABB,
+}
+
+impl Default for Model {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Model {

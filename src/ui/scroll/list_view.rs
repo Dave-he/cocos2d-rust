@@ -1,7 +1,6 @@
 use super::scroll_view::{ScrollDirection, ScrollView};
 use crate::base::Node;
 use crate::math::Vec2;
-use crate::ui::Widget;
 
 /// 列表视图重力（对齐方式）
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -10,6 +10,12 @@ pub struct TextureCache {
     textures: HashMap<String, RefPtr<Texture2D>>,
 }
 
+impl Default for TextureCache {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TextureCache {
     /// Gets the singleton instance
     pub fn get_instance() -> &'static mut TextureCache {
@@ -40,7 +46,7 @@ impl TextureCache {
         // Create texture from image via Renderer/Backend
         // This requires access to the Director -> Renderer
         let director = Director::get_instance();
-        let mut director = director.borrow_mut();
+        let director = director.borrow_mut();
         let renderer = director.get_renderer();
         let mut renderer = renderer.borrow_mut();
 

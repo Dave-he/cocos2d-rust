@@ -1,10 +1,9 @@
 use crate::backend::opengl::OpenGLBackend;
-use crate::base::types::Color4F;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::Mat4;
 use crate::platform::Image;
 use crate::renderer::command::{
-    CommandType, GroupCommand, MeshCommand, Quad, RenderCommand, Triangles,
+    GroupCommand, MeshCommand, Quad, RenderCommand, Triangles,
 };
 use crate::renderer::material::Material;
 use crate::renderer::pipeline::PipelineState;
@@ -24,6 +23,12 @@ pub struct Renderer {
     default_program: u32,
     dynamic_vbo: u32,
     dynamic_ibo: u32,
+}
+
+impl Default for Renderer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Renderer {
@@ -354,17 +359,14 @@ impl std::fmt::Debug for Renderer {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default)]
 pub enum CullMode {
     None,
     Front,
+    #[default]
     Back,
 }
 
-impl Default for CullMode {
-    fn default() -> Self {
-        CullMode::Back
-    }
-}
 
 #[derive(Debug)]
 pub struct ScissorRect {

@@ -1,5 +1,5 @@
 use super::menu_item::MenuItem;
-use crate::base::{Node, Ref, RefPtr};
+use crate::base::{Node, RefPtr};
 use crate::math::Vec2;
 
 /// Menu state

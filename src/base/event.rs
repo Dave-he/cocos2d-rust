@@ -53,6 +53,12 @@ pub struct EventTouch {
     touch_id: i32,
 }
 
+impl Default for EventTouch {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventTouch {
     pub fn new() -> EventTouch {
         EventTouch {
@@ -118,6 +124,12 @@ pub enum MouseEventType {
     Up,
     Move,
     Scroll,
+}
+
+impl Default for EventMouse {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl EventMouse {
@@ -254,6 +266,12 @@ pub struct EventDispatcher {
     in_update: bool,
 }
 
+impl Default for EventDispatcher {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventDispatcher {
     pub fn new() -> EventDispatcher {
         EventDispatcher {
@@ -271,7 +289,7 @@ impl EventDispatcher {
         let listener_type = listener.borrow().get_type().clone();
         self.listeners_map
             .entry(listener_type)
-            .or_insert_with(Vec::new)
+            .or_default()
             .push(index);
     }
 

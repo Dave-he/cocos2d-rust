@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
 use std::time::Duration;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -72,6 +72,12 @@ pub struct HttpResponse {
     error: Option<String>,
 }
 
+impl Default for HttpResponse {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl HttpResponse {
     pub fn new() -> HttpResponse {
         HttpResponse {
@@ -125,6 +131,12 @@ pub struct HttpClient {
     requests: HashMap<i32, HttpRequest>,
     response_callbacks: HashMap<i32, HttpCallback>,
     current_request_id: i32,
+}
+
+impl Default for HttpClient {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl HttpClient {
@@ -186,6 +198,12 @@ pub enum NetworkReachability {
     NONE,
     WIFI,
     WAN,
+}
+
+impl Default for Network {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Network {

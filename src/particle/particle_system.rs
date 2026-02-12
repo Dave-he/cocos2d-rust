@@ -1,5 +1,5 @@
 use crate::base::types::Color4F;
-use crate::math::{Vec2, Vec3, Vec4};
+use crate::math::Vec3;
 use std::f32::consts::PI;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -32,6 +32,12 @@ pub struct Particle {
     end_size: f32,
     start_color: Color4F,
     end_color: Color4F,
+}
+
+impl Default for Particle {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Particle {
@@ -176,6 +182,12 @@ pub struct ParticleSystem {
     is_visible: bool,
     auto_remove: bool,
     texture: Option<()>,
+}
+
+impl Default for ParticleSystem {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ParticleSystem {

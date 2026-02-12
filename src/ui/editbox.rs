@@ -37,6 +37,7 @@ pub enum EditBoxInputMode {
 
 /// EditBox 输入标志
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default)]
 pub struct EditBoxInputFlag {
     pub password: bool,
     pub sensitive: bool,
@@ -45,17 +46,6 @@ pub struct EditBoxInputFlag {
     pub initial_caps_all_characters: bool,
 }
 
-impl Default for EditBoxInputFlag {
-    fn default() -> Self {
-        Self {
-            password: false,
-            sensitive: false,
-            initial_caps_sentence: false,
-            initial_caps_word: false,
-            initial_caps_all_characters: false,
-        }
-    }
-}
 
 /// 编辑历史记录
 #[derive(Debug, Clone)]
@@ -974,10 +964,14 @@ mod tests {
         
         editbox.begin_editing();
         
-        // 单行模式下，回车应结束编辑
+        // 单行模式下,回车应结束编辑
         let event = KeyboardEvent {
             key_code: KeyCode::Enter,
             event_type: KeyEventType::Pressed,
+            shift: false,
+            ctrl: false,
+            alt: false,
+            super_key: false,
             character: Some('\n'),
         };
         

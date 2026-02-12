@@ -1,5 +1,4 @@
-use crate::base::{Ref, RefPtr};
-use std::collections::HashMap;
+use crate::base::RefPtr;
 
 pub trait Texture {
     fn get_name(&self) -> u32;
@@ -105,6 +104,12 @@ pub struct TextureDescriptor {
     pub mipmap_level: u32,
 }
 
+impl Default for TextureDescriptor {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TextureDescriptor {
     pub fn new() -> TextureDescriptor {
         TextureDescriptor {
@@ -146,6 +151,12 @@ pub struct Texture2D {
     texture_type: TextureType,
     bits_per_pixel: u32,
     has_mipmaps: bool,
+}
+
+impl Default for Texture2D {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Texture2D {
@@ -254,6 +265,12 @@ pub struct TexturedVertex {
     v: f32,
 }
 
+impl Default for TextureAtlas {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TextureAtlas {
     pub fn new() -> TextureAtlas {
         TextureAtlas {
@@ -301,6 +318,12 @@ impl TextureAtlas {
     }
 }
 
+impl Default for TextureQuad {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TextureQuad {
     pub fn new() -> TextureQuad {
         TextureQuad {
@@ -344,6 +367,12 @@ pub struct Sampler {
     wrap_t: TextureWrap,
     compare_mode: bool,
     compare_func: CompareFunc,
+}
+
+impl Default for Sampler {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Sampler {

@@ -1,7 +1,6 @@
 use crate::_3d::Bone3D;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::{Mat4, Vec3};
-use crate::renderer::Texture2D;
 
 #[derive(Debug)]
 pub struct Mesh {
@@ -11,6 +10,12 @@ pub struct Mesh {
     vertex_count: u32,
     index_count: u32,
     aabb: AABB,
+}
+
+impl Default for Mesh {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Mesh {
@@ -68,6 +73,12 @@ impl Mesh {
 pub struct AABB {
     min: Vec3,
     max: Vec3,
+}
+
+impl Default for AABB {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl AABB {
@@ -156,6 +167,12 @@ pub struct MeshIndexData {
     index_format: IndexFormat,
 }
 
+impl Default for MeshIndexData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MeshIndexData {
     pub fn new() -> MeshIndexData {
         MeshIndexData {
@@ -181,6 +198,12 @@ pub struct MeshVertexData {
     vertex_buffer_id: u32,
     vertex_count: u32,
     vertex_size: u32,
+}
+
+impl Default for MeshVertexData {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MeshVertexData {
@@ -209,6 +232,12 @@ pub struct MeshSkin {
     bind_pose_inverses: Vec<Mat4>,
 }
 
+impl Default for MeshSkin {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MeshSkin {
     pub fn new() -> MeshSkin {
         MeshSkin {
@@ -234,68 +263,84 @@ impl MeshSkin {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VertexAttribType {
+    Position,
+    Color,
+    TexCoord,
+    TexCoord1,
+    TexCoord2,
+    TexCoord3,
+    TexCoord4,
+    TexCoord5,
+    TexCoord6,
+    TexCoord7,
+    Normal,
+    Blend,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VertexAttrib {
-    POSITION,
-    NORMAL,
-    TANGENT,
-    TEX_COORD,
-    TEX_COORD1,
-    TEX_COORD2,
-    TEX_COORD3,
-    TEX_COORD4,
-    TEX_COORD5,
-    TEX_COORD6,
-    TEX_COORD7,
-    TEX_COORD8,
-    COLOR,
-    COLOR1,
-    COLOR2,
-    COLOR3,
-    COLOR4,
-    BLEND_INDICES,
-    BLEND_WEIGHT,
+    Position,
+    Normal,
+    Tangent,
+    TexCoord,
+    TexCoord1,
+    TexCoord2,
+    TexCoord3,
+    TexCoord4,
+    TexCoord5,
+    TexCoord6,
+    TexCoord7,
+    TexCoord8,
+    Color,
+    Color1,
+    Color2,
+    Color3,
+    Color4,
+    BlendIndices,
+    BlendWeight,
 }
 
 impl VertexAttrib {
     pub fn get_size(&self) -> u32 {
         match self {
-            VertexAttrib::POSITION => 3,
-            VertexAttrib::NORMAL => 3,
-            VertexAttrib::TANGENT => 4,
-            VertexAttrib::TEX_COORD => 2,
-            VertexAttrib::TEX_COORD1 => 2,
-            VertexAttrib::TEX_COORD2 => 2,
-            VertexAttrib::TEX_COORD3 => 2,
-            VertexAttrib::TEX_COORD4 => 2,
-            VertexAttrib::TEX_COORD5 => 2,
-            VertexAttrib::TEX_COORD6 => 2,
-            VertexAttrib::TEX_COORD7 => 2,
-            VertexAttrib::TEX_COORD8 => 2,
-            VertexAttrib::COLOR => 4,
-            VertexAttrib::COLOR1 => 4,
-            VertexAttrib::COLOR2 => 4,
-            VertexAttrib::COLOR3 => 4,
-            VertexAttrib::COLOR4 => 4,
-            VertexAttrib::BLEND_INDICES => 4,
-            VertexAttrib::BLEND_WEIGHT => 4,
+            VertexAttrib::Position => 3,
+            VertexAttrib::Normal => 3,
+            VertexAttrib::Tangent => 4,
+            VertexAttrib::TexCoord => 2,
+            VertexAttrib::TexCoord1 => 2,
+            VertexAttrib::TexCoord2 => 2,
+            VertexAttrib::TexCoord3 => 2,
+            VertexAttrib::TexCoord4 => 2,
+            VertexAttrib::TexCoord5 => 2,
+            VertexAttrib::TexCoord6 => 2,
+            VertexAttrib::TexCoord7 => 2,
+            VertexAttrib::TexCoord8 => 2,
+            VertexAttrib::Color => 4,
+            VertexAttrib::Color1 => 4,
+            VertexAttrib::Color2 => 4,
+            VertexAttrib::Color3 => 4,
+            VertexAttrib::Color4 => 4,
+            VertexAttrib::BlendIndices => 4,
+            VertexAttrib::BlendWeight => 4,
         }
     }
 
-    pub fn get_type(&self) -> VertexAttribType {
-        VertexAttribType::FLOAT
+    pub fn get_type(&self) -> VertexDataType {
+        VertexDataType::Float
     }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum VertexAttribType {
-    FLOAT,
-    DOUBLE,
-    BYTE,
-    UBYTE,
-    SHORT,
-    USHORT,
-    INT,
-    UINT,
+pub enum VertexDataType {
+    Float,
+    Double,
+    Byte,
+    UByte,
+    Short,
+    UShort,
+    Int,
+    UInt,
 }
 
 #[derive(Debug)]
@@ -309,6 +354,12 @@ pub struct VertexAttribBindingInfo {
     attrib: VertexAttrib,
     size: u32,
     offset: u32,
+}
+
+impl Default for VertexAttribBinding {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl VertexAttribBinding {
@@ -330,6 +381,12 @@ pub struct BillBoard {
 pub enum BillBoardMode {
     VIEW_POINT_ORIENTED,
     VIEW_PLANE_ORIENTED,
+}
+
+impl Default for BillBoard {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl BillBoard {

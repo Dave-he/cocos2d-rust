@@ -1,4 +1,4 @@
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::Vec2;
 use crate::renderer::Texture2D;
 use std::collections::HashMap;
@@ -131,7 +131,7 @@ impl FontAtlas {
     /// Measures the size of a string
     pub fn measure_string(&self, text: &str) -> Vec2 {
         let mut width = 0.0;
-        let mut height = self.common_line_height;
+        let height = self.common_line_height;
 
         for ch in text.chars() {
             if let Some(def) = self.get_letter_definition(ch) {

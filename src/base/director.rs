@@ -21,6 +21,12 @@ pub struct Director {
     is_cleanup: bool,
 }
 
+impl Default for Director {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Director {
     pub fn get_instance() -> RefPtr<Director> {
         static mut DIRECTOR: Option<RefCell<RefPtr<Director>>> = None;
@@ -153,6 +159,12 @@ pub struct Scene {
     children: Vec<RefPtr<Node>>,
 }
 
+impl Default for Scene {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Scene {
     pub fn new() -> Scene {
         Scene {
@@ -252,6 +264,12 @@ impl std::fmt::Debug for Node {
             .field("content_size", &self.content_size)
             .field("on_draw", &"Fn(...)")
             .finish()
+    }
+}
+
+impl Default for Node {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -427,8 +445,8 @@ impl Node {
     pub fn update(&mut self, delta_time: f32) {}
 
     pub fn get_id(&self) -> usize {
-        let ptr = &self.base as *const Ref as *const u8 as usize;
-        ptr
+        
+        &self.base as *const Ref as *const u8 as usize
     }
 
     pub fn get_base(&self) -> &Ref {

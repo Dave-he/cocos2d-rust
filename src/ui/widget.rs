@@ -1,5 +1,5 @@
 use crate::base::types::Color3B;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::Vec2;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -186,6 +186,12 @@ pub struct Button {
     disabled_image: String,
 }
 
+impl Default for Button {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Button {
     pub fn new() -> Button {
         Button {
@@ -228,6 +234,12 @@ pub struct TextField {
     max_length: i32,
     password_enabled: bool,
     password_char: char,
+}
+
+impl Default for TextField {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TextField {
@@ -291,6 +303,12 @@ pub struct Slider {
     max_percent: i32,
 }
 
+impl Default for Slider {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Slider {
     pub fn new() -> Slider {
         Slider {
@@ -346,6 +364,12 @@ pub struct CheckBox {
     check_mark_image: String,
 }
 
+impl Default for CheckBox {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CheckBox {
     pub fn new() -> CheckBox {
         CheckBox {
@@ -388,6 +412,12 @@ pub struct ImageView {
     widget: Widget,
     image_texture: String,
     scale_type: WidgetTextureType,
+}
+
+impl Default for ImageView {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ImageView {
@@ -434,6 +464,12 @@ pub enum TextVAlignment {
     TOP,
     CENTER,
     BOTTOM,
+}
+
+impl Default for Text {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Text {

@@ -93,7 +93,7 @@ impl Quaternion {
         self.x = -self.x * n_inv;
         self.y = -self.y * n_inv;
         self.z = -self.z * n_inv;
-        self.w = self.w * n_inv;
+        self.w *= n_inv;
         true
     }
 

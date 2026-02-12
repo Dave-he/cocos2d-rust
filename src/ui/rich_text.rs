@@ -2,8 +2,6 @@ use crate::base::types::Color3B;
 use crate::base::Node;
 use crate::label::Label;
 use crate::math::Vec2;
-use crate::sprite::Sprite;
-use std::collections::HashMap;
 
 /// 富文本元素类型
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -308,10 +306,10 @@ impl RichText {
         // 简化的 HTML 解析器
         // 实际应用中应使用专业的 HTML 解析库
 
-        let mut current_text = String::new();
-        let mut current_font = self.font_name.clone();
-        let mut current_size = self.font_size;
-        let mut current_color = self.font_color;
+        let current_text = String::new();
+        let current_font = self.font_name.clone();
+        let current_size = self.font_size;
+        let current_color = self.font_color;
 
         // 这里是简化版本，实际需要完整的标签解析
         if !text.contains('<') {

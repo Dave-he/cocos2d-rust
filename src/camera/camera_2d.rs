@@ -1,5 +1,5 @@
 use crate::base::Node;
-use crate::math::{Vec2, Vec3, Mat4};
+use crate::math::{Vec2, Mat4};
 use std::sync::{Arc, Mutex};
 
 /// 2D 相机
@@ -71,7 +71,7 @@ impl Camera2D {
     
     /// 移动相机
     pub fn move_by(&mut self, delta: Vec2) {
-        self.position = self.position + delta;
+        self.position += delta;
         self.apply_bounds();
     }
     

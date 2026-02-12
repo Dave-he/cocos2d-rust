@@ -16,13 +16,18 @@ use winit::{
     window::WindowBuilder,
 };
 
-use crate::backend::opengl::OpenGLBackend;
 use crate::base::Director;
 
 /// Keyboard state
 #[derive(Debug, Clone)]
 pub struct KeyboardState {
     keys: std::collections::HashMap<u32, bool>,
+}
+
+impl Default for KeyboardState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl KeyboardState {
@@ -91,6 +96,12 @@ pub trait ApplicationDelegate {
 /// Application manages the main application lifecycle
 pub struct Application {
     delegate: Option<Box<dyn ApplicationDelegate>>,
+}
+
+impl Default for Application {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Application {
@@ -172,7 +183,7 @@ impl Application {
         let glow_context = Rc::new(glow_context);
 
         // Initialize Director with context
-        let mut director = Director::get_instance();
+        let director = Director::get_instance();
         director.borrow_mut().set_gl_context(glow_context.clone());
 
         // Notify delegate

@@ -154,11 +154,10 @@ impl Vec2 {
     }
 
     pub fn fuzzy_equals(&self, target: &Vec2, variance: f32) -> bool {
-        if self.x - variance <= target.x && target.x <= self.x + variance {
-            if self.y - variance <= target.y && target.y <= self.y + variance {
+        if self.x - variance <= target.x && target.x <= self.x + variance
+            && self.y - variance <= target.y && target.y <= self.y + variance {
                 return true;
             }
-        }
         false
     }
 

@@ -1,6 +1,6 @@
 use super::{Renderer, Texture2D};
 use crate::base::types::Color4F;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::Mat4;
 use crate::renderer::material::Material;
 
@@ -74,6 +74,12 @@ pub struct Triangles {
     pub model_matrix: Mat4,
 }
 
+impl Default for Triangles {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Triangles {
     pub fn new() -> Triangles {
         Triangles {
@@ -100,6 +106,12 @@ pub struct TrianglesCommand {
     global_order: f32,
     triangles: Triangles,
     material: Option<RefPtr<Material>>,
+}
+
+impl Default for TrianglesCommand {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TrianglesCommand {
@@ -155,6 +167,12 @@ pub struct Quad {
     pub model_matrix: Mat4,
 }
 
+impl Default for Quad {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Quad {
     pub fn new() -> Quad {
         Quad {
@@ -177,6 +195,12 @@ pub struct MeshCommand {
     mesh_data: Vec<f32>,
     indices_data: Vec<u16>,
     transform: Mat4,
+}
+
+impl Default for MeshCommand {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl MeshCommand {
@@ -225,6 +249,12 @@ pub struct GroupCommand {
     group_id: i32,
 }
 
+impl Default for GroupCommand {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl GroupCommand {
     pub fn new() -> GroupCommand {
         GroupCommand {
@@ -252,6 +282,12 @@ pub struct CallbackCommand {
     command_type: CommandType,
     global_order: f32,
     callback: Box<dyn Fn(&mut Renderer)>,
+}
+
+impl Default for CallbackCommand {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl CallbackCommand {
@@ -296,6 +332,12 @@ impl std::fmt::Debug for CustomCommand {
             .field("global_order", &self.global_order)
             .field("depth", &self.depth)
             .finish()
+    }
+}
+
+impl Default for CustomCommand {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -412,7 +454,7 @@ mod tests {
         let indices = vec![0, 1, 2];
         let matrix = Mat4::IDENTITY;
 
-        cmd.init(1.5, vertices, indices, (770, 771), matrix);
+        cmd.init(1.5, None, vertices, indices, (770, 771), matrix);
 
         assert_eq!(cmd.get_global_order(), 1.5);
         assert_eq!(cmd.triangles.get_vertex_count(), 3);

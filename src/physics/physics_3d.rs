@@ -49,6 +49,12 @@ pub struct Physics3DBody {
     collision_enabled: bool,
 }
 
+impl Default for Physics3DBody {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Physics3DBody {
     pub fn new() -> Physics3DBody {
         Physics3DBody {
@@ -185,7 +191,7 @@ impl Physics3DBody {
     /// Apply a central impulse
     pub fn apply_central_impulse(&mut self, impulse: Vec3) {
         if self.body_type == Physics3DBodyType::DYNAMIC {
-            self.linear_velocity = self.linear_velocity + impulse / self.mass;
+            self.linear_velocity += impulse / self.mass;
         }
     }
 
@@ -194,7 +200,7 @@ impl Physics3DBody {
         if self.body_type == Physics3DBodyType::DYNAMIC {
             self.apply_central_impulse(impulse);
             let torque_impulse = rel_pos.cross(&impulse);
-            self.angular_velocity = self.angular_velocity + torque_impulse;
+            self.angular_velocity += torque_impulse;
         }
     }
 
@@ -206,7 +212,7 @@ impl Physics3DBody {
     /// Apply torque
     pub fn apply_torque(&mut self, torque: Vec3, delta_time: f32) {
         if self.body_type == Physics3DBodyType::DYNAMIC {
-            self.angular_velocity = self.angular_velocity + torque * delta_time;
+            self.angular_velocity += torque * delta_time;
         }
     }
 }
@@ -442,6 +448,12 @@ pub struct Physics3DWorld {
     constraints: Vec<Physics3DConstraint>,
 }
 
+impl Default for Physics3DWorld {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Physics3DWorld {
     pub fn new() -> Physics3DWorld {
         Physics3DWorld {
@@ -574,6 +586,12 @@ pub enum NavMeshQueryResult {
 pub struct NavMeshPath {
     corners: Vec<Vec3>,
     length: f32,
+}
+
+impl Default for NavMeshPath {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl NavMeshPath {

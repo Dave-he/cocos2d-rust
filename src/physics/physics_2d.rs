@@ -1,5 +1,4 @@
 use crate::math::Vec2;
-use std::sync::Arc;
 
 /// Physics material properties
 #[derive(Debug, Clone, Copy)]
@@ -247,6 +246,12 @@ pub struct PhysicsBody {
     collision_enabled: bool,
 }
 
+impl Default for PhysicsBody {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PhysicsBody {
     pub fn new() -> PhysicsBody {
         PhysicsBody {
@@ -300,6 +305,49 @@ impl PhysicsBody {
             gravity_enabled: true,
             collision_enabled: true,
         }
+    }
+
+    /// Create a box body (convenience method)
+    /// By default creates a static body, call set_dynamic(true) to make it dynamic
+    pub fn create_box(width: f32, height: f32) -> PhysicsBody {
+        let material = PhysicsMaterial::DEFAULT;
+        let size = Vec2::new(width, height);
+        let area = width * height;
+        let moment = material.density * area * (width * width + height * height) / 12.0;
+        
+        let mut body = PhysicsBody::create_static_body();
+        body.mass = material.density * area;
+        body.moment = moment;
+        body
+    }
+
+    /// Create a circle body (convenience method)
+    /// By default creates a static body, call set_dynamic(true) to make it dynamic
+    pub fn create_circle(radius: f32) -> PhysicsBody {
+        let material = PhysicsMaterial::DEFAULT;
+        let area = std::f32::consts::PI * radius * radius;
+        let moment = material.density * area * radius * radius / 2.0;
+        
+        let mut body = PhysicsBody::create_static_body();
+        body.mass = material.density * area;
+        body.moment = moment;
+        body
+    }
+
+    pub fn is_dynamic(&self) -> bool {
+        self.body_type == PhysicsBodyType::DYNAMIC
+    }
+
+    pub fn set_dynamic(&mut self, dynamic: bool) {
+        self.body_type = if dynamic {
+            PhysicsBodyType::DYNAMIC
+        } else {
+            PhysicsBodyType::STATIC
+        };
+    }
+
+    pub fn set_mass(&mut self, mass: f32) {
+        self.mass = mass;
     }
 
     pub fn get_type(&self) -> PhysicsBodyType {
@@ -381,7 +429,7 @@ impl PhysicsBody {
     /// Apply an impulse to the body
     pub fn apply_impulse(&mut self, impulse: Vec2, offset: Vec2) {
         if self.body_type == PhysicsBodyType::DYNAMIC {
-            self.linear_velocity = self.linear_velocity + impulse / self.mass;
+            self.linear_velocity += impulse / self.mass;
             // Angular impulse calculation
             let r = offset;
             let angular_impulse = r.x * impulse.y - r.y * impulse.x;
@@ -500,6 +548,12 @@ pub struct PhysicsWorld {
     auto_step: bool,
 }
 
+impl Default for PhysicsWorld {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PhysicsWorld {
     pub fn new() -> PhysicsWorld {
         PhysicsWorld {
@@ -614,7 +668,7 @@ impl PhysicsWorld {
         
         let t = (-b - discriminant.sqrt()) / (2.0 * a);
         
-        if t >= 0.0 && t <= 1.0 {
+        if (0.0..=1.0).contains(&t) {
             let contact = start + d * t;
             let mut normal_vec = contact - center;
             normal_vec.normalize();
@@ -714,6 +768,12 @@ pub struct PhysicsContact {
     body_b: *const PhysicsBody,
     contact_point: Vec2,
     contact_normal: Vec2,
+}
+
+impl Default for PhysicsContact {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PhysicsContact {

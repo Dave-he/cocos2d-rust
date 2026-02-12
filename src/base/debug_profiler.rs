@@ -200,7 +200,7 @@ impl DebugProfiler {
 
         if let Some(start_time) = self.start_times.remove(name) {
             let duration = start_time.elapsed();
-            let last_parent = self.call_stack.last().map(|s| s.clone());
+            let last_parent = self.call_stack.last().cloned();
             if let Some(parent) = last_parent {
                 self.record_with_parent(name, &parent, duration);
             } else {

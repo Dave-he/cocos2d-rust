@@ -93,7 +93,7 @@ struct DefaultHandler;
 
 impl ConsoleHandler for DefaultHandler {
     fn handle_command(&mut self, command: &str) -> CommandResult {
-        let parts: Vec<&str> = command.trim().split_whitespace().collect();
+        let parts: Vec<&str> = command.split_whitespace().collect();
         if parts.is_empty() {
             return CommandResult::new(String::new(), true);
         }
@@ -119,8 +119,7 @@ impl ConsoleHandler for DefaultHandler {
     }
 
     fn get_help(&self) -> String {
-        vec![
-            "=== Debug Console Commands ===",
+        ["=== Debug Console Commands ===",
             "help - Show this help message",
             "clear - Clear console output",
             "stats - Show debug statistics",
@@ -128,8 +127,7 @@ impl ConsoleHandler for DefaultHandler {
             "list - List all variables",
             "quit - Exit console",
             "",
-            "Custom commands can be registered via ConsoleHandler",
-        ].join("\n")
+            "Custom commands can be registered via ConsoleHandler"].join("\n")
     }
 }
 

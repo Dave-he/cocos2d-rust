@@ -1,6 +1,5 @@
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::{Quaternion, Vec3};
-use std::f32::consts::PI;
 
 #[derive(Debug)]
 pub struct AnimationCurve {
@@ -13,6 +12,12 @@ pub struct KeyFrame {
     value: f32,
     in_tangent: f32,
     out_tangent: f32,
+}
+
+impl Default for AnimationCurve {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl AnimationCurve {
@@ -54,6 +59,12 @@ pub struct Animation3D {
     position_curves: Vec<AnimationCurve>,
     rotation_curves: Vec<AnimationCurve>,
     scale_curves: Vec<AnimationCurve>,
+}
+
+impl Default for Animation3D {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Animation3D {
@@ -160,6 +171,12 @@ pub struct AnimationComponent {
     current_time: f32,
     speed: f32,
     playing: bool,
+}
+
+impl Default for AnimationComponent {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl AnimationComponent {

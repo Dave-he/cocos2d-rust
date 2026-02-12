@@ -4,14 +4,10 @@
 
 use std::rc::Rc;
 use std::cell::RefCell;
-use std::f32::consts::PI;
-use std::mem;
 
 use super::action::{Action, FiniteTimeAction, INVALID_TAG};
 use crate::scene::Node;
 use crate::math::Vec2;
-use crate::math::Vec3;
-use crate::math::geometry::Size;
 
 /// ActionInterval - 间隔动作基类
 #[derive(Debug, Clone)]
@@ -104,7 +100,7 @@ impl Action for ActionIntervalImpl {
     fn update(&mut self, dt: f32) {
         if self.first_tick {
             self.first_tick = false;
-            self.elapsed = 0.0;
+            self.elapsed = dt;
         } else {
             self.elapsed += dt;
         }
@@ -120,7 +116,7 @@ impl Action for ActionIntervalImpl {
     fn step(&mut self, dt: f32) {
         if self.first_tick {
             self.first_tick = false;
-            self.elapsed = 0.0;
+            self.elapsed = dt;
         } else {
             self.elapsed += dt;
         }
@@ -128,15 +124,15 @@ impl Action for ActionIntervalImpl {
         let time = self.elapsed.min(self.duration);
         self.update_with_time(time / self.duration);
     }
+    
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ActionIntervalImpl {
     fn update_with_time(&mut self, _time: f32) {
         // 子类覆盖
-    }
-
-    pub fn reverse(&self) -> Box<dyn FiniteTimeAction> {
-        Box::new(self.clone())
     }
 }
 
@@ -208,7 +204,17 @@ impl Action for MoveBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        // 更新interval的时间追踪
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt; // 第一次更新就应该累加dt
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        // 计算归一化时间 (0.0 - 1.0)
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -218,6 +224,10 @@ impl Action for MoveBy {
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl MoveBy {
@@ -226,7 +236,8 @@ impl MoveBy {
         
         if let Some(ref target) = self.interval.get_target() {
             let diff = current_pos - self.previous_position;
-            target.borrow_mut().set_position(target.borrow().position() + diff);
+            let old_position = target.borrow().position();
+            target.borrow_mut().set_position(old_position + diff);
             self.previous_position = current_pos;
         }
     }
@@ -306,6 +317,10 @@ impl Action for MoveTo {
     fn step(&mut self, dt: f32) {
         self.move_by.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl MoveTo {
@@ -375,7 +390,15 @@ impl Action for RotateBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -384,6 +407,10 @@ impl Action for RotateBy {
 
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -466,6 +493,10 @@ impl Action for RotateTo {
     fn step(&mut self, dt: f32) {
         self.rotate_by.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl RotateTo {
@@ -486,7 +517,7 @@ impl ScaleBy {
     pub fn new(duration: f32, scale: f32) -> Self {
         Self {
             interval: ActionIntervalImpl::new(duration),
-            delta: Vec2::new(scale, scale),
+            delta: Vec2::new(scale - 1.0, scale - 1.0),
             start_scale: Vec2::new(1.0, 1.0),
         }
     }
@@ -494,7 +525,7 @@ impl ScaleBy {
     pub fn new_xy(duration: f32, scale_x: f32, scale_y: f32) -> Self {
         Self {
             interval: ActionIntervalImpl::new(duration),
-            delta: Vec2::new(scale_x, scale_y),
+            delta: Vec2::new(scale_x - 1.0, scale_y - 1.0),
             start_scale: Vec2::new(1.0, 1.0),
         }
     }
@@ -544,7 +575,15 @@ impl Action for ScaleBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -553,6 +592,10 @@ impl Action for ScaleBy {
 
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -645,6 +688,10 @@ impl Action for ScaleTo {
     fn step(&mut self, dt: f32) {
         self.scale_by.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl ScaleTo {
@@ -715,7 +762,13 @@ impl Action for SkewBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        // DelayTime 只需要更新时间追踪,不需要执行任何动作
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
     }
 
     fn is_done(&self) -> bool {
@@ -725,13 +778,17 @@ impl Action for SkewBy {
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl SkewBy {
     pub fn update_with_time(&mut self, time: f32) {
         let new_skew = self.start_skew + self.delta * time;
         if let Some(ref target) = self.interval.get_target() {
-            let mut target_mut = target.borrow_mut();
+            let target_mut = target.borrow_mut();
             // 需要在 Node 中添加 set_skew_xy 方法
             // target_mut.set_skew_xy(new_skew.x, new_skew.y);
         }
@@ -802,7 +859,15 @@ impl Action for Blink {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -812,6 +877,10 @@ impl Action for Blink {
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl Blink {
@@ -819,7 +888,7 @@ impl Blink {
         let slice = 1.0 / self.times as f32;
         let m = (time / slice).floor() as u32;
         if let Some(ref target) = self.interval.get_target() {
-            target.borrow_mut().set_visible(m % 2 == 0);
+            target.borrow_mut().set_visible(m % 2 != 0);
         }
     }
 }
@@ -876,6 +945,7 @@ impl Action for DelayTime {
     }
 
     fn update(&mut self, dt: f32) {
+        // DelayTime 只需要更新时间追踪，不需要执行任何动作
         self.interval.update(dt);
     }
 
@@ -885,6 +955,10 @@ impl Action for DelayTime {
 
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -949,7 +1023,17 @@ impl Action for FadeTo {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        // 更新interval的时间追踪
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        // 计算归一化时间 (0.0 - 1.0)
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -959,6 +1043,10 @@ impl Action for FadeTo {
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl FadeTo {
@@ -966,7 +1054,7 @@ impl FadeTo {
         let opacity = self.from_opacity as f32 + 
             (self.to_opacity as f32 - self.from_opacity as f32) * time;
         if let Some(ref target) = self.interval.get_target() {
-            target.borrow_mut().set_opacity(opacity as u8);
+            target.borrow_mut().set_opacity(opacity.round() as u8);
         }
     }
 }
@@ -1033,6 +1121,10 @@ impl Action for FadeIn {
     fn step(&mut self, dt: f32) {
         self.fade_to.step(dt);
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 /// FadeOut - 渐出动作
@@ -1096,6 +1188,10 @@ impl Action for FadeOut {
 
     fn step(&mut self, dt: f32) {
         self.fade_to.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -1163,7 +1259,17 @@ impl Action for BezierBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        // 更新interval的时间追踪
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        // 计算归一化时间 (0.0 - 1.0)
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -1172,6 +1278,10 @@ impl Action for BezierBy {
 
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -1196,10 +1306,10 @@ impl BezierBy {
     }
 
     fn bezier_at(a: f32, b: f32, c: f32, d: f32, t: f32) -> f32 {
-        ((1.0 - t).powi(3) * a +
+        (1.0 - t).powi(3) * a +
          3.0 * t * (1.0 - t).powi(2) * b +
          3.0 * t.powi(2) * (1.0 - t) * c +
-         t.powi(3) * d)
+         t.powi(3) * d
     }
 }
 
@@ -1268,7 +1378,17 @@ impl Action for JumpBy {
     }
 
     fn update(&mut self, dt: f32) {
-        self.interval.update(dt);
+        // 更新interval的时间追踪
+        if self.interval.first_tick {
+            self.interval.first_tick = false;
+            self.interval.elapsed = dt;
+        } else {
+            self.interval.elapsed += dt;
+        }
+        
+        // 计算归一化时间 (0.0 - 1.0)
+        let normalized_time = (self.interval.elapsed / self.interval.duration).min(1.0);
+        self.update_with_time(normalized_time);
     }
 
     fn is_done(&self) -> bool {
@@ -1277,6 +1397,10 @@ impl Action for JumpBy {
 
     fn step(&mut self, dt: f32) {
         self.interval.step(dt);
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -1318,8 +1442,9 @@ mod tests {
         assert!((pos.y - 25.0).abs() < 0.01);
 
         move_by.update(0.5);
-        assert!((target.borrow().position().x - 100.0).abs() < 0.01);
-        assert!((target.borrow().position().y - 50.0).abs() < 0.01);
+        let pos = target.borrow().position();
+        assert!((pos.x - 100.0).abs() < 0.01);
+        assert!((pos.y - 50.0).abs() < 0.01);
         assert!(move_by.is_done());
     }
 
@@ -1364,10 +1489,10 @@ mod tests {
         let mut rotate_to = RotateTo::new(1.0, 180.0);
         rotate_to.start_with_target(&target);
 
-        rotate_by.update(0.5);
+        rotate_to.update(0.5);
         assert!((target.borrow().rotation() - 90.0).abs() < 0.01);
 
-        rotate_by.update(0.5);
+        rotate_to.update(0.5);
         assert!((target.borrow().rotation() - 180.0).abs() < 0.01);
     }
 

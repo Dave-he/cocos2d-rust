@@ -14,6 +14,12 @@ pub struct TileSet {
     columns: u32,
 }
 
+impl Default for TileSet {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TileSet {
     pub fn new() -> TileSet {
         TileSet {
@@ -182,6 +188,12 @@ pub struct TileMapObject {
     properties: HashMap<String, String>,
 }
 
+impl Default for TileMapObject {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl TileMapObject {
     pub fn new() -> TileMapObject {
         TileMapObject {
@@ -196,6 +208,12 @@ impl TileMapObject {
             visible: true,
             properties: HashMap::new(),
         }
+    }
+}
+
+impl Default for TileMapInfo {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

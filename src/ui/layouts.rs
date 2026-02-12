@@ -1,4 +1,4 @@
-use super::widget::{LayoutParameter, Widget, WidgetSizeType};
+use super::widget::Widget;
 use crate::base::RefPtr;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -17,6 +17,12 @@ pub struct Layout {
     clipping_enabled: bool,
     clip_margin: f32,
     children: Vec<RefPtr<Widget>>,
+}
+
+impl Default for Layout {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Layout {
@@ -82,6 +88,12 @@ pub enum LinearGravity {
     BOTTOM,
     CENTER_VERTICAL,
     CENTER_HORIZONTAL,
+}
+
+impl Default for LinearLayout {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl LinearLayout {
@@ -168,6 +180,12 @@ pub enum RelativeAlign {
     LOCATION_CENTER_VERTICAL,
 }
 
+impl Default for RelativeLayout {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl RelativeLayout {
     pub fn new() -> RelativeLayout {
         RelativeLayout {
@@ -208,6 +226,12 @@ pub struct GridLayout {
 pub enum AxisDirection {
     HORIZONTAL,
     VERTICAL,
+}
+
+impl Default for GridLayout {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl GridLayout {

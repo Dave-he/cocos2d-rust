@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
@@ -87,6 +86,12 @@ pub enum AudioState {
     STOPPED,
 }
 
+impl Default for AudioPlayer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AudioPlayer {
     pub fn new() -> AudioPlayer {
         AudioPlayer {
@@ -170,6 +175,12 @@ pub struct AudioBuffer {
     size: usize,
 }
 
+impl Default for AudioBuffer {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AudioBuffer {
     pub fn new() -> AudioBuffer {
         AudioBuffer {
@@ -210,6 +221,12 @@ impl AudioBuffer {
 #[derive(Debug)]
 pub struct AudioListener {
     volume: f32,
+}
+
+impl Default for AudioListener {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl AudioListener {

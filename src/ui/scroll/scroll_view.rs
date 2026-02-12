@@ -206,33 +206,33 @@ impl ScrollView {
     }
 
     /// 滚动到顶部
-    pub fn scroll_to_top(&mut self, time_in_sec: f32, attenuated: bool) {
+    pub fn scroll_to_top(&mut self, time_in_sec: f32, _attenuated: bool) {
         self.start_auto_scroll(Vec2::new(self.inner_position.x, 0.0), time_in_sec);
         self.trigger_event(ScrollViewEventType::SCROLL_TO_TOP);
     }
 
     /// 滚动到底部
-    pub fn scroll_to_bottom(&mut self, time_in_sec: f32, attenuated: bool) {
+    pub fn scroll_to_bottom(&mut self, time_in_sec: f32, _attenuated: bool) {
         let min_y = self.content_size.y - self.inner_size.y;
         self.start_auto_scroll(Vec2::new(self.inner_position.x, min_y), time_in_sec);
         self.trigger_event(ScrollViewEventType::SCROLL_TO_BOTTOM);
     }
 
     /// 滚动到左侧
-    pub fn scroll_to_left(&mut self, time_in_sec: f32, attenuated: bool) {
+    pub fn scroll_to_left(&mut self, time_in_sec: f32, _attenuated: bool) {
         self.start_auto_scroll(Vec2::new(0.0, self.inner_position.y), time_in_sec);
         self.trigger_event(ScrollViewEventType::SCROLL_TO_LEFT);
     }
 
     /// 滚动到右侧
-    pub fn scroll_to_right(&mut self, time_in_sec: f32, attenuated: bool) {
+    pub fn scroll_to_right(&mut self, time_in_sec: f32, _attenuated: bool) {
         let min_x = self.content_size.x - self.inner_size.x;
         self.start_auto_scroll(Vec2::new(min_x, self.inner_position.y), time_in_sec);
         self.trigger_event(ScrollViewEventType::SCROLL_TO_RIGHT);
     }
 
     /// 滚动到指定百分比位置
-    pub fn scroll_to_percent_vertical(&mut self, percent: f32, time_in_sec: f32, attenuated: bool) {
+    pub fn scroll_to_percent_vertical(&mut self, percent: f32, time_in_sec: f32, _attenuated: bool) {
         let percent = percent.clamp(0.0, 100.0);
         let h = self.inner_size.y - self.content_size.y;
         let dest = Vec2::new(self.inner_position.x, h * percent / 100.0);

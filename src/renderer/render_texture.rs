@@ -1,5 +1,3 @@
-use crate::math::Rect;
-use crate::renderer::Texture;
 use crate::renderer::Texture2D;
 use std::cell::RefCell;
 use std::rc::Rc;

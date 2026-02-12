@@ -1,5 +1,5 @@
-use super::tilemap_info::{LayerInfo, Rect, TileMapInfo, TileSet};
-use crate::base::{Ref, RefPtr};
+use super::tilemap_info::{LayerInfo, TileMapInfo, TileSet};
+use crate::base::RefPtr;
 use crate::sprite::Sprite;
 
 #[derive(Debug)]
@@ -11,6 +11,12 @@ pub struct TileMapLayer {
     tile_height: f32,
     map_width: u32,
     map_height: u32,
+}
+
+impl Default for TileMapLayer {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TileMapLayer {
@@ -97,6 +103,12 @@ impl TileMapLayer {
 pub struct TileMap {
     map_info: Option<TileMapInfo>,
     layers: Vec<RefPtr<TileMapLayer>>,
+}
+
+impl Default for TileMap {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TileMap {

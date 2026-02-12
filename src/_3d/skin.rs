@@ -1,4 +1,4 @@
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::{Mat4, Quaternion, Vec3};
 
 #[derive(Debug)]
@@ -89,6 +89,12 @@ pub struct Skeleton3D {
     root_bones: Vec<RefPtr<Bone3D>>,
 }
 
+impl Default for Skeleton3D {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Skeleton3D {
     pub fn new() -> Skeleton3D {
         Skeleton3D {
@@ -126,6 +132,12 @@ impl Skeleton3D {
 pub struct Skin {
     mesh: RefPtr<()>,
     skeleton: Option<RefPtr<Skeleton3D>>,
+}
+
+impl Default for Skin {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Skin {

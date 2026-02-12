@@ -41,6 +41,12 @@ struct UpdateEntry {
     priority: i32,
 }
 
+impl Default for Scheduler {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Scheduler {
     pub fn new() -> Scheduler {
         Scheduler {

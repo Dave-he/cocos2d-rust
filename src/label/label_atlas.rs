@@ -1,7 +1,6 @@
 use crate::base::types::Color3B;
-use crate::base::{Node, Ref, RefPtr};
+use crate::base::{Node, RefPtr};
 use crate::renderer::Texture2D;
-use crate::math::Vec2;
 
 /// LabelAtlas is a label that uses a texture atlas
 #[derive(Debug)]

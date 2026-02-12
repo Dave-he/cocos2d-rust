@@ -151,7 +151,6 @@ impl ShaderProgram {
     /// 使用此着色器程序
     pub fn use_program(&self) {
         if self.state != ShaderProgramState::Ready {
-            return;
         }
 
         // TODO: 调用 glUseProgram(self.program_id)

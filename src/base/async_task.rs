@@ -10,16 +10,12 @@
 /// - 任务组
 /// - 线程池支持
 
-use std::sync::{Arc, Mutex, Condvar, atomic::{AtomicBool, AtomicUsize, Ordering}};
+use std::sync::{Arc, Mutex, atomic::{AtomicBool, AtomicUsize, Ordering}};
 use std::thread;
 use std::time::{Duration, Instant};
 use std::collections::{VecDeque, HashMap, HashSet};
-use std::future::Future;
-use std::pin::Pin;
-use std::task::{Context, Poll};
 use std::boxed::Box;
 use std::result::Result;
-use std::error::Error;
 
 #[derive(Debug)]
 pub enum TaskStatus {
@@ -97,6 +93,12 @@ pub struct AsyncTaskResult<T> {
     pub progress: TaskProgress,
     pub start_time: Instant,
     pub end_time: Option<Instant>,
+}
+
+impl<T> Default for AsyncTaskResult<T> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<T> AsyncTaskResult<T> {
@@ -238,7 +240,10 @@ impl<T: Send + 'static> AsyncTask<T> {
         self.progress.lock().unwrap().clone()
     }
 
-    pub fn get_result(&self) -> AsyncTaskResult<T> {
+    pub fn get_result(&self) -> AsyncTaskResult<T> 
+    where 
+        T: Clone 
+    {
         self.result.lock().unwrap().clone()
     }
 
@@ -301,7 +306,7 @@ impl<T: Send + 'static> AsyncTask<T> {
         handler.on_cancelled();
     }
 
-    pub fn execute<F>(mut self, task_fn: F) -> Self
+    pub fn execute<F>(self, task_fn: F) -> Self
     where
         F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
             + Send
@@ -355,8 +360,18 @@ impl<T: Send + 'static> AsyncTask<T> {
                 result_guard.status = TaskStatus::Completed;
                 result_guard.data = Some(data);
                 result_guard.end_time = Some(Instant::now());
+                
+                // 创建一个临时result用于通知,不需要Clone T
+                let temp_result = AsyncTaskResult {
+                    status: result_guard.status.clone(),
+                    data: None,  // 不传递data,避免Clone约束
+                    error: None,
+                    progress: self.progress.lock().unwrap().clone(),
+                    start_time: result_guard.start_time,
+                    end_time: result_guard.end_time,
+                };
                 drop(result_guard);
-                self.notify_complete(&self.get_result());
+                self.notify_complete(&temp_result);
             }
             Err(error) => {
                 result_guard.status = TaskStatus::Failed(error.clone());
@@ -505,6 +520,12 @@ pub struct AsyncTaskManager {
     completed_count: Arc<AtomicUsize>,
 }
 
+impl Default for AsyncTaskManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AsyncTaskManager {
     pub fn new() -> Self {
         Self {
@@ -626,11 +647,11 @@ mod tests {
     }
 
     #[test]
-    fn test_task_group() {
-        let mut group = TaskGroup::<i32>::new("test_group");
-
+    fn test_task_group_basic() {
+        let mut group = TaskGroup::<i32>::new("test");
+        
         for i in 0..3 {
-            let task = AsyncTask::<i32>::new(&format!("task{}", i), |_, _| Ok(i));
+            let task = AsyncTask::<i32>::new(&format!("task{}", i), move |_, _| Ok(i));
             group.add_task(task);
         }
 
@@ -641,11 +662,20 @@ mod tests {
     #[test]
     fn test_task_group_progress() {
         let mut group = TaskGroup::<i32>::new("test");
+        
+        // 添加3个任务
+        for i in 0..3 {
+            let task = AsyncTask::<i32>::new(&format!("task{}", i), move |_, _| Ok(i));
+            group.add_task(task);
+        }
 
+        // 模拟2个完成，1个失败
         group.completed_count.store(2, Ordering::Relaxed);
         group.failed_count.store(1, Ordering::Relaxed);
 
-        assert!((group.get_progress() - 100.0).abs() < 0.01);
+        // 进度应该是 2/3 * 100 = 66.67%（只计算completed，不包括failed）
+        let expected = (2.0 / 3.0) * 100.0;
+        assert!((group.get_progress() - expected).abs() < 0.1);
     }
 
     #[test]
@@ -664,7 +694,7 @@ mod tests {
 
     #[test]
     fn test_notification_center_default() {
-        let center = NotificationCenter::default();
+        let center = crate::base::notification_center::NotificationCenter::default();
         let guard = center.lock().unwrap();
         assert_eq!(guard.name, "Default");
     }

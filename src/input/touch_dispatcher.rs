@@ -1,5 +1,4 @@
-use super::touch::{Touch, TouchId, TouchPhase};
-use crate::math::Vec2;
+use super::touch::{Touch, TouchId};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;

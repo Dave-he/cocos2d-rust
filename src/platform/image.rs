@@ -1,6 +1,5 @@
 use crate::platform::file_utils::FileUtils;
 use image::GenericImageView;
-use std::path::Path;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ImageFormat {
@@ -28,6 +27,12 @@ pub struct Image {
     number_of_mipmaps: i32,
 }
 
+impl Default for Image {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Image {
     pub fn new() -> Image {
         Image {
@@ -51,7 +56,7 @@ impl Image {
     }
 
     pub fn init_with_file(&mut self, path: &str) -> bool {
-        let mut file_utils = FileUtils::get_instance();
+        let file_utils = FileUtils::get_instance();
         let full_path = if let Some(path) = file_utils.get_full_path(path) {
             path
         } else {

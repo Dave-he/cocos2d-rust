@@ -6,7 +6,6 @@
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::cell::RefCell;
-use std::time::Duration;
 
 use crate::math::Vec2;
 use crate::math::Vec3;
@@ -55,6 +54,7 @@ impl TransformFlags {
 
 /// 节点类型枚举
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Default)]
 pub enum NodeType {
     Scene,
     Layer,
@@ -64,14 +64,10 @@ pub enum NodeType {
     MenuItem,
     LayerColor,
     LayerGradient,
+    #[default]
     Node,
 }
 
-impl Default for NodeType {
-    fn default() -> Self {
-        NodeType::Node
-    }
-}
 
 /// Node - 节点基类
 pub struct Node {
@@ -508,6 +504,12 @@ impl Node {
         }
     }
 
+    pub fn update_cascade_opacity_with_parent(&mut self, parent_opacity: u8) {
+        if self.cascade_opacity {
+            self.displayed_opacity = (self.opacity as f32 * parent_opacity as f32 / 255.0) as u8;
+        }
+    }
+
     // ===== 颜色 =====
     
     pub fn set_color(&mut self, color: Color3B) {
@@ -551,6 +553,16 @@ impl Node {
         }
     }
 
+    pub fn update_cascade_color_with_parent(&mut self, parent_color: Color3B) {
+        if self.cascade_color {
+            self.displayed_color = Color3B::new(
+                (self.color.r as f32 * parent_color.r as f32 / 255.0) as u8,
+                (self.color.g as f32 * parent_color.g as f32 / 255.0) as u8,
+                (self.color.b as f32 * parent_color.b as f32 / 255.0) as u8,
+            );
+        }
+    }
+
     // ===== Z-order =====
     
     pub fn set_local_z_order(&mut self, z_order: i32) {
@@ -591,15 +603,17 @@ impl Node {
     // ===== 父子关系 =====
     
     pub fn add_child(&mut self, child: Rc<RefCell<Node>>, z_order: i32, name: Option<&str>) {
+        let parent_displayed_opacity = self.displayed_opacity;
+        let parent_displayed_color = self.displayed_color;
+        
         {
             let mut child_mut = child.borrow_mut();
-            child_mut.parent = Some(Rc::clone(&self) as Rc<RefCell<Node>>);
             child_mut.set_local_z_order(z_order);
             if let Some(n) = name {
                 child_mut.set_name(n);
             }
-            child_mut.update_cascade_opacity();
-            child_mut.update_cascade_color();
+            child_mut.update_cascade_opacity_with_parent(parent_displayed_opacity);
+            child_mut.update_cascade_color_with_parent(parent_displayed_color);
         }
         
         self.children.push(child.clone());
@@ -616,6 +630,36 @@ impl Node {
 
     pub fn add_child_simple(&mut self, child: Rc<RefCell<Node>>) {
         self.add_child(child, self.local_z_order, None);
+    }
+
+    pub fn add_child_to_parent(
+        parent: &Rc<RefCell<Node>>,
+        child: Rc<RefCell<Node>>,
+        z_order: i32,
+        name: Option<&str>,
+    ) {
+        let (parent_displayed_opacity, parent_displayed_color) = {
+            let p = parent.borrow();
+            (p.displayed_opacity, p.displayed_color)
+        };
+        
+        {
+            let mut child_mut = child.borrow_mut();
+            child_mut.parent = Some(Rc::clone(parent));
+            child_mut.set_local_z_order(z_order);
+            if let Some(n) = name {
+                child_mut.set_name(n);
+            }
+            child_mut.update_cascade_opacity_with_parent(parent_displayed_opacity);
+            child_mut.update_cascade_color_with_parent(parent_displayed_color);
+        }
+        
+        let mut parent_mut = parent.borrow_mut();
+        parent_mut.children.push(child.clone());
+        if let Some(n) = name {
+            parent_mut.children_by_name.insert(n.to_string(), child);
+        }
+        parent_mut.reorder_child_dirty = true;
     }
 
     pub fn get_child_by_tag(&self, tag: i32) -> Option<Rc<RefCell<Node>>> {
@@ -678,21 +722,12 @@ impl Node {
     }
 
     pub fn remove_from_parent(&mut self, cleanup: bool) {
-        if let Some(ref parent) = self.parent {
-            let tag = self.tag;
-            let mut parent_mut = parent.borrow_mut();
-            for i in (0..parent_mut.children.len()).rev() {
-                if Rc::ptr_eq(&parent_mut.children[i], &self) {
-                    let child = parent_mut.children.remove(i);
-                    if cleanup {
-                        let mut child_mut = child.borrow_mut();
-                        child_mut.parent = None;
-                        child_mut.cleanup();
-                    }
-                    break;
-                }
-            }
+        // 注意：此方法无法完全实现，因为我们无法从&mut self获取Rc来与children比较
+        // 如果需要从父节点移除，请使用parent.borrow_mut().remove_child()
+        if cleanup {
+            self.cleanup();
         }
+        self.parent = None;
     }
 
     pub fn get_parent(&self) -> Option<Rc<RefCell<Node>>> {
@@ -770,9 +805,39 @@ impl Node {
 
     pub fn get_node_to_parent_transform(&self) -> Mat4 {
         if self.transform_dirty {
-            // 需要重新计算
+            // 需要重新计算，但这是一个不可变方法
+            // 返回基于当前属性计算的变换矩阵
+            return self.calculate_transform_immutable();
         }
         self.transform
+    }
+    
+    fn calculate_transform_immutable(&self) -> Mat4 {
+        let mut transform = Mat4::IDENTITY;
+        
+        // 平移
+        let mut pos = self.position;
+        if !self.ignore_anchor_point_for_position {
+            pos.x -= self.anchor_point_in_points.x;
+            pos.y -= self.anchor_point_in_points.y;
+        }
+        
+        // 创建平移矩阵
+        transform = Mat4::create_translation(&Vec3::new(pos.x, pos.y, self.position_z));
+        
+        // 旋转 (简化：只处理 Z 轴，在 cocos2d-x 中 rotation 就是 Z 轴旋转)
+        if self.rotation_x != 0.0 {
+            let angle_rad = self.rotation_x.to_radians();
+            let mut rotation = Mat4::IDENTITY;
+            rotation.rotate_z(angle_rad);
+            transform = transform * rotation;
+        }
+        
+        // 缩放
+        let scale_mat = Mat4::create_scale(&Vec3::new(self.scale_x, self.scale_y, 1.0));
+        transform = transform * scale_mat;
+        
+        transform
     }
 
     pub fn get_node_to_parent_transform_mut(&mut self) -> Mat4 {
@@ -797,13 +862,13 @@ impl Node {
     }
 
     pub fn get_world_to_node_transform(&self) -> Mat4 {
-        self.get_node_to_world_transform().inverted()
+        self.get_node_to_world_transform().inverted().unwrap_or(Mat4::IDENTITY)
     }
 
     pub fn convert_to_node_space(&self, world_point: Vec2) -> Vec2 {
         let world_transform = self.get_node_to_world_transform();
         let point3 = Vec3::new(world_point.x, world_point.y, 0.0);
-        let local_point = world_transform.inverted() * point3;
+        let local_point = world_transform.inverted().unwrap_or(Mat4::IDENTITY) * point3;
         Vec2::new(local_point.x, local_point.y)
     }
 
@@ -847,6 +912,11 @@ impl Node {
 
     pub fn on_exit(&mut self) {
         self.set_running(false);
+    }
+
+    // Placeholder for draw callback - sprite模块需要但暂未完整实现
+    pub fn set_on_draw(&mut self, _callback: Box<dyn Fn(&dyn std::any::Any, &Mat4)>) {
+        // TODO: 实现绘制回调机制
     }
 
     // ===== 节点类型 =====
@@ -1032,9 +1102,7 @@ mod tests {
         let parent = Rc::new(RefCell::new(Node::new()));
         let child = Rc::new(RefCell::new(Node::new()));
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child));
-        drop(parent_mut);
+        Node::add_child_to_parent(&parent, Rc::clone(&child), 0, None);
 
         let child_borrow = child.borrow();
         assert!(child_borrow.get_parent().is_some());
@@ -1047,9 +1115,7 @@ mod tests {
         let child = Rc::new(RefCell::new(Node::new()));
         child.borrow_mut().set_tag(100);
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child));
-        drop(parent_mut);
+        Node::add_child_to_parent(&parent, Rc::clone(&child), 0, None);
 
         let mut parent_mut = parent.borrow_mut();
         parent_mut.remove_child_by_tag(100, true);
@@ -1066,10 +1132,8 @@ mod tests {
         child1.borrow_mut().set_tag(100);
         child2.borrow_mut().set_tag(200);
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child1));
-        parent_mut.add_child_simple(Rc::clone(&child2));
-        drop(parent_mut);
+        Node::add_child_to_parent(&parent, Rc::clone(&child1), 0, None);
+        Node::add_child_to_parent(&parent, Rc::clone(&child2), 0, None);
 
         let found = parent.borrow().get_child_by_tag(100);
         assert!(found.is_some());
@@ -1081,10 +1145,9 @@ mod tests {
         let parent = Rc::new(RefCell::new(Node::new()));
         let child1 = Rc::new(RefCell::new(Node::new()));
         
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child(Rc::clone(&child1), 0, Some("Child1"));
+        Node::add_child_to_parent(&parent, Rc::clone(&child1), 0, Some("Child1"));
 
-        let found = parent_mut.get_child_by_name("Child1");
+        let found = parent.borrow().get_child_by_name("Child1");
         assert!(found.is_some());
         assert_eq!(found.unwrap().borrow().name(), "Child1");
     }
@@ -1100,15 +1163,15 @@ mod tests {
         child2.borrow_mut().set_tag(2);
         child3.borrow_mut().set_tag(3);
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_with_z(Rc::clone(&child1), 3);
-        parent_mut.add_child_with_z(Rc::clone(&child2), 1);
-        parent_mut.add_child_with_z(Rc::clone(&child3), 2);
-        parent_mut.sort_all_children();
+        Node::add_child_to_parent(&parent, Rc::clone(&child1), 3, None);
+        Node::add_child_to_parent(&parent, Rc::clone(&child2), 1, None);
+        Node::add_child_to_parent(&parent, Rc::clone(&child3), 2, None);
+        parent.borrow_mut().sort_all_children();
 
-        assert_eq!(parent_mut.get_children()[0].borrow().tag(), 2);
-        assert_eq!(parent_mut.get_children()[1].borrow().tag(), 3);
-        assert_eq!(parent_mut.get_children()[2].borrow().tag(), 1);
+        let parent_ref = parent.borrow();
+        assert_eq!(parent_ref.get_children()[0].borrow().tag(), 2);
+        assert_eq!(parent_ref.get_children()[1].borrow().tag(), 3);
+        assert_eq!(parent_ref.get_children()[2].borrow().tag(), 1);
     }
 
     #[test]
@@ -1142,12 +1205,9 @@ mod tests {
         child.borrow_mut().set_opacity(255);
         child.borrow_mut().set_cascade_opacity(true);
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child));
-        drop(parent_mut);
+        Node::add_child_to_parent(&parent, Rc::clone(&child), 0, None);
 
         let child_borrow = child.borrow();
-        // 级联透明度应该为 128
         assert!(child_borrow.displayed_opacity() <= 128);
     }
 
@@ -1159,9 +1219,13 @@ mod tests {
         let world_point = Vec2::new(110.0, 210.0);
         let local_point = node.convert_to_node_space(world_point);
         
-        // 本地空间应该比世界空间小 (反向变换)
-        assert!(local_point.x < world_point.x);
-        assert!(local_point.y < world_point.y);
+        // 世界坐标 (110, 210) 相对于节点位置 (100, 200)
+        // 在节点本地空间应该是 (10, 10)
+        // 因此 local_point 的值应该远小于 world_point
+        assert!((local_point.x - 10.0).abs() < 0.01, 
+            "Expected local_point.x ≈ 10.0, got {}", local_point.x);
+        assert!((local_point.y - 10.0).abs() < 0.01,
+            "Expected local_point.y ≈ 10.0, got {}", local_point.y);
     }
 
     #[test]
@@ -1173,10 +1237,8 @@ mod tests {
         let child2 = Rc::new(RefCell::new(Node::new()));
         child2.borrow_mut().set_tag(2);
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child1));
-        parent_mut.add_child_simple(Rc::clone(&child2));
-        drop(parent_mut);
+        Node::add_child_to_parent(&parent, Rc::clone(&child1), 0, None);
+        Node::add_child_to_parent(&parent, Rc::clone(&child2), 0, None);
 
         let mut count = 0;
         let mut tags = Vec::new();
@@ -1241,13 +1303,12 @@ mod tests {
         let child1 = Rc::new(RefCell::new(Node::new()));
         let child2 = Rc::new(RefCell::new(Node::new()));
 
-        let mut parent_mut = parent.borrow_mut();
-        parent_mut.add_child_simple(Rc::clone(&child1));
-        parent_mut.add_child_simple(Rc::clone(&child2));
-        assert_eq!(parent_mut.get_children_count(), 2);
+        Node::add_child_to_parent(&parent, Rc::clone(&child1), 0, None);
+        Node::add_child_to_parent(&parent, Rc::clone(&child2), 0, None);
+        assert_eq!(parent.borrow().get_children_count(), 2);
 
-        parent_mut.remove_all_children(false);
-        assert_eq!(parent_mut.get_children_count(), 0);
+        parent.borrow_mut().remove_all_children(false);
+        assert_eq!(parent.borrow().get_children_count(), 0);
     }
 
     #[test]

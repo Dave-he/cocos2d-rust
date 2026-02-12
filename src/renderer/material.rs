@@ -1,5 +1,4 @@
-use crate::base::types::Color4F;
-use crate::base::{Ref, RefPtr};
+use crate::base::RefPtr;
 use crate::math::{Mat4, Vec4};
 use std::collections::HashMap;
 
@@ -9,6 +8,12 @@ pub struct Material {
     technique: Option<RefPtr<Technique>>,
     techniques: HashMap<String, RefPtr<Technique>>,
     state: MaterialState,
+}
+
+impl Default for Material {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Material {
@@ -97,6 +102,12 @@ pub struct MaterialState {
     pub alpha_test_value: f32,
 }
 
+impl Default for MaterialState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl MaterialState {
     pub fn new() -> MaterialState {
         MaterialState {
@@ -118,6 +129,12 @@ pub struct Technique {
     name: String,
     passes: Vec<RefPtr<Pass>>,
     render_states: Vec<RenderState>,
+}
+
+impl Default for Technique {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Technique {
@@ -168,6 +185,12 @@ pub struct Pass {
     program: Option<RefPtr<Program>>,
     render_state: RenderState,
     uniform_data: HashMap<String, UniformValue>,
+}
+
+impl Default for Pass {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Pass {
@@ -234,6 +257,12 @@ pub struct RenderState {
     pub stencil_op_s_pass_depth_pass: u32,
     pub alpha_test: bool,
     pub alpha_test_value: f32,
+}
+
+impl Default for RenderState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl RenderState {
@@ -338,6 +367,12 @@ pub struct Program {
     vertex_shader: String,
     fragment_shader: String,
     uniforms: HashMap<String, UniformInfo>,
+}
+
+impl Default for Program {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Program {

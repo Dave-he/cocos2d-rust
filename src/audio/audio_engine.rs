@@ -36,6 +36,12 @@ impl std::fmt::Debug for AudioEngine {
     }
 }
 
+impl Default for AudioEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl AudioEngine {
     pub fn new() -> AudioEngine {
         let stream = rodio::OutputStreamBuilder::open_default_stream()
@@ -115,7 +121,7 @@ impl AudioEngine {
             }
         };
 
-        let sink = rodio::Sink::connect_new(&self.stream.mixer());
+        let sink = rodio::Sink::connect_new(self.stream.mixer());
         sink.set_volume(volume * self.volume);
         
         if loop_enabled {

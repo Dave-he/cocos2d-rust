@@ -1,4 +1,3 @@
-use crate::base::types::Color4F;
 
 #[derive(Debug, Clone)]
 pub struct PipelineState {
@@ -10,6 +9,12 @@ pub struct PipelineState {
     vertex_layout: String,
     primitive_type: PrimitiveType,
     render_target: String,
+}
+
+impl Default for PipelineState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PipelineState {
@@ -112,6 +117,12 @@ pub struct BlendState {
     rgb_op: u32,
     alpha_op: u32,
     write_mask: ColorWriteMask,
+}
+
+impl Default for BlendState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl BlendState {
@@ -245,6 +256,12 @@ pub struct DepthStencilState {
     back_stencil: StencilState,
 }
 
+impl Default for DepthStencilState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DepthStencilState {
     pub fn new() -> DepthStencilState {
         DepthStencilState {
@@ -337,6 +354,12 @@ pub struct StencilState {
     stencil_pass_depth_pass_op: StencilOp,
 }
 
+impl Default for StencilState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl StencilState {
     pub fn new() -> StencilState {
         StencilState {
@@ -411,6 +434,12 @@ pub struct RasterizerState {
     scissor_test_enabled: bool,
     multisample_antialiasing_enabled: bool,
     line_width: f32,
+}
+
+impl Default for RasterizerState {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl RasterizerState {

@@ -24,7 +24,7 @@ pub mod ui;
 
 // 重新导出常用类型
 pub use base::{
-    Director, Scene, Node, Color3B, Color4B, Color4F, Size, Rect,
+    Color3B, Color4B, Color4F, Size, Rect,
     DebugStats, DebugConsole, DebugProfiler, DebugLayer,
     LogLevel, LogEntry, ConsoleCommand,
     ProfilerScope, ProfilerCategory, ProfilerEntry,
@@ -34,6 +34,8 @@ pub use base::{
     AsyncTask, AsyncTaskResult, AsyncTaskHandler,
     TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager
 };
+pub use base::director::{Director, Scene};
+pub use scene::node::Node;
 pub use math::{Vec2, Vec3, Vec4, Mat4, Quaternion};
 pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};

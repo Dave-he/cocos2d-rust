@@ -26,6 +26,12 @@ pub struct Camera {
     rendering_order: i32,
 }
 
+impl Default for Camera {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Camera {
     pub fn new() -> Camera {
         Camera {

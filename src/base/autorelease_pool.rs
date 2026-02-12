@@ -44,6 +44,12 @@ pub struct PoolManager {
     pools: LinkedList<AutoreleasePool>,
 }
 
+impl Default for PoolManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl PoolManager {
     pub fn get_instance() -> &'static mut PoolManager {
         static mut POOL_MANAGER: Option<PoolManager> = None;

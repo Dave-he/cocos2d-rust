@@ -46,6 +46,9 @@ pub trait Action: std::fmt::Debug {
     
     /// 步进动作（用于时间映射）
     fn step(&mut self, dt: f32);
+    
+    /// as_any for downcasting
+    fn as_any(&self) -> &dyn std::any::Any;
 }
 
 impl Clone for Box<dyn Action> {
@@ -133,7 +136,7 @@ impl Action for Speed {
     }
     
     fn set_target(&mut self, target: Option<Rc<RefCell<Node>>>) {
-        self.target = target;
+        self.target = target.clone();
         self.inner.set_target(target.clone());
     }
     
@@ -168,6 +171,10 @@ impl Action for Speed {
     
     fn step(&mut self, dt: f32) {
         self.inner.step(dt * self.speed);
+    }
+    
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -259,7 +266,6 @@ impl Action for Follow {
     }
     
     fn stop(&mut self) {
-        // Follow 动作永不停止
     }
     
     fn update(&mut self, _dt: f32) {
@@ -289,11 +295,15 @@ impl Action for Follow {
     }
     
     fn is_done(&self) -> bool {
-        false // Follow 动作永不完成
+        false
     }
     
     fn step(&mut self, dt: f32) {
         self.update(dt);
+    }
+    
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -376,6 +386,10 @@ mod tests {
         
         fn step(&mut self, dt: f32) {
             self.update(dt);
+        }
+        
+        fn as_any(&self) -> &dyn std::any::Any {
+            self
         }
     }
     
@@ -507,10 +521,7 @@ mod tests {
         let followed = Rc::new(RefCell::new(Node::new()));
         followed.borrow_mut().set_position(crate::math::Vec2::new(100.0, 100.0));
 
-        let rect = crate::math::geometry::Rect::new(
-            crate::math::Vec2::new(0.0, 0.0),
-            crate::math::geometry::Size::new(100.0, 100.0),
-        );
+        let rect = crate::math::geometry::Rect::new(0.0, 0.0, 100.0, 100.0);
         let mut follow = Follow::with_boundary(Rc::clone(&followed), rect);
 
         let target = Rc::new(RefCell::new(Node::new()));
@@ -526,7 +537,7 @@ mod tests {
     #[test]
     fn test_follow_action_never_done() {
         let followed = Rc::new(RefCell::new(Node::new()));
-        let follow = Follow::new(followed);
+        let follow = Follow::new(followed.clone());
         assert!(!follow.is_done());
 
         let target = Rc::new(RefCell::new(Node::new()));

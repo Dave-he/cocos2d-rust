@@ -41,6 +41,12 @@ pub struct BufferObject {
     native: Option<glow::NativeBuffer>,
 }
 
+impl Default for BufferObject {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl BufferObject {
     pub fn new() -> BufferObject {
         BufferObject {
@@ -103,6 +109,12 @@ pub struct DeviceCapabilities {
     supports_atc: bool,
 }
 
+impl Default for DeviceCapabilities {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl DeviceCapabilities {
     pub fn new() -> DeviceCapabilities {
         DeviceCapabilities {
@@ -160,6 +172,12 @@ pub struct ShaderProgram {
     native: Option<glow::NativeProgram>,
 }
 
+impl Default for ShaderProgram {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl ShaderProgram {
     pub fn new() -> ShaderProgram {
         ShaderProgram {
@@ -193,6 +211,12 @@ pub struct TextureObject {
     height: u32,
     format: u32,
     native: Option<glow::NativeTexture>,
+}
+
+impl Default for TextureObject {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl TextureObject {
@@ -233,6 +257,12 @@ pub struct FramebufferObject {
     width: u32,
     height: u32,
     native: Option<glow::NativeFramebuffer>,
+}
+
+impl Default for FramebufferObject {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl FramebufferObject {

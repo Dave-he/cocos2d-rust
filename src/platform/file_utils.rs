@@ -21,6 +21,12 @@ pub enum SearchPathType {
     Temp,
 }
 
+impl Default for FileUtils {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl FileUtils {
     /// Creates a new FileUtils
     pub fn new() -> FileUtils {
@@ -100,7 +106,7 @@ impl FileUtils {
 
     /// Creates a directory
     pub fn create_directory(&self, dir_path: &str) -> bool {
-        if let Ok(_) = fs::create_dir_all(dir_path) {
+        if fs::create_dir_all(dir_path).is_ok() {
             true
         } else {
             false
@@ -109,7 +115,7 @@ impl FileUtils {
 
     /// Removes a directory
     pub fn remove_directory(&self, dir_path: &str) -> bool {
-        if let Ok(_) = fs::remove_dir_all(dir_path) {
+        if fs::remove_dir_all(dir_path).is_ok() {
             true
         } else {
             false
@@ -127,25 +133,17 @@ impl FileUtils {
 
     /// Reads file to string
     pub fn get_string_from_file(&self, filename: &str) -> Option<String> {
-        if let Ok(content) = fs::read_to_string(filename) {
-            Some(content)
-        } else {
-            None
-        }
+        fs::read_to_string(filename).ok()
     }
 
     /// Reads file to bytes
     pub fn get_bytes_from_file(&self, filename: &str) -> Option<Vec<u8>> {
-        if let Ok(content) = fs::read(filename) {
-            Some(content)
-        } else {
-            None
-        }
+        fs::read(filename).ok()
     }
 
     /// Writes string to file
     pub fn write_string_to_file(&self, data: &str, filename: &str) -> bool {
-        if let Ok(_) = fs::write(filename, data) {
+        if fs::write(filename, data).is_ok() {
             true
         } else {
             false
@@ -154,7 +152,7 @@ impl FileUtils {
 
     /// Writes bytes to file
     pub fn write_bytes_to_file(&self, data: &[u8], filename: &str) -> bool {
-        if let Ok(_) = fs::write(filename, data) {
+        if fs::write(filename, data).is_ok() {
             true
         } else {
             false
@@ -176,7 +174,7 @@ impl FileUtils {
 
     /// Removes a file
     pub fn remove_file(&self, filename: &str) -> bool {
-        if let Ok(_) = fs::remove_file(filename) {
+        if fs::remove_file(filename).is_ok() {
             true
         } else {
             false
@@ -185,7 +183,7 @@ impl FileUtils {
 
     /// Renames a file
     pub fn rename_file(&self, old_name: &str, new_name: &str) -> bool {
-        if let Ok(_) = fs::rename(old_name, new_name) {
+        if fs::rename(old_name, new_name).is_ok() {
             true
         } else {
             false

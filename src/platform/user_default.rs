@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::{File, OpenOptions};
-use std::io::{Read, Write, BufReader, BufWriter};
+use std::io::{Write, BufReader, BufWriter};
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
@@ -11,6 +11,7 @@ use std::sync::{Arc, Mutex};
 /// 支持的数据类型：bool, i32, i64, f32, f64, String
 /// 数据以 JSON 格式存储在本地文件中
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct UserDefaultData {
     #[serde(default)]
     bool_values: HashMap<String, bool>,
@@ -22,16 +23,6 @@ pub struct UserDefaultData {
     string_values: HashMap<String, String>,
 }
 
-impl Default for UserDefaultData {
-    fn default() -> Self {
-        UserDefaultData {
-            bool_values: HashMap::new(),
-            int_values: HashMap::new(),
-            float_values: HashMap::new(),
-            string_values: HashMap::new(),
-        }
-    }
-}
 
 /// UserDefault 单例
 pub struct UserDefault {

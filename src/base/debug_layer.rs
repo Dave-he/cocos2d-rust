@@ -16,18 +16,15 @@ use crate::base::debug_profiler::DebugProfiler;
 use crate::base::types::{Size, Color4B};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Default)]
 pub enum DebugPanel {
     Stats,
     Console,
     Profiler,
+    #[default]
     All,
 }
 
-impl Default for DebugPanel {
-    fn default() -> Self {
-        DebugPanel::All
-    }
-}
 
 #[derive(Clone, Copy, Debug)]
 pub struct DebugPosition {

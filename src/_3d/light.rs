@@ -25,6 +25,12 @@ pub struct Light {
     enabled: bool,
 }
 
+impl Default for Light {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Light {
     pub fn new() -> Light {
         Light {
@@ -181,6 +187,12 @@ impl Light {
 pub struct LightManager {
     lights: Vec<Light>,
     ambient_color: Color3B,
+}
+
+impl Default for LightManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl LightManager {

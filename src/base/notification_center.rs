@@ -50,11 +50,11 @@ impl Hash for DefaultNotification {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub enum NotificationPriority {
-    Low,
-    Normal,
-    High,
+    Low = 0,
+    Normal = 1,
+    High = 2,
 }
 
 #[derive(Clone)]
@@ -147,7 +147,7 @@ struct NotificationCenterInner {
 #[derive(Clone)]
 pub struct NotificationCenter {
     inner: Arc<Mutex<NotificationCenterInner>>,
-    name: String,
+    pub name: String,
 }
 
 impl NotificationCenter {
@@ -185,11 +185,15 @@ impl NotificationCenter {
         let notification_name = observer.name.clone();
         let observer_id = observer.id;
 
-        inner
+        let observers = inner
             .observers
             .entry(notification_name.clone())
-            .or_insert_with(Vec::new)
-            .push(observer);
+            .or_default();
+        
+        observers.push(observer);
+        
+        // 按优先级排序：High > Normal > Low（降序）
+        observers.sort_by(|a, b| b.priority.cmp(&a.priority));
 
         inner.observer_ids.insert(observer_id, notification_name);
     }
@@ -225,13 +229,14 @@ impl NotificationCenter {
     }
 
     pub fn post(&mut self, notification: &dyn Notification) {
-        let mut inner = self.inner.lock().unwrap();
-
         let name = notification.name().to_string();
 
+        let mut inner = self.inner.lock().unwrap();
+        
+        let mut to_remove = Vec::new();
+        let mut removed_ids = Vec::new();
+        
         if let Some(observers) = inner.observers.get_mut(&name) {
-            let mut to_remove = Vec::new();
-
             for (i, observer) in observers.iter().enumerate() {
                 if observer.is_enabled() {
                     observer.notify(notification);
@@ -241,11 +246,17 @@ impl NotificationCenter {
                     }
                 }
             }
-
+            
+            // 在同一个可变借用内完成移除操作
             for i in to_remove.iter().rev() {
                 let observer = observers.remove(*i);
-                inner.observer_ids.remove(&observer.id());
+                removed_ids.push(observer.id());
             }
+        }
+        
+        // 在observers借用结束后再移除IDs
+        for id in removed_ids {
+            inner.observer_ids.remove(&id);
         }
 
         inner.notification_history.push_back(NotificationPost::new(&name));

@@ -1,0 +1,1129 @@
+   Compiling cocos2d-rust v0.1.0 (/Users/hyx/codespace/cocos-engine/cocos2d-rust)
+warning: variant `VIEW_POINT_ORIENTED` should have an upper camel case name
+   --> src/_3d/mesh.rs:382:5
+    |
+382 |     VIEW_POINT_ORIENTED,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ViewPointOriented`
+    |
+    = note: `#[warn(non_camel_case_types)]` on by default
+
+warning: variant `VIEW_PLANE_ORIENTED` should have an upper camel case name
+   --> src/_3d/mesh.rs:383:5
+    |
+383 |     VIEW_PLANE_ORIENTED,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ViewPlaneOriented`
+
+warning: variant `RESIZE_HEIGHT` should have an upper camel case name
+  --> src/label/label.rs:28:5
+   |
+28 |     RESIZE_HEIGHT,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ResizeHeight`
+
+warning: variant `TRACKING_TOUCH` should have an upper camel case name
+ --> src/menu/menu.rs:9:5
+  |
+9 |     TRACKING_TOUCH,
+  |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TrackingTouch`
+
+warning: variant `EDGE_SEGMENT` should have an upper camel case name
+  --> src/physics/physics_2d.rs:36:5
+   |
+36 |     EDGE_SEGMENT,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `EdgeSegment`
+
+warning: variant `EDGE_BOX` should have an upper camel case name
+  --> src/physics/physics_2d.rs:37:5
+   |
+37 |     EDGE_BOX,
+   |     ^^^^^^^^ help: convert the identifier to upper camel case: `EdgeBox`
+
+warning: variant `EDGE_POLYGON` should have an upper camel case name
+  --> src/physics/physics_2d.rs:38:5
+   |
+38 |     EDGE_POLYGON,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `EdgePolygon`
+
+warning: variant `EDGE_CHAIN` should have an upper camel case name
+  --> src/physics/physics_2d.rs:39:5
+   |
+39 |     EDGE_CHAIN,
+   |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `EdgeChain`
+
+warning: variant `CONVEX_HULL` should have an upper camel case name
+   --> src/physics/physics_3d.rs:228:5
+    |
+228 |     CONVEX_HULL,
+    |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `ConvexHull`
+
+warning: variant `HEIGHT_FIELD` should have an upper camel case name
+   --> src/physics/physics_3d.rs:230:5
+    |
+230 |     HEIGHT_FIELD,
+    |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `HeightField`
+
+warning: variant `POINT_TO_POINT` should have an upper camel case name
+   --> src/physics/physics_3d.rs:320:5
+    |
+320 |     POINT_TO_POINT,
+    |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `PointToPoint`
+
+warning: variant `CONE_TWIST` should have an upper camel case name
+   --> src/physics/physics_3d.rs:323:5
+    |
+323 |     CONE_TWIST,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `ConeTwist`
+
+warning: variant `GENERIC_6DOF` should have an upper camel case name
+   --> src/physics/physics_3d.rs:324:5
+    |
+324 |     GENERIC_6DOF,
+    |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `Generic6dof`
+
+warning: variant `RAW_DATA` should have an upper camel case name
+  --> src/platform/image.rs:15:5
+   |
+15 |     RAW_DATA,
+   |     ^^^^^^^^ help: convert the identifier to upper camel case: `RawData`
+
+warning: unused import: `crate::renderer::command::Vertex as CmdVertex`
+   --> src/renderer/batch_renderer.rs:432:13
+    |
+432 |         use crate::renderer::command::Vertex as CmdVertex;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = note: `#[warn(unused_imports)]` on by default
+
+warning: unused import: `crate::renderer::command::Vertex as CmdVertex`
+   --> src/renderer/batch_renderer.rs:495:13
+    |
+495 |         use crate::renderer::command::Vertex as CmdVertex;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::renderer::command::Vertex as CmdVertex`
+   --> src/renderer/batch_renderer.rs:535:13
+    |
+535 |         use crate::renderer::command::Vertex as CmdVertex;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::renderer::command::Vertex as CmdVertex`
+   --> src/renderer/batch_renderer.rs:570:13
+    |
+570 |         use crate::renderer::command::Vertex as CmdVertex;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::renderer::command::Vertex as CmdVertex`
+   --> src/renderer/batch_renderer.rs:587:13
+    |
+587 |         use crate::renderer::command::Vertex as CmdVertex;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: variant `LINE_STRIP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:104:5
+    |
+104 |     LINE_STRIP,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `LineStrip`
+
+warning: variant `TRIANGLE_STRIP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:106:5
+    |
+106 |     TRIANGLE_STRIP,
+    |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TriangleStrip`
+
+warning: variant `TRIANGLE_FAN` should have an upper camel case name
+   --> src/renderer/pipeline.rs:107:5
+    |
+107 |     TRIANGLE_FAN,
+    |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `TriangleFan`
+
+warning: variant `INCR_WRAP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:421:5
+    |
+421 |     INCR_WRAP,
+    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `IncrWrap`
+
+warning: variant `DECR_WRAP` should have an upper camel case name
+   --> src/renderer/pipeline.rs:423:5
+    |
+423 |     DECR_WRAP,
+    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `DecrWrap`
+
+warning: variant `SRGB8_A8` should have an upper camel case name
+  --> src/renderer/texture.rs:39:5
+   |
+39 |     SRGB8_A8,
+   |     ^^^^^^^^ help: convert the identifier to upper camel case: `Srgb8A8`
+
+warning: variant `DEPTH_STENCIL` should have an upper camel case name
+  --> src/renderer/texture.rs:41:5
+   |
+41 |     DEPTH_STENCIL,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `DepthStencil`
+
+warning: variant `NEAREST_MIPMAP_NEAREST` should have an upper camel case name
+   --> src/renderer/texture.rs:132:5
+    |
+132 |     NEAREST_MIPMAP_NEAREST,
+    |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `NearestMipmapNearest`
+
+warning: variant `LINEAR_MIPMAP_NEAREST` should have an upper camel case name
+   --> src/renderer/texture.rs:133:5
+    |
+133 |     LINEAR_MIPMAP_NEAREST,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LinearMipmapNearest`
+
+warning: variant `NEAREST_MIPMAP_LINEAR` should have an upper camel case name
+   --> src/renderer/texture.rs:134:5
+    |
+134 |     NEAREST_MIPMAP_LINEAR,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `NearestMipmapLinear`
+
+warning: variant `LINEAR_MIPMAP_LINEAR` should have an upper camel case name
+   --> src/renderer/texture.rs:135:5
+    |
+135 |     LINEAR_MIPMAP_LINEAR,
+    |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LinearMipmapLinear`
+
+warning: variant `CLAMP_TO_EDGE` should have an upper camel case name
+   --> src/renderer/texture.rs:141:5
+    |
+141 |     CLAMP_TO_EDGE,
+    |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ClampToEdge`
+
+warning: variant `MIRRORED_REPEAT` should have an upper camel case name
+   --> src/renderer/texture.rs:142:5
+    |
+142 |     MIRRORED_REPEAT,
+    |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `MirroredRepeat`
+
+warning: variant `CENTER_VERTICAL` should have an upper camel case name
+  --> src/ui/layouts.rs:89:5
+   |
+89 |     CENTER_VERTICAL,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterVertical`
+
+warning: variant `CENTER_HORIZONTAL` should have an upper camel case name
+  --> src/ui/layouts.rs:90:5
+   |
+90 |     CENTER_HORIZONTAL,
+   |     ^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterHorizontal`
+
+warning: variant `ALIGN_NONE` should have an upper camel case name
+   --> src/ui/layouts.rs:148:5
+    |
+148 |     ALIGN_NONE,
+    |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignNone`
+
+warning: variant `ALIGN_PARENT_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:149:5
+    |
+149 |     ALIGN_PARENT_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopLeft`
+
+warning: variant `ALIGN_PARENT_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:150:5
+    |
+150 |     ALIGN_PARENT_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopCenter`
+
+warning: variant `ALIGN_PARENT_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:151:5
+    |
+151 |     ALIGN_PARENT_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentTopRight`
+
+warning: variant `ALIGN_PARENT_LEFT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:152:5
+    |
+152 |     ALIGN_PARENT_LEFT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentLeftCenter`
+
+warning: variant `ALIGN_PARENT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:153:5
+    |
+153 |     ALIGN_PARENT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentCenter`
+
+warning: variant `ALIGN_PARENT_RIGHT_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:154:5
+    |
+154 |     ALIGN_PARENT_RIGHT_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentRightCenter`
+
+warning: variant `ALIGN_PARENT_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:155:5
+    |
+155 |     ALIGN_PARENT_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomLeft`
+
+warning: variant `ALIGN_PARENT_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:156:5
+    |
+156 |     ALIGN_PARENT_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomCenter`
+
+warning: variant `ALIGN_PARENT_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:157:5
+    |
+157 |     ALIGN_PARENT_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `AlignParentBottomRight`
+
+warning: variant `LOCATION_ABOVE_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:158:5
+    |
+158 |     LOCATION_ABOVE_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveLeft`
+
+warning: variant `LOCATION_ABOVE_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:159:5
+    |
+159 |     LOCATION_ABOVE_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveCenter`
+
+warning: variant `LOCATION_ABOVE_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:160:5
+    |
+160 |     LOCATION_ABOVE_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationAboveRight`
+
+warning: variant `LOCATION_LEFT_OF_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:161:5
+    |
+161 |     LOCATION_LEFT_OF_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopLeft`
+
+warning: variant `LOCATION_LEFT_OF_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:162:5
+    |
+162 |     LOCATION_LEFT_OF_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopCenter`
+
+warning: variant `LOCATION_LEFT_OF_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:163:5
+    |
+163 |     LOCATION_LEFT_OF_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfTopRight`
+
+warning: variant `LOCATION_LEFT_OF_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:164:5
+    |
+164 |     LOCATION_LEFT_OF_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfCenter`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:165:5
+    |
+165 |     LOCATION_LEFT_OF_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomLeft`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:166:5
+    |
+166 |     LOCATION_LEFT_OF_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomCenter`
+
+warning: variant `LOCATION_LEFT_OF_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:167:5
+    |
+167 |     LOCATION_LEFT_OF_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationLeftOfBottomRight`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:168:5
+    |
+168 |     LOCATION_RIGHT_OF_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopLeft`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:169:5
+    |
+169 |     LOCATION_RIGHT_OF_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopCenter`
+
+warning: variant `LOCATION_RIGHT_OF_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:170:5
+    |
+170 |     LOCATION_RIGHT_OF_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfTopRight`
+
+warning: variant `LOCATION_RIGHT_OF_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:171:5
+    |
+171 |     LOCATION_RIGHT_OF_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfCenter`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:172:5
+    |
+172 |     LOCATION_RIGHT_OF_BOTTOM_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomLeft`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:173:5
+    |
+173 |     LOCATION_RIGHT_OF_BOTTOM_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomCenter`
+
+warning: variant `LOCATION_RIGHT_OF_BOTTOM_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:174:5
+    |
+174 |     LOCATION_RIGHT_OF_BOTTOM_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationRightOfBottomRight`
+
+warning: variant `LOCATION_BELOW_TOP_LEFT` should have an upper camel case name
+   --> src/ui/layouts.rs:175:5
+    |
+175 |     LOCATION_BELOW_TOP_LEFT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopLeft`
+
+warning: variant `LOCATION_BELOW_TOP_CENTER` should have an upper camel case name
+   --> src/ui/layouts.rs:176:5
+    |
+176 |     LOCATION_BELOW_TOP_CENTER,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopCenter`
+
+warning: variant `LOCATION_BELOW_TOP_RIGHT` should have an upper camel case name
+   --> src/ui/layouts.rs:177:5
+    |
+177 |     LOCATION_BELOW_TOP_RIGHT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationBelowTopRight`
+
+warning: variant `LOCATION_CENTER_IN_PARENT` should have an upper camel case name
+   --> src/ui/layouts.rs:178:5
+    |
+178 |     LOCATION_CENTER_IN_PARENT,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterInParent`
+
+warning: variant `LOCATION_CENTER_HORIZONTAL` should have an upper camel case name
+   --> src/ui/layouts.rs:179:5
+    |
+179 |     LOCATION_CENTER_HORIZONTAL,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterHorizontal`
+
+warning: variant `LOCATION_CENTER_VERTICAL` should have an upper camel case name
+   --> src/ui/layouts.rs:180:5
+    |
+180 |     LOCATION_CENTER_VERTICAL,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `LocationCenterVertical`
+
+warning: variant `CUSTOM_NODE` should have an upper camel case name
+  --> src/ui/rich_text.rs:11:5
+   |
+11 |     CUSTOM_NODE,
+   |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `CustomNode`
+
+warning: variant `CENTER_HORIZONTAL` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:10:5
+   |
+10 |     CENTER_HORIZONTAL,
+   |     ^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterHorizontal`
+
+warning: variant `CENTER_VERTICAL` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:13:5
+   |
+13 |     CENTER_VERTICAL,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `CenterVertical`
+
+warning: variant `ON_SELECTED_ITEM_START` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:19:5
+   |
+19 |     ON_SELECTED_ITEM_START,
+   |     ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `OnSelectedItemStart`
+
+warning: variant `ON_SELECTED_ITEM_END` should have an upper camel case name
+  --> src/ui/scroll/list_view.rs:20:5
+   |
+20 |     ON_SELECTED_ITEM_END,
+   |     ^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `OnSelectedItemEnd`
+
+warning: variant `SCROLL_TO_TOP` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:18:5
+   |
+18 |     SCROLL_TO_TOP,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToTop`
+
+warning: variant `SCROLL_TO_BOTTOM` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:19:5
+   |
+19 |     SCROLL_TO_BOTTOM,
+   |     ^^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToBottom`
+
+warning: variant `SCROLL_TO_LEFT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:20:5
+   |
+20 |     SCROLL_TO_LEFT,
+   |     ^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToLeft`
+
+warning: variant `SCROLL_TO_RIGHT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:21:5
+   |
+21 |     SCROLL_TO_RIGHT,
+   |     ^^^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollToRight`
+
+warning: variant `SCROLL_ENDED` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:23:5
+   |
+23 |     SCROLL_ENDED,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `ScrollEnded`
+
+warning: variant `BOUNCE_TOP` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:24:5
+   |
+24 |     BOUNCE_TOP,
+   |     ^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceTop`
+
+warning: variant `BOUNCE_BOTTOM` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:25:5
+   |
+25 |     BOUNCE_BOTTOM,
+   |     ^^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceBottom`
+
+warning: variant `BOUNCE_LEFT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:26:5
+   |
+26 |     BOUNCE_LEFT,
+   |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceLeft`
+
+warning: variant `BOUNCE_RIGHT` should have an upper camel case name
+  --> src/ui/scroll/scroll_view.rs:27:5
+   |
+27 |     BOUNCE_RIGHT,
+   |     ^^^^^^^^^^^^ help: convert the identifier to upper camel case: `BounceRight`
+
+error[E0599]: no method named `update_with_time` found for mutable reference `&mut action_interval::DelayTime` in the current scope
+   --> src/action/action_interval.rs:966:14
+    |
+966 |         self.update_with_time(normalized_time);
+    |              ^^^^^^^^^^^^^^^^ method not found in `&mut action_interval::DelayTime`
+    |
+help: one of the expressions' fields has a method of the same name
+    |
+966 |         self.interval.update_with_time(normalized_time);
+    |              +++++++++
+
+warning: unused import: `FiniteTimeAction`
+ --> src/action/action_interval.rs:8:29
+  |
+8 | use super::action::{Action, FiniteTimeAction, INVALID_TAG};
+  |                             ^^^^^^^^^^^^^^^^
+
+warning: unused import: `image::GenericImageView`
+ --> src/platform/image.rs:2:5
+  |
+2 | use image::GenericImageView;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `Write`
+ --> src/platform/user_default.rs:4:15
+  |
+4 | use std::io::{Write, BufReader, BufWriter};
+  |               ^^^^^
+
+warning: unused variable: `bone_name`
+   --> src/_3d/animation_3d.rs:248:9
+    |
+248 |         bone_name: &str,
+    |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_bone_name`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `file_name`
+  --> src/_3d/model.rs:32:28
+   |
+32 |     pub fn init(&mut self, file_name: &str) {}
+   |                            ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_file_name`
+
+warning: unused variable: `new_skew`
+   --> src/action/action_interval.rs:797:13
+    |
+797 |         let new_skew = self.start_skew + self.delta * time;
+    |             ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_new_skew`
+
+warning: unused variable: `target_mut`
+   --> src/action/action_interval.rs:799:17
+    |
+799 |             let target_mut = target.borrow_mut();
+    |                 ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_target_mut`
+
+warning: unused variable: `obj`
+  --> src/base/autorelease_pool.rs:30:37
+   |
+30 |     pub fn remove_object(&mut self, obj: &RefPtr<Ref>) {
+   |                                     ^^^ help: if this is intentional, prefix it with an underscore: `_obj`
+
+warning: unused variable: `pool`
+  --> src/base/autorelease_pool.rs:82:21
+   |
+82 |         if let Some(pool) = self.pools.pop_back() {}
+   |                     ^^^^ help: if this is intentional, prefix it with an underscore: `_pool`
+
+warning: unused variable: `delta_time`
+   --> src/base/director.rs:445:30
+    |
+445 |     pub fn update(&mut self, delta_time: f32) {}
+    |                              ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_delta_time`
+
+warning: unused variable: `i`
+   --> src/base/director.rs:518:13
+    |
+518 |         for i in 0..5 {
+    |             ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unused variable: `i`
+   --> src/base/event.rs:624:13
+    |
+624 |         for i in 0..3 {
+    |             ^ help: if this is intentional, prefix it with an underscore: `_i`
+
+warning: unused variable: `cloned2`
+   --> src/base/ref_count.rs:221:13
+    |
+221 |         let cloned2 = cloned.clone();
+    |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_cloned2`
+
+warning: unused variable: `task_fn`
+   --> src/base/async_task.rs:207:31
+    |
+207 |     pub fn new<F>(name: &str, task_fn: F) -> Self
+    |                               ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_task_fn`
+
+warning: variable does not need to be mutable
+   --> src/base/async_task.rs:664:13
+    |
+664 |         let mut group = TaskGroup::<i32>::new("test");
+    |             ----^^^^^
+    |             |
+    |             help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` on by default
+
+warning: unused variable: `char_map_file`
+   --> src/label/label.rs:110:9
+    |
+110 |         char_map_file: &str,
+    |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_char_map_file`
+
+warning: unused variable: `item_width`
+   --> src/label/label.rs:111:9
+    |
+111 |         item_width: i32,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_item_width`
+
+warning: unused variable: `item_height`
+   --> src/label/label.rs:112:9
+    |
+112 |         item_height: i32,
+    |         ^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_item_height`
+
+warning: unused variable: `start_char`
+   --> src/label/label.rs:113:9
+    |
+113 |         start_char: char,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_start_char`
+
+warning: unused variable: `char_map_file`
+  --> src/label/label_atlas.rs:49:9
+   |
+49 |         char_map_file: &str,
+   |         ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_char_map_file`
+
+warning: unused variable: `rectangle_center`
+   --> src/math/geometry.rs:194:13
+    |
+194 |         let rectangle_center = Vec2::new(self.get_mid_x(), self.get_mid_y());
+    |             ^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_rectangle_center`
+
+warning: unused variable: `sin_theta`
+   --> src/math/quaternion.rs:188:13
+    |
+188 |         let sin_theta = theta.sin();
+    |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_sin_theta`
+
+warning: unused variable: `s1`
+   --> src/math/quaternion.rs:191:13
+    |
+191 |         let s1 = (theta_0 - theta).sin() / sin_theta_0; // wait, standard formula is different?
+    |             ^^ help: if this is intentional, prefix it with an underscore: `_s1`
+
+warning: unused variable: `axis`
+   --> src/math/quaternion.rs:328:14
+    |
+328 |         let (axis, angle) = q.to_axis_angle();
+    |              ^^^^ help: if this is intentional, prefix it with an underscore: `_axis`
+
+warning: unused variable: `normal_image`
+   --> src/menu/menu_item.rs:189:9
+    |
+189 |         normal_image: &str,
+    |         ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_normal_image`
+
+warning: unused variable: `selected_image`
+   --> src/menu/menu_item.rs:190:9
+    |
+190 |         selected_image: &str,
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_selected_image`
+
+warning: unused variable: `disabled_image`
+   --> src/menu/menu_item.rs:191:9
+    |
+191 |         disabled_image: Option<&str>,
+    |         ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_disabled_image`
+
+warning: unused variable: `activated`
+   --> src/menu/menu_item.rs:379:17
+    |
+379 |         let mut activated = false;
+    |                 ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_activated`
+
+warning: variable does not need to be mutable
+   --> src/menu/menu_item.rs:379:13
+    |
+379 |         let mut activated = false;
+    |             ----^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `file`
+   --> src/particle/particle_system.rs:212:29
+    |
+212 |     pub fn create_with_file(file: &str) -> Option<ParticleSystem> {
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `offset`
+  --> src/physics/physics_2d.rs:73:66
+   |
+73 |     pub fn create_circle(radius: f32, material: PhysicsMaterial, offset: Vec2) -> Self {
+   |                                                                  ^^^^^^ help: if this is intentional, prefix it with an underscore: `_offset`
+
+warning: unused variable: `offset`
+  --> src/physics/physics_2d.rs:92:62
+   |
+92 |     pub fn create_box(size: Vec2, material: PhysicsMaterial, offset: Vec2) -> Self {
+   |                                                              ^^^^^^ help: if this is intentional, prefix it with an underscore: `_offset`
+
+warning: unused variable: `offset`
+   --> src/physics/physics_2d.rs:111:71
+    |
+111 |     pub fn create_polygon(points: &[Vec2], material: PhysicsMaterial, offset: Vec2) -> Self {
+    |                                                                       ^^^^^^ help: if this is intentional, prefix it with an underscore: `_offset`
+
+warning: unused variable: `a`
+   --> src/physics/physics_2d.rs:131:32
+    |
+131 |     pub fn create_edge_segment(a: Vec2, b: Vec2, material: PhysicsMaterial, border: f32) -> Self {
+    |                                ^ help: if this is intentional, prefix it with an underscore: `_a`
+
+warning: unused variable: `b`
+   --> src/physics/physics_2d.rs:131:41
+    |
+131 |     pub fn create_edge_segment(a: Vec2, b: Vec2, material: PhysicsMaterial, border: f32) -> Self {
+    |                                         ^ help: if this is intentional, prefix it with an underscore: `_b`
+
+warning: unused variable: `border`
+   --> src/physics/physics_2d.rs:131:77
+    |
+131 |     pub fn create_edge_segment(a: Vec2, b: Vec2, material: PhysicsMaterial, border: f32) -> Self {
+    |                                                                             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_border`
+
+warning: unused variable: `size`
+   --> src/physics/physics_2d.rs:314:13
+    |
+314 |         let size = Vec2::new(width, height);
+    |             ^^^^ help: if this is intentional, prefix it with an underscore: `_size`
+
+warning: unused variable: `body`
+   --> src/physics/physics_2d.rs:605:32
+    |
+605 |     pub fn add_body(&mut self, body: &PhysicsBody) {
+    |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `body`
+   --> src/physics/physics_2d.rs:609:35
+    |
+609 |     pub fn remove_body(&mut self, body: &PhysicsBody) {
+    |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `shape`
+   --> src/physics/physics_2d.rs:613:33
+    |
+613 |     pub fn add_shape(&mut self, shape: &PhysicsShape) {
+    |                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_shape`
+
+warning: unused variable: `shape`
+   --> src/physics/physics_2d.rs:617:36
+    |
+617 |     pub fn remove_shape(&mut self, shape: &PhysicsShape) {
+    |                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_shape`
+
+warning: unused variable: `joint`
+   --> src/physics/physics_2d.rs:621:33
+    |
+621 |     pub fn add_joint(&mut self, joint: &PhysicsJoint) {
+    |                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_joint`
+
+warning: unused variable: `joint`
+   --> src/physics/physics_2d.rs:625:36
+    |
+625 |     pub fn remove_joint(&mut self, joint: &PhysicsJoint) {
+    |                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_joint`
+
+warning: unused variable: `rect_start`
+   --> src/physics/physics_2d.rs:682:30
+    |
+682 |     pub fn query_rect(&self, rect_start: Vec2, rect_end: Vec2) -> Vec<QueryInfo> {
+    |                              ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_rect_start`
+
+warning: unused variable: `rect_end`
+   --> src/physics/physics_2d.rs:682:48
+    |
+682 |     pub fn query_rect(&self, rect_start: Vec2, rect_end: Vec2) -> Vec<QueryInfo> {
+    |                                                ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_rect_end`
+
+warning: unused variable: `point`
+   --> src/physics/physics_2d.rs:695:31
+    |
+695 |     pub fn query_point(&self, point: Vec2) -> Vec<QueryInfo> {
+    |                               ^^^^^ help: if this is intentional, prefix it with an underscore: `_point`
+
+warning: unused variable: `body`
+   --> src/physics/physics_3d.rs:486:32
+    |
+486 |     pub fn add_body(&mut self, body: &Physics3DBody) {
+    |                                ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `body`
+   --> src/physics/physics_3d.rs:490:35
+    |
+490 |     pub fn remove_body(&mut self, body: &Physics3DBody) {
+    |                                   ^^^^ help: if this is intentional, prefix it with an underscore: `_body`
+
+warning: unused variable: `renderer`
+   --> src/renderer/batch_renderer.rs:282:29
+    |
+282 |     pub fn flush(&mut self, renderer: &mut Renderer) {
+    |                             ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_renderer`
+
+warning: variable does not need to be mutable
+   --> src/renderer/batch_renderer.rs:563:13
+    |
+563 |         let mut batch2 = RenderBatch::new();
+    |             ----^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `src_alpha`
+   --> src/renderer/blend_mode.rs:364:32
+    |
+364 |         let (src_rgb, dst_rgb, src_alpha, dst_alpha) = mode.to_gl_values();
+    |                                ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_src_alpha`
+
+warning: unused variable: `dst_alpha`
+   --> src/renderer/blend_mode.rs:364:43
+    |
+364 |         let (src_rgb, dst_rgb, src_alpha, dst_alpha) = mode.to_gl_values();
+    |                                           ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_dst_alpha`
+
+warning: unused variable: `mat4_val`
+   --> src/renderer/material.rs:565:13
+    |
+565 |         let mat4_val = UniformValue::Mat4(Mat4::IDENTITY);
+    |             ^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_mat4_val`
+
+warning: unused variable: `quad`
+   --> src/renderer/renderer.rs:252:33
+    |
+252 |     pub fn draw_quad(&mut self, quad: &Quad, material: RefPtr<Material>) {
+    |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_quad`
+
+warning: unused variable: `mesh`
+   --> src/renderer/renderer.rs:256:33
+    |
+256 |     pub fn draw_mesh(&mut self, mesh: &MeshCommand) {}
+    |                                 ^^^^ help: if this is intentional, prefix it with an underscore: `_mesh`
+
+warning: unused variable: `group`
+   --> src/renderer/renderer.rs:258:34
+    |
+258 |     pub fn draw_group(&mut self, group: &GroupCommand) {}
+    |                                  ^^^^^ help: if this is intentional, prefix it with an underscore: `_group`
+
+warning: unused variable: `enabled`
+   --> src/renderer/renderer.rs:268:46
+    |
+268 |     pub fn set_depth_test_enabled(&mut self, enabled: bool) {}
+    |                                              ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_enabled`
+
+warning: unused variable: `mode`
+   --> src/renderer/renderer.rs:270:37
+    |
+270 |     pub fn set_cull_mode(&mut self, mode: CullMode) {}
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_mode`
+
+warning: unused variable: `src`
+   --> src/renderer/renderer.rs:272:38
+    |
+272 |     pub fn set_blend_func(&mut self, src: u32, dst: u32) {}
+    |                                      ^^^ help: if this is intentional, prefix it with an underscore: `_src`
+
+warning: unused variable: `dst`
+   --> src/renderer/renderer.rs:272:48
+    |
+272 |     pub fn set_blend_func(&mut self, src: u32, dst: u32) {}
+    |                                                ^^^ help: if this is intentional, prefix it with an underscore: `_dst`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:144:51
+    |
+144 |     pub fn set_uniform_int(&mut self, name: &str, value: i32) {
+    |                                                   ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:149:53
+    |
+149 |     pub fn set_uniform_float(&mut self, name: &str, value: f32) {
+    |                                                     ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:154:52
+    |
+154 |     pub fn set_uniform_vec2(&mut self, name: &str, value: &Vec2) {
+    |                                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:159:52
+    |
+159 |     pub fn set_uniform_vec3(&mut self, name: &str, value: &Vec3) {
+    |                                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:164:52
+    |
+164 |     pub fn set_uniform_vec4(&mut self, name: &str, value: &Vec4) {
+    |                                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:169:52
+    |
+169 |     pub fn set_uniform_mat4(&mut self, name: &str, value: &Mat4) {
+    |                                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `value`
+   --> src/renderer/shader.rs:174:53
+    |
+174 |     pub fn set_uniform_color(&mut self, name: &str, value: &Color4F) {
+    |                                                     ^^^^^ help: if this is intentional, prefix it with an underscore: `_value`
+
+warning: unused variable: `data`
+   --> src/renderer/texture.rs:203:30
+    |
+203 |     pub fn update(&mut self, data: &[u8], width: u32, height: u32, pixel_format: PixelFormat) {
+    |                              ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
+
+warning: unused variable: `layer`
+   --> src/scene/layer.rs:545:13
+    |
+545 |         let layer = Layer::create();
+    |             ^^^^^ help: if this is intentional, prefix it with an underscore: `_layer`
+
+warning: unused variable: `tag`
+   --> src/scene/node.rs:689:13
+    |
+689 |         let tag = child.borrow().tag();
+    |             ^^^ help: if this is intentional, prefix it with an underscore: `_tag`
+
+warning: unused variable: `file`
+   --> src/tilemap/tilemap_info.rs:234:29
+    |
+234 |     pub fn create_with_file(file: &str) -> Option<TileMapInfo> {
+    |                             ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `gid`
+  --> src/tilemap/tilemap_layer.rs:66:36
+   |
+66 |     pub fn set_tile_gid(&mut self, gid: u32, x: u32, y: u32) {
+   |                                    ^^^ help: if this is intentional, prefix it with an underscore: `_gid`
+
+warning: unused variable: `file`
+   --> src/tilemap/tilemap_layer.rs:128:38
+    |
+128 |     pub fn init_with_file(&mut self, file: &str) {}
+    |                                      ^^^^ help: if this is intentional, prefix it with an underscore: `_file`
+
+warning: unused variable: `name`
+   --> src/tilemap/tilemap_layer.rs:162:36
+    |
+162 |     pub fn get_object_group(&self, name: &str) -> Option<&Vec<()>> {
+    |                                    ^^^^ help: if this is intentional, prefix it with an underscore: `_name`
+
+warning: variable does not need to be mutable
+   --> src/tilemap/tilemap_layer.rs:241:13
+    |
+241 |         let mut layer_info = LayerInfo::new("TestLayer", 5, 5);
+    |             ----^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `tile`
+   --> src/tilemap/tilemap_layer.rs:302:13
+    |
+302 |         let tile = layer.get_tile_at(0, 0);
+    |             ^^^^ help: if this is intentional, prefix it with an underscore: `_tile`
+
+warning: unused variable: `tile_edge`
+   --> src/tilemap/tilemap_layer.rs:303:13
+    |
+303 |         let tile_edge = layer.get_tile_at(2, 2);
+    |             ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_tile_edge`
+
+warning: unused variable: `clicked`
+   --> src/ui/button.rs:285:17
+    |
+285 |         let mut clicked = false;
+    |                 ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_clicked`
+
+warning: variable does not need to be mutable
+   --> src/ui/button.rs:285:13
+    |
+285 |         let mut clicked = false;
+    |             ----^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `current_text`
+   --> src/ui/rich_text.rs:309:13
+    |
+309 |         let current_text = String::new();
+    |             ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_current_text`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:247:9
+    |
+247 |         attenuated: bool,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `attenuated`
+   --> src/ui/scroll/scroll_view.rs:261:9
+    |
+261 |         attenuated: bool,
+    |         ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_attenuated`
+
+warning: unused variable: `dest`
+   --> src/ui/scroll/scroll_view.rs:327:37
+    |
+327 |     fn start_auto_scroll(&mut self, dest: Vec2, time_in_sec: f32) {
+    |                                     ^^^^ help: if this is intentional, prefix it with an underscore: `_dest`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:168:38
+    |
+168 |     pub fn on_touch_began(&mut self, touch: &Vec2) -> bool {
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:172:38
+    |
+172 |     pub fn on_touch_moved(&mut self, touch: &Vec2) {}
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:174:38
+    |
+174 |     pub fn on_touch_ended(&mut self, touch: &Vec2) {}
+    |                                      ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `touch`
+   --> src/ui/widget.rs:176:41
+    |
+176 |     pub fn on_touch_canceled(&mut self, touch: &Vec2) {}
+    |                                         ^^^^^ help: if this is intentional, prefix it with an underscore: `_touch`
+
+warning: unused variable: `return_pressed`
+   --> src/ui/editbox.rs:959:17
+    |
+959 |         let mut return_pressed = false;
+    |                 ^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_return_pressed`
+
+warning: variable does not need to be mutable
+   --> src/ui/editbox.rs:959:13
+    |
+959 |         let mut return_pressed = false;
+    |             ----^^^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `text_changed`
+   --> src/ui/editbox.rs:988:17
+    |
+988 |         let mut text_changed = false;
+    |                 ^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_text_changed`
+
+warning: unused variable: `began`
+   --> src/ui/editbox.rs:989:17
+    |
+989 |         let mut began = false;
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_began`
+
+warning: unused variable: `ended`
+   --> src/ui/editbox.rs:990:17
+    |
+990 |         let mut ended = false;
+    |                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_ended`
+
+warning: variable does not need to be mutable
+   --> src/ui/editbox.rs:988:13
+    |
+988 |         let mut text_changed = false;
+    |             ----^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/ui/editbox.rs:989:13
+    |
+989 |         let mut began = false;
+    |             ----^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: variable does not need to be mutable
+   --> src/ui/editbox.rs:990:13
+    |
+990 |         let mut ended = false;
+    |             ----^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `event_triggered`
+   --> src/ui/video_player.rs:955:17
+    |
+955 |         let mut event_triggered = false;
+    |                 ^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_event_triggered`
+
+warning: unused variable: `event_type`
+   --> src/ui/video_player.rs:957:34
+    |
+957 |         player.set_on_event(|_p, event_type| {
+    |                                  ^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_event_type`
+
+warning: variable does not need to be mutable
+   --> src/ui/video_player.rs:955:13
+    |
+955 |         let mut event_triggered = false;
+    |             ----^^^^^^^^^^^^^^^
+    |             |
+    |             help: remove this `mut`
+
+warning: unused variable: `original_load_state`
+   --> src/ui/web_view.rs:662:13
+    |
+662 |         let original_load_state = webview.load_state();
+    |             ^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_original_load_state`
+
+warning: unused variable: `event`
+   --> src/ui/web_view.rs:829:36
+    |
+829 |         webview.set_on_event(|_wv, event, _data| {
+    |                                    ^^^^^ help: if this is intentional, prefix it with an underscore: `_event`
+
+For more information about this error, try `rustc --explain E0599`.
+warning: `cocos2d-rust` (lib test) generated 181 warnings
+error: could not compile `cocos2d-rust` (lib test) due to 1 previous error; 181 warnings emitted
