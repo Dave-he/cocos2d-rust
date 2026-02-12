@@ -98,6 +98,7 @@ impl Default for LabelAtlas {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::math::Vec2;
 
     #[test]
     fn test_label_atlas_new() {

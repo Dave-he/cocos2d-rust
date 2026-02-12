@@ -219,6 +219,7 @@ impl Default for TouchDispatcher {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::math::Vec2;
 
     struct TestListener {
         priority: i32,
