@@ -188,6 +188,16 @@ impl Texture2D {
         self.height
     }
 
+    /// 获取宽度（别名，兼容 width() 调用）
+    pub fn width(&self) -> u32 {
+        self.width
+    }
+
+    /// 获取高度（别名，兼容 height() 调用）
+    pub fn height(&self) -> u32 {
+        self.height
+    }
+
     pub fn get_pixel_format(&self) -> PixelFormat {
         self.pixel_format
     }

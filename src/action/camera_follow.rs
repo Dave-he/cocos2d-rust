@@ -202,6 +202,30 @@ impl CameraFollow {
         self.offset = offset;
     }
 
+    pub fn get_lerp_factor(&self) -> f32 {
+        self.lerp_factor
+    }
+
+    pub fn get_bounds_enabled(&self) -> bool {
+        self.bounds_enabled
+    }
+
+    pub fn get_bounds_min(&self) -> Vec2 {
+        self.bounds_min
+    }
+
+    pub fn get_bounds_max(&self) -> Vec2 {
+        self.bounds_max
+    }
+
+    pub fn get_world_rect(&self) -> (f32, f32, f32, f32) {
+        self.world_rect
+    }
+
+    pub fn get_boundary_set(&self) -> bool {
+        self.boundary_set
+    }
+
     pub fn get_current_position(&self) -> Vec2 {
         self.current_position
     }

@@ -239,6 +239,22 @@ impl DrawNode {
         self.dirty = true;
     }
 
+    /// 绘制点（别名方法，兼容 cocos2d-x API）
+    pub fn draw_point(&mut self, pos: Vec2, size: f32, color: Color4F) {
+        self.draw_dot(pos, size, color);
+    }
+
+    /// 绘制矩形（用两个角点指定，兼容 cocos2d-x API）
+    pub fn draw_rect_corners(&mut self, origin: Vec2, destination: Vec2, color: Color4F) {
+        let rect = Rect::new(origin.x, origin.y, destination.x - origin.x, destination.y - origin.y);
+        self.draw_rect(rect, color);
+    }
+
+    /// 绘制圆（简化版，不需要 draw_line_to_center 参数）
+    pub fn draw_circle_simple(&mut self, center: Vec2, radius: f32, angle: f32, segments: u32, color: Color4F) {
+        self.draw_circle(center, radius, angle, segments, false, color);
+    }
+
     pub fn get_commands(&self) -> &[DrawCommand] {
         &self.commands
     }

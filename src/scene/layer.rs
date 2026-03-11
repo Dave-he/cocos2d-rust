@@ -150,6 +150,132 @@ impl Layer {
 
     pub fn on_exit_transition_did_start(&mut self) {
     }
+
+    // ===== Node 委托方法 =====
+
+    pub fn set_position(&mut self, pos: Vec2) {
+        self.node.set_position(pos);
+    }
+
+    pub fn set_position_xy(&mut self, x: f32, y: f32) {
+        self.node.set_position_xy(x, y);
+    }
+
+    pub fn get_position(&self) -> Vec2 {
+        self.node.position()
+    }
+
+    pub fn position(&self) -> Vec2 {
+        self.node.position()
+    }
+
+    pub fn set_scale(&mut self, scale: f32) {
+        self.node.set_scale(scale);
+    }
+
+    pub fn get_scale(&self) -> f32 {
+        self.node.scale()
+    }
+
+    pub fn set_scale_xy(&mut self, scale_x: f32, scale_y: f32) {
+        self.node.set_scale_xy(scale_x, scale_y);
+    }
+
+    pub fn set_rotation(&mut self, rotation: f32) {
+        self.node.set_rotation(rotation);
+    }
+
+    pub fn get_rotation(&self) -> f32 {
+        self.node.rotation()
+    }
+
+    pub fn set_visible(&mut self, visible: bool) {
+        self.node.set_visible(visible);
+    }
+
+    pub fn is_visible(&self) -> bool {
+        self.node.is_visible()
+    }
+
+    pub fn set_opacity(&mut self, opacity: u8) {
+        self.node.set_opacity(opacity);
+    }
+
+    pub fn get_opacity(&self) -> u8 {
+        self.node.opacity()
+    }
+
+    pub fn set_tag(&mut self, tag: i32) {
+        self.node.set_tag(tag);
+    }
+
+    pub fn tag(&self) -> i32 {
+        self.node.tag()
+    }
+
+    pub fn set_name(&mut self, name: impl Into<String>) {
+        self.node.set_name(name);
+    }
+
+    pub fn name(&self) -> &str {
+        self.node.name()
+    }
+
+    pub fn set_content_size(&mut self, size: crate::math::geometry::Size) {
+        self.node.set_content_size(size);
+    }
+
+    pub fn get_content_size(&self) -> crate::math::geometry::Size {
+        self.node.content_size()
+    }
+
+    pub fn set_anchor_point(&mut self, anchor: Vec2) {
+        self.node.set_anchor_point(anchor);
+    }
+
+    pub fn get_anchor_point(&self) -> Vec2 {
+        self.node.anchor_point()
+    }
+
+    pub fn set_z_order(&mut self, z: i32) {
+        self.node.set_local_z_order(z);
+    }
+
+    pub fn get_z_order(&self) -> i32 {
+        self.node.local_z_order()
+    }
+
+    pub fn set_color(&mut self, color: Color3B) {
+        self.node.set_color(color);
+    }
+
+    pub fn get_color(&self) -> Color3B {
+        self.node.color()
+    }
+
+    pub fn add_child(&mut self, child: std::rc::Rc<std::cell::RefCell<crate::scene::Node>>, z_order: i32, name: Option<&str>) {
+        self.node.add_child(child, z_order, name);
+    }
+
+    pub fn add_child_simple(&mut self, child: std::rc::Rc<std::cell::RefCell<crate::scene::Node>>) {
+        self.node.add_child_simple(child);
+    }
+
+    pub fn get_children(&self) -> &[std::rc::Rc<std::cell::RefCell<crate::scene::Node>>] {
+        self.node.get_children()
+    }
+
+    pub fn get_children_count(&self) -> usize {
+        self.node.get_children_count()
+    }
+
+    pub fn get_child_by_tag(&self, tag: i32) -> Option<std::rc::Rc<std::cell::RefCell<crate::scene::Node>>> {
+        self.node.get_child_by_tag(tag)
+    }
+
+    pub fn get_child_by_name(&self, name: &str) -> Option<std::rc::Rc<std::cell::RefCell<crate::scene::Node>>> {
+        self.node.get_child_by_name(name)
+    }
 }
 
 impl Default for Layer {

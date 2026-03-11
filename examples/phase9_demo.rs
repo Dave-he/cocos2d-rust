@@ -46,29 +46,29 @@ fn demo_camera_follow() {
     println!("\n3. 带偏移的相机跟随:");
     let follow_with_offset = CameraFollow::with_target(target.clone())
         .with_offset(Vec2::new(50.0, 100.0));
-    println!("   偏移量: {:?}", follow_with_offset.offset);
+    println!("   偏移量: {:?}", follow_with_offset.get_offset());
     
     // 4. 平滑跟随
     println!("\n4. 平滑跟随 (lerp=0.5):");
     let smooth_follow = CameraFollow::with_target(target.clone())
         .with_lerp(0.5);
-    println!("   平滑系数: {}", smooth_follow.lerp_factor);
+    println!("   平滑系数: {}", smooth_follow.get_lerp_factor());
     
     // 5. 带边界限制的跟随
     println!("\n5. 带边界限制的相机跟随:");
     let bounded_follow = CameraFollow::with_target(target.clone())
         .with_boundary(Vec2::new(0.0, 0.0), Vec2::new(800.0, 600.0));
-    println!("   边界最小: {:?}", bounded_follow.bounds_min);
-    println!("   边界最大: {:?}", bounded_follow.bounds_max);
-    assert!(bounded_follow.bounds_enabled);
+    println!("   边界最小: {:?}", bounded_follow.get_bounds_min());
+    println!("   边界最大: {:?}", bounded_follow.get_bounds_max());
+    assert!(bounded_follow.get_bounds_enabled());
     
     // 6. 世界矩形边界
     println!("\n6. 世界矩形边界:");
     let world_follow = CameraFollow::with_target(target.clone())
         .with_world_rect(0.0, 0.0, 1600.0, 1200.0);
-    assert!(world_follow.bounds_enabled);
-    assert!(world_follow.boundary_set);
-    println!("   世界矩形: {:?}", world_follow.world_rect);
+    assert!(world_follow.get_bounds_enabled());
+    assert!(world_follow.get_boundary_set());
+    println!("   世界矩形: {:?}", world_follow.get_world_rect());
     
     // 7. 模拟相机跟随更新
     println!("\n7. 模拟相机跟随:");
@@ -160,13 +160,14 @@ fn demo_debug_stats() {
     stats.set_float_stat("health", 99.5);
     stats.set_int_stat("score", 15000);
     
+    use cocos2d_rust::base::debug_stats::StatValue;
     println!("   敌人数: {}", match stats.get_stat("enemies").unwrap() {
-        super::StatValue::Integer(v) => v.to_string(),
+        StatValue::Integer(v) => v.to_string(),
         _ => String::new(),
     });
     
     println!("   生命值: {}", match stats.get_stat("health").unwrap() {
-        super::StatValue::Float(v) => format!("{:.1}", v),
+        StatValue::Float(v) => format!("{:.1}", v),
         _ => String::new(),
     });
     
@@ -265,20 +266,20 @@ fn demo_integration() {
     println!("\n5. 性能分析:");
     let fps = stats.get_fps();
     if fps >= 55.0 {
-        println!("   ✓ 性能优秀 (FPS: {:.1})", fps);
+        println!("   性能优秀 (FPS: {:.1})", fps);
     } else if fps >= 30.0 {
-        println!("   △ 性能一般 (FPS: {:.1})", fps);
+        println!("   性能一般 (FPS: {:.1})", fps);
     } else {
-        println!("   ✗ 性能需要优化 (FPS: {:.1})", fps);
+        println!("   性能需要优化 (FPS: {:.1})", fps);
     }
     
     let triangles = stats.get_triangles();
     if triangles < 10000 {
-        println!("   ✓ 三角形数量适中 ({})", triangles);
+        println!("   三角形数量适中 ({})", triangles);
     } else if triangles < 50000 {
-        println!("   △ 三角形数量较多 ({})", triangles);
+        println!("   三角形数量较多 ({})", triangles);
     } else {
-        println!("   ✗ 三角形数量过多 ({})", triangles);
+        println!("   三角形数量过多 ({})", triangles);
     }
     
     println!("\n所有演示完成！");

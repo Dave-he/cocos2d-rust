@@ -772,6 +772,94 @@ impl Node {
     pub fn on_exit(&mut self) {
         // Hook for when node exits the scene
     }
+
+    // ===== 兼容 scene::Node 的别名方法 =====
+
+    /// 获取位置（scene::Node 风格别名）
+    pub fn position(&self) -> crate::math::Vec2 {
+        self.position
+    }
+
+    /// 设置位置（接受 x, y 两个参数）
+    pub fn set_position_xy(&mut self, x: f32, y: f32) {
+        self.position = crate::math::Vec2::new(x, y);
+        self.update_local_transform();
+    }
+
+    /// 获取缩放
+    pub fn scale(&self) -> f32 {
+        (self.scale_x + self.scale_y) / 2.0
+    }
+
+    /// 获取旋转
+    pub fn rotation(&self) -> f32 {
+        self.rotation
+    }
+
+    /// tag() 别名
+    pub fn tag(&self) -> i32 {
+        self.tag
+    }
+
+    /// name() 别名
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    /// 获取内容大小（兼容 Size 类型）
+    pub fn content_size(&self) -> crate::math::geometry::Size {
+        crate::math::geometry::Size::new(self.content_size.x, self.content_size.y)
+    }
+
+    /// set_content_size（兼容 Size 类型）
+    pub fn set_content_size_from_size(&mut self, size: crate::math::geometry::Size) {
+        self.content_size = crate::math::Vec2::new(size.width, size.height);
+    }
+
+    /// 获取锚点
+    pub fn anchor_point(&self) -> crate::math::Vec2 {
+        crate::math::Vec2::new(0.5, 0.5)
+    }
+
+    /// 设置本地Z轴排序
+    pub fn set_local_z_order(&mut self, _z: i32) {
+        // director::Node 暂不支持Z排序，保留接口兼容性
+    }
+
+    /// 获取本地Z轴排序
+    pub fn local_z_order(&self) -> i32 {
+        0
+    }
+
+    /// 添加子节点（简化版，不需要z轴参数）
+    pub fn add_child_simple(&mut self, child: RefPtr<Node>) {
+        self.children.push(child);
+    }
+
+    /// 获取子节点数量
+    pub fn get_children_count(&self) -> usize {
+        self.children.len()
+    }
+
+    /// 通过标签获取子节点
+    pub fn get_child_by_tag(&self, tag: i32) -> Option<RefPtr<Node>> {
+        for child in &self.children {
+            if child.borrow().tag() == tag {
+                return Some(child.clone());
+            }
+        }
+        None
+    }
+
+    /// 通过名称获取子节点
+    pub fn get_child_by_name(&self, name: &str) -> Option<RefPtr<Node>> {
+        for child in &self.children {
+            if child.borrow().name() == name {
+                return Some(child.clone());
+            }
+        }
+        None
+    }
 }
 
 #[cfg(test)]

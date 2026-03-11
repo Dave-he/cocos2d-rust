@@ -36,10 +36,16 @@ pub use base::{
     ResourceManager, ResourceType, ResourceState, ResourceMeta, ResourceStats,
     ObjectPool, Poolable,
 };
+pub use base::debug_console::ConsoleHandler;
+pub use base::debug_console::CommandResult;
 pub use base::director::{Director, Scene};
+// Node 从 scene::node 导出（比 base::director::Node 功能更完整）
 pub use scene::node::Node;
 pub use math::{Vec2, Vec3, Vec4, Mat4, Quaternion};
 pub use scene::{Layer, LayerColor};
+pub use scene::{DrawNode, DrawCommand};
+pub use scene::ParallaxNode;
+pub use scene::ClippingNode;
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
 pub use audio::AudioEngine;
 pub use animation::{Animate, Animation, AnimationCache, SpriteFrame, SpriteFrameCache};
@@ -103,3 +109,4 @@ pub use transition::{
 };
 pub use camera::Camera2D;
 pub use effects::{ProgressTimer, ProgressTimerType, MotionStreak};
+pub use sprite::{Sprite, SpriteBatchNode};

@@ -168,7 +168,7 @@ fn example_draw_node() {
     println!("  绘制蓝色线");
     
     // 绘制矩形
-    draw_node.draw_rect(
+    draw_node.draw_rect_corners(
         Vec2::new(10.0, 10.0), 
         Vec2::new(90.0, 90.0), 
         Color4F::GREEN
@@ -176,7 +176,7 @@ fn example_draw_node() {
     println!("  绘制绿色矩形");
     
     // 绘制圆形
-    draw_node.draw_circle(Vec2::new(50.0, 50.0), 30.0, 0.0, 32, Color4F::YELLOW);
+    draw_node.draw_circle_simple(Vec2::new(50.0, 50.0), 30.0, 0.0, 32, Color4F::YELLOW);
     println!("  绘制黄色圆形");
     
     println!("  绘制命令数: {}", draw_node.get_command_count());

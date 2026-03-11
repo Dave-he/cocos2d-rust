@@ -315,6 +315,16 @@ impl ParticleSystem {
         self.config.total_particles
     }
 
+    /// 获取粒子配置引用
+    pub fn get_config(&self) -> &ParticleEmitterConfig {
+        &self.config
+    }
+
+    /// 获取粒子配置可变引用
+    pub fn get_config_mut(&mut self) -> &mut ParticleEmitterConfig {
+        &mut self.config
+    }
+
     pub fn is_active(&self) -> bool {
         self.is_active
     }
