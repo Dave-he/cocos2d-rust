@@ -5,7 +5,7 @@
 use cocos2d_rust::action::CameraFollow;
 use cocos2d_rust::base::DebugStats;
 use cocos2d_rust::camera::Camera2D;
-use cocos2d_rust::base::Node;
+use cocos2d_rust::base::{RefPtr, Ref};
 use cocos2d_rust::math::Vec2;
 
 fn main() {
@@ -28,13 +28,13 @@ fn main() {
 fn demo_camera_follow() {
     // 1. 创建目标节点和相机
     println!("1. 创建目标节点和相机:");
-    let target = Node::new();
+    let target = RefPtr::new(cocos2d_rust::base::director::Node::new());
     target.borrow_mut().set_position(Vec2::new(100.0, 200.0));
-    println!("   目标位置: {:?}", target.borrow().get_position());
+    println!("   目标位置: {:?}", target.borrow().position());
     
-    let camera = Node::new();
+    let camera = RefPtr::new(cocos2d_rust::base::director::Node::new());
     camera.borrow_mut().set_position(Vec2::ZERO);
-    println!("   相机初始位置: {:?}", camera.borrow().get_position());
+    println!("   相机初始位置: {:?}", camera.borrow().position());
     
     // 2. 创建相机跟随动作
     println!("\n2. 创建相机跟随动作:");
@@ -74,13 +74,11 @@ fn demo_camera_follow() {
     println!("\n7. 模拟相机跟随:");
     target.borrow_mut().set_position(Vec2::new(300.0, 400.0));
     
-    // 模拟 step 调用
     let mut follow_action = CameraFollow::with_target(target.clone());
     follow_action.set_camera(camera.clone());
     
-    // 初始相机位置
-    println!("   初始相机位置: {:?}", camera.borrow().get_position());
-    println!("   目标位置: {:?}", target.borrow().get_position());
+    println!("   初始相机位置: {:?}", camera.borrow().position());
+    println!("   目标位置: {:?}", target.borrow().position());
     
     // 8. Camera2D 集成
     println!("\n8. Camera2D 集成:");
@@ -197,10 +195,10 @@ fn demo_integration() {
     
     // 1. 相机跟随 + 调试统计
     println!("1. 相机跟随 + 调试统计:");
-    let target = Node::new();
+    let target = RefPtr::new(cocos2d_rust::base::director::Node::new());
     target.borrow_mut().set_position(Vec2::new(500.0, 500.0));
     
-    let camera = Node::new();
+    let camera = RefPtr::new(cocos2d_rust::base::director::Node::new());
     camera.borrow_mut().set_position(Vec2::ZERO);
     
     let mut follow = CameraFollow::with_target(target.clone())
@@ -224,8 +222,9 @@ fn demo_integration() {
         stats.begin_frame();
         
         // 模拟相机跟随更新
-        let camera_pos = camera.borrow().get_position();
-        let target_pos = target.borrow().get_position() + Vec2::new(-100.0, -50.0);
+        let camera_pos = *camera.borrow().get_position();
+        let offset = Vec2::new(-100.0, -50.0);
+        let target_pos = *target.borrow().get_position() + offset;
         let new_camera_pos = Vec2::new(
             camera_pos.x + (target_pos.x - camera_pos.x) * 0.1,
             camera_pos.y + (target_pos.y - camera_pos.y) * 0.1,
@@ -243,8 +242,8 @@ fn demo_integration() {
         
         println!("   帧 {}: 目标位置 {:?}, 相机位置 {:?}", 
             i + 1, 
-            target.borrow().get_position(),
-            camera.borrow().get_position());
+            target.borrow().position(),
+            camera.borrow().position());
     }
     
     // 3. 最终统计

@@ -12,6 +12,7 @@ use cocos2d_rust::{
     ProfilerScope, ProfilerCategory, ProfilerEntry,
     DebugPanel, DebugPanelConfig,
 };
+use cocos2d_rust::base::debug_console::CommandResult;
 use std::time::{Duration, Instant};
 use std::thread;
 use std::collections::HashMap;

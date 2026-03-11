@@ -1,8 +1,11 @@
 use cocos2d_rust::{
     ScrollView, ListView, PageView, 
     ScrollDirection, ListViewGravity,
-    Vec2, Node,
+    Vec2,
 };
+// ui 模块使用 base::director::Node
+use cocos2d_rust::base::director::Node;
+use cocos2d_rust::math::geometry::Size;
 
 fn demo_scroll_view() {
     println!("=== ScrollView Demo ===\n");

@@ -4,8 +4,8 @@
 /// 支持纹理贴图、精灵帧动画、颜色混合、翻转等功能。
 
 use crate::animation::sprite_frame::SpriteFrame;
-use crate::base::types::{Color3B, Color4B, Color4F, Rect, BlendFunc};
-use crate::math::Vec2;
+use crate::base::types::{Color3B, Color4B, Color4F, BlendFunc};
+use crate::math::{Vec2, Rect};
 use crate::math::geometry::Size;
 use crate::renderer::texture::Texture2D;
 use crate::scene::node::{Node, NodeType};

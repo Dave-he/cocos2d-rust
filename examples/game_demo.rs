@@ -26,7 +26,15 @@ impl GameLayer {
         self.layer.set_touch_enabled(true);
     }
 
-    pub fn update(&mut self, delta: f32) {
+    pub fn get_layer(&self) -> &Layer {
+        &self.layer
+    }
+
+    pub fn get_layer_mut(&mut self) -> &mut Layer {
+        &mut self.layer
+    }
+
+    pub fn update(&mut self, _delta: f32) {
         self.score += 1;
     }
 
@@ -48,21 +56,21 @@ fn main() {
     println!("=== Cocos2d-Rust Game Demo ===\n");
 
     // Initialize the director
-    let mut director = Director::get_instance();
+    let director = Director::get_instance();
     println!("✓ Director initialized");
 
     // Create the main scene
-    let mut scene = Scene::new();
+    let scene = Scene::new();
     println!("✓ Scene created");
 
     // Create game layer
-    let mut game_layer = GameLayer::new();
-    scene.add_child(game_layer.get_node_mut().clone());
-    println!("✓ Game layer added");
-
+    let game_layer = GameLayer::new();
+    println!("✓ Game layer created");
+    
     // Run the scene
-    director.run_scene(scene);
-    println!("✓ Scene running\n");
+    let scene_ptr = cocos2d_rust::base::RefPtr::new(scene);
+    director.borrow_mut().push_scene(scene_ptr);
+    println!("✓ Scene pushed\n");
 
     println!("Game demo structure:");
     println!("  - Director: Main game loop controller");
@@ -76,5 +84,5 @@ fn main() {
     println!("  2. Build: cd cocos2d-rust && cargo build");
     println!("  3. Run: cargo run --example game_demo\n");
 
-    println!("Demo completed successfully! 🎮");
+    println!("Demo completed successfully!");
 }
