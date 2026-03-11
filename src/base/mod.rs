@@ -7,6 +7,7 @@ pub mod debug_stats;
 pub mod director;
 pub mod error;
 pub mod event;
+pub mod event_bus;
 pub mod notification_center;
 pub mod ref_count;
 pub mod resource_manager;

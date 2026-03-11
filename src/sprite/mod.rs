@@ -26,6 +26,10 @@ pub struct SpriteBatchNode {
     texture: Option<Rc<RefCell<Texture2D>>>,
     /// 子精灵列表
     sprites: Vec<Sprite>,
+    /// 批次缓存（顶点数据）
+    dirty: bool,
+    /// 最大缓存精灵数
+    capacity: usize,
 }
 
 impl SpriteBatchNode {
@@ -34,47 +38,188 @@ impl SpriteBatchNode {
             node: Node::with_type(NodeType::Sprite),
             texture: None,
             sprites: Vec::new(),
+            dirty: false,
+            capacity: 128,
         }
     }
 
+    /// 从纹理创建批处理节点
     pub fn create_with_texture(texture: Rc<RefCell<Texture2D>>) -> Self {
         let mut batch = Self::new();
         batch.texture = Some(texture);
         batch
     }
 
-    pub fn add_sprite(&mut self, sprite: Sprite) {
-        self.sprites.push(sprite);
+    /// 创建时指定容量
+    pub fn create_with_capacity(capacity: usize) -> Self {
+        let mut batch = Self::new();
+        batch.capacity = capacity;
+        batch.sprites = Vec::with_capacity(capacity);
+        batch
     }
 
+    /// 从纹理和容量创建
+    pub fn create_with_texture_and_capacity(texture: Rc<RefCell<Texture2D>>, capacity: usize) -> Self {
+        let mut batch = Self::create_with_texture(texture);
+        batch.capacity = capacity;
+        batch.sprites = Vec::with_capacity(capacity);
+        batch
+    }
+
+    /// 添加精灵到批次
+    pub fn add_sprite(&mut self, mut sprite: Sprite) {
+        sprite.set_batched(true);
+        self.sprites.push(sprite);
+        self.dirty = true;
+    }
+
+    /// 移除指定索引的精灵
+    pub fn remove_sprite_at(&mut self, index: usize) -> Option<Sprite> {
+        if index < self.sprites.len() {
+            self.dirty = true;
+            Some(self.sprites.remove(index))
+        } else {
+            None
+        }
+    }
+
+    /// 获取精灵列表
     pub fn get_sprites(&self) -> &[Sprite] {
         &self.sprites
     }
 
+    /// 获取可变精灵列表
+    pub fn get_sprites_mut(&mut self) -> &mut Vec<Sprite> {
+        self.dirty = true;
+        &mut self.sprites
+    }
+
+    /// 获取精灵数量
     pub fn get_sprite_count(&self) -> usize {
         self.sprites.len()
     }
 
-    pub fn set_texture(&mut self, texture: Rc<RefCell<Texture2D>>) {
-        self.texture = Some(texture);
+    /// 获取指定索引精灵
+    pub fn get_sprite_at(&self, index: usize) -> Option<&Sprite> {
+        self.sprites.get(index)
     }
 
+    /// 设置纹理
+    pub fn set_texture(&mut self, texture: Rc<RefCell<Texture2D>>) {
+        self.texture = Some(texture);
+        self.dirty = true;
+    }
+
+    /// 获取纹理
     pub fn texture(&self) -> Option<Rc<RefCell<Texture2D>>> {
         self.texture.clone()
     }
 
+    /// 获取节点
     pub fn get_node(&self) -> &Node {
         &self.node
     }
 
+    /// 获取可变节点
     pub fn get_node_mut(&mut self) -> &mut Node {
         &mut self.node
+    }
+
+    /// 是否需要重新生成批次缓存
+    pub fn is_dirty(&self) -> bool {
+        self.dirty
+    }
+
+    /// 标记批次已更新（渲染后调用）
+    pub fn clear_dirty(&mut self) {
+        self.dirty = false;
+    }
+
+    /// 获取容量
+    pub fn get_capacity(&self) -> usize {
+        self.capacity
+    }
+
+    /// 清空所有精灵
+    pub fn remove_all_sprites(&mut self) {
+        self.sprites.clear();
+        self.dirty = true;
+    }
+
+    /// 排序精灵（按 z-order）
+    pub fn sort_by_z_order(&mut self) {
+        self.sprites.sort_by(|a, b| {
+            a.get_node().local_z_order().cmp(&b.get_node().local_z_order())
+        });
+        self.dirty = true;
+    }
+
+    /// 模拟生成批次顶点数据
+    ///
+    /// 在真实渲染中，这里会把所有精灵顶点合并到一个大的 VBO 中
+    pub fn generate_batch_data(&self) -> BatchData {
+        let mut batch = BatchData::new();
+        for sprite in &self.sprites {
+            if !sprite.is_visible() {
+                continue;
+            }
+            // 合并每个精灵的顶点
+            let quad = sprite.generate_quad();
+            batch.quads.push(quad);
+        }
+        batch
     }
 }
 
 impl Default for SpriteBatchNode {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+/// 批次渲染数据（包含所有精灵的顶点数据）
+#[derive(Debug, Default)]
+pub struct BatchData {
+    /// 精灵四边形数据
+    pub quads: Vec<SpriteQuad>,
+}
+
+impl BatchData {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    pub fn quad_count(&self) -> usize {
+        self.quads.len()
+    }
+
+    pub fn vertex_count(&self) -> usize {
+        self.quads.len() * 4
+    }
+
+    pub fn index_count(&self) -> usize {
+        self.quads.len() * 6
+    }
+}
+
+/// 精灵四边形数据（4个顶点）
+#[derive(Debug, Clone)]
+pub struct SpriteQuad {
+    /// 四个顶点位置 [左下, 右下, 左上, 右上]
+    pub vertices: [[f32; 3]; 4],
+    /// UV 坐标
+    pub uvs: [[f32; 2]; 4],
+    /// 颜色 RGBA
+    pub color: [f32; 4],
+}
+
+impl Default for SpriteQuad {
+    fn default() -> Self {
+        Self {
+            vertices: [[0.0; 3]; 4],
+            uvs: [[0.0; 2]; 4],
+            color: [1.0, 1.0, 1.0, 1.0],
+        }
     }
 }
 
@@ -236,6 +381,44 @@ impl Sprite {
 
     pub fn is_visible(&self) -> bool {
         self.node.is_visible()
+    }
+
+    /// 设置是否属于 SpriteBatchNode
+    pub fn set_batched(&mut self, batched: bool) {
+        self.batched = batched;
+    }
+
+    /// 是否属于 SpriteBatchNode
+    pub fn is_batched(&self) -> bool {
+        self.batched
+    }
+
+    /// 生成四边形顶点数据（供 SpriteBatchNode 使用）
+    pub fn generate_quad(&self) -> SpriteQuad {
+        let pos = self.node.position();
+        let size = self.get_content_size();
+        let scale_x = self.node.scale_x();
+        let scale_y = self.node.scale_y();
+        let w = size.width * scale_x;
+        let h = size.height * scale_y;
+        let z = 0.0f32; // 2D
+
+        SpriteQuad {
+            vertices: [
+                [pos.x,       pos.y,       z],  // 左下
+                [pos.x + w,   pos.y,       z],  // 右下
+                [pos.x,       pos.y + h,   z],  // 左上
+                [pos.x + w,   pos.y + h,   z],  // 右上
+            ],
+            uvs: self.quad_uv,
+            color: {
+                let r = self.color.r as f32 / 255.0;
+                let g = self.color.g as f32 / 255.0;
+                let b = self.color.b as f32 / 255.0;
+                let a = self.opacity as f32 / 255.0;
+                [r, g, b, a]
+            },
+        }
     }
 
     pub fn set_tag(&mut self, tag: i32) {
@@ -651,6 +834,85 @@ mod tests {
         batch.add_sprite(sprite2);
         
         assert_eq!(batch.get_sprite_count(), 2);
+    }
+
+    #[test]
+    fn test_sprite_batch_node_capacity() {
+        let batch = SpriteBatchNode::create_with_capacity(256);
+        assert_eq!(batch.get_capacity(), 256);
+        assert_eq!(batch.get_sprite_count(), 0);
+    }
+
+    #[test]
+    fn test_sprite_batch_node_remove() {
+        let mut batch = SpriteBatchNode::new();
+        batch.add_sprite(Sprite::new());
+        batch.add_sprite(Sprite::new());
+        batch.add_sprite(Sprite::new());
+        assert_eq!(batch.get_sprite_count(), 3);
+
+        batch.remove_sprite_at(1);
+        assert_eq!(batch.get_sprite_count(), 2);
+
+        batch.remove_all_sprites();
+        assert_eq!(batch.get_sprite_count(), 0);
+    }
+
+    #[test]
+    fn test_sprite_batch_node_dirty() {
+        let mut batch = SpriteBatchNode::new();
+        assert!(!batch.is_dirty());
+
+        batch.add_sprite(Sprite::new());
+        assert!(batch.is_dirty());
+
+        batch.clear_dirty();
+        assert!(!batch.is_dirty());
+    }
+
+    #[test]
+    fn test_sprite_batch_node_generate_data() {
+        let mut batch = SpriteBatchNode::new();
+
+        let mut s1 = Sprite::new();
+        s1.set_position(Vec2::new(0.0, 0.0));
+        s1.set_texture_rect(Rect::new(0.0, 0.0, 64.0, 64.0));
+
+        let mut s2 = Sprite::new();
+        s2.set_position(Vec2::new(100.0, 100.0));
+        s2.set_texture_rect(Rect::new(0.0, 0.0, 64.0, 64.0));
+
+        let mut s3 = Sprite::new();
+        s3.set_visible(false); // 隐藏精灵不应生成顶点
+
+        batch.add_sprite(s1);
+        batch.add_sprite(s2);
+        batch.add_sprite(s3);
+
+        let data = batch.generate_batch_data();
+        assert_eq!(data.quad_count(), 2); // 隐藏精灵不计入
+        assert_eq!(data.vertex_count(), 8);
+        assert_eq!(data.index_count(), 12);
+    }
+
+    #[test]
+    fn test_sprite_generate_quad() {
+        let mut sprite = Sprite::new();
+        sprite.set_position(Vec2::new(100.0, 200.0));
+        sprite.set_texture_rect(Rect::new(0.0, 0.0, 50.0, 80.0));
+        sprite.set_color(Color3B::new(255, 128, 64));
+        sprite.set_opacity(200);
+
+        let quad = sprite.generate_quad();
+
+        // 检查左下顶点
+        assert!((quad.vertices[0][0] - 100.0).abs() < 0.01);
+        assert!((quad.vertices[0][1] - 200.0).abs() < 0.01);
+
+        // 检查颜色（r 约 1.0）
+        assert!((quad.color[0] - 1.0).abs() < 0.01);
+        // 检查 alpha
+        assert!((quad.color[3] - 200.0 / 255.0).abs() < 0.01);
     }
 
     #[test]

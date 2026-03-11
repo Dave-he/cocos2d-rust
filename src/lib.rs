@@ -4,6 +4,7 @@ pub mod animation;
 pub mod audio;
 pub mod backend;
 pub mod base;
+pub mod component;
 pub mod input;
 pub mod label;
 pub mod math;
@@ -35,6 +36,15 @@ pub use base::{
     TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager, ThreadPool,
     ResourceManager, ResourceType, ResourceState, ResourceMeta, ResourceStats,
     ObjectPool, Poolable,
+};
+pub use base::event_bus::{
+    EventBus, SubscriberId, DeferredEventQueue,
+    // 内置游戏事件
+    SceneChangeEvent, NodeSceneEvent,
+    TouchBeganEvent, TouchMovedEvent, TouchEndedEvent,
+    KeyDownEvent, KeyUpEvent, MouseClickEvent,
+    FrameEvent, GameEvent, MemoryWarningEvent,
+    ResolutionChangeEvent, AudioEvent,
 };
 pub use base::debug_console::ConsoleHandler;
 pub use base::debug_console::CommandResult;
@@ -95,6 +105,7 @@ pub use ui::{
     VideoPlayer, VideoState, VideoEventType,
     WebView, LoadState, WebViewEvent, ZoomRange,
 };
+pub use ui::rich_text::{RichElement, RichElementType};
 pub use particle::ParticleSystem;
 pub use particle::ParticlePresets;
 pub use particle::{ParticleEmitterConfig, EmitterType, BlendType};
@@ -106,7 +117,27 @@ pub use tilemap::{
 pub use transition::{
     FadeTransition, FlipTransition, RotateTransition, SlideTransition, TransitionScene,
     ZoomTransition,
+    // 扩展过场
+    TransitionProgress, TransitionKind,
+    SplitTransition, SplitDirection,
+    PageTurnTransition, CrossfadeTransition, FlashTransition, MorphTransition,
 };
 pub use camera::Camera2D;
 pub use effects::{ProgressTimer, ProgressTimerType, MotionStreak};
-pub use sprite::{Sprite, SpriteBatchNode};
+pub use effects::progress_timer::BarChangeRate;
+pub use effects::{
+    OffscreenTarget, RenderTextureFormat,
+    PostProcessPipeline, PostProcessEffect,
+};
+pub use sprite::{Sprite, SpriteBatchNode, BatchData, SpriteQuad};
+pub use backend::{
+    PipelineState, PipelineCache,
+    VertexLayout, VertexAttribute, VertexFormat,
+    BlendDescriptor, BlendFactor, BlendOp,
+    DepthDescriptor, CullMode, FillMode,
+    ShaderRef,
+};
+pub use component::{
+    Component, ComponentContainer, ComponentBase,
+    TimerComponent, ScriptComponent, StateMachineComponent, PropertyComponent,
+};

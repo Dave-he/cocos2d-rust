@@ -4,7 +4,8 @@
 
 use cocos2d_rust::base::types::Color4F;
 use cocos2d_rust::math::{Vec2, Vec3};
-use cocos2d_rust::renderer::{BatchKey, OptimizedBatchRenderer, RenderCommand};
+use cocos2d_rust::renderer::{BatchKey, OptimizedBatchRenderer};
+use cocos2d_rust::renderer::optimized_batch_renderer::RenderCommand;
 
 fn main() {
     println!("=== Optimized Batch Renderer Demo ===\n");
@@ -28,7 +29,7 @@ fn main() {
 /// 示例 1: 基础使用
 fn example_basic_usage() {
     println!("1. Basic Usage Example");
-    println!("-".repeat(50));
+    println!("{}", "-".repeat(50));
 
     // 创建渲染器
     let mut renderer = OptimizedBatchRenderer::new();
@@ -83,7 +84,7 @@ fn example_basic_usage() {
 /// 示例 2: 游戏场景渲染（模拟 1000 个精灵）
 fn example_game_scene() {
     println!("2. Game Scene Example (1000 sprites)");
-    println!("-".repeat(50));
+    println!("{}", "-".repeat(50));
 
     let mut renderer = OptimizedBatchRenderer::new();
 
@@ -151,7 +152,7 @@ fn example_game_scene() {
 /// 示例 3: 粒子系统渲染
 fn example_particle_system() {
     println!("3. Particle System Example (10000 particles)");
-    println!("-".repeat(50));
+    println!("{}", "-".repeat(50));
 
     let mut renderer = OptimizedBatchRenderer::new();
 
@@ -210,7 +211,7 @@ fn example_particle_system() {
 /// 示例 4: UI 渲染（混合不同类型）
 fn example_ui_rendering() {
     println!("4. UI Rendering Example");
-    println!("-".repeat(50));
+    println!("{}", "-".repeat(50));
 
     let mut renderer = OptimizedBatchRenderer::new();
 
@@ -293,7 +294,7 @@ fn example_ui_rendering() {
 /// 示例 5: 性能对比（模拟 Cocos2d-x vs 优化版本）
 fn example_performance_comparison() {
     println!("5. Performance Comparison");
-    println!("-".repeat(50));
+    println!("{}", "-".repeat(50));
 
     use std::time::Instant;
 

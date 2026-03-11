@@ -61,7 +61,7 @@ fn demo_list_view() {
     // Add items
     for i in 0..10 {
         let mut item = Node::new();
-        item.set_content_size(Vec2::new(300.0, 60.0));
+        item.set_content_size(cocos2d_rust::math::Vec2::new(300.0, 60.0));
         list_view.push_back_custom_item(item);
     }
     println!("✓ Added 10 items to list");
@@ -108,7 +108,7 @@ fn demo_page_view() {
     // Add pages
     for i in 0..5 {
         let mut page = Node::new();
-        page.set_content_size(Vec2::new(800.0, 600.0));
+        page.set_content_size(cocos2d_rust::math::Vec2::new(800.0, 600.0));
         page_view.add_page(page);
     }
     println!("✓ Added 5 pages");
@@ -163,7 +163,7 @@ fn demo_advanced_features() {
         let mut item = Node::new();
         // Different sized items
         let height = 40.0 + (i * 10) as f32;
-        item.set_content_size(Vec2::new(300.0, height));
+        item.set_content_size(cocos2d_rust::math::Vec2::new(300.0, height));
         custom_list.push_back_custom_item(item);
     }
     
@@ -176,7 +176,7 @@ fn demo_advanced_features() {
     
     for _ in 0..3 {
         let mut page = Node::new();
-        page.set_content_size(Vec2::new(600.0, 800.0));
+        page.set_content_size(cocos2d_rust::math::Vec2::new(600.0, 800.0));
         vertical_pages.add_page(page);
     }
     

@@ -79,7 +79,7 @@ fn demo_user_default() {
     // 统计信息
     println!("\n📊 数据统计...");
     let stats = ud.get_stats();
-    pri  ✓ Bool 值数量:   {}", stats.bool_count);
+    println!("  ✓ Bool 值数量:   {}", stats.bool_count);
     println!("  ✓ Int 值数量:    {}", stats.int_count);
     println!("  ✓ Float 值数量:  {}", stats.float_count);
     println!("  ✓ String 值数量: {}", stats.string_count);
