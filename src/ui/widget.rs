@@ -216,7 +216,7 @@ impl Button {
         self.title_color = color;
     }
 
-    pub fn loadTextures(&mut self, normal: &str, pressed: &str, disabled: &str) {
+    pub fn load_textures(&mut self, normal: &str, pressed: &str, disabled: &str) {
         self.normal_image = normal.to_string();
         self.pressed_image = pressed.to_string();
         self.disabled_image = disabled.to_string();
@@ -348,7 +348,7 @@ impl Slider {
         self.max_percent
     }
 
-    pub fn loadSlidingBar(&mut self, bar: &str) {
+    pub fn load_sliding_bar(&mut self, bar: &str) {
         self.bar_image = bar.to_string();
     }
 }
@@ -391,7 +391,7 @@ impl CheckBox {
         self.on_off
     }
 
-    pub fn loadTextures(
+    pub fn load_textures(
         &mut self,
         off_normal: &str,
         on_normal: &str,
