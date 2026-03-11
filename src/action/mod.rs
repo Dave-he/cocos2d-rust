@@ -16,3 +16,6 @@ pub use action_interval::{
     BezierBy, BezierConfig,
     JumpBy
 };
+pub use camera_follow::{
+    CameraFollow, FollowAxis, FollowMode,
+};

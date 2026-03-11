@@ -11,6 +11,7 @@ pub mod notification_center;
 pub mod ref_count;
 pub mod resource_manager;
 pub mod scheduler;
+pub mod script_binding;
 pub mod types;
 
 pub use async_task::{
@@ -35,5 +36,10 @@ pub use ref_count::{Clonable, Ref, RefPtr};
 pub use resource_manager::{
     ObjectPool, Poolable, PoolGuard, Resource, ResourceMeta, ResourceManager,
     ResourceState, ResourceStats, ResourceType,
+};
+pub use script_binding::{
+    JSScriptEngine, LuaScriptEngine, NativeFunction, ScriptCallback,
+    ScriptEngine, ScriptEngineConfig, ScriptEngineStats, ScriptError,
+    ScriptErrorKind, ScriptLanguage, ScriptManager, ScriptResult, ScriptValue,
 };
 pub use types::{Color3B, Color4B, Color4F, Point, Rect, Size};

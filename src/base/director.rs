@@ -7,10 +7,40 @@ use crate::renderer::Renderer;
 use glow::Context;
 use std::rc::Rc;
 
+/// 投影类型
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Projection {
+    /// 2D 正交投影
+    Projection2D,
+    /// 3D 透视投影
+    Projection3D,
+    /// 自定义投影
+    Custom,
+}
+
+/// 分辨率适配策略（对应 cocos2d-x ResolutionPolicy）
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ResolutionPolicy {
+    /// 拉伸填满，可能变形
+    ExactFit,
+    /// 不裁剪，可能有黑边
+    NoBorder,
+    /// 显示全部，保持宽高比，可能有黑边
+    ShowAll,
+    /// 固定高度，宽度自适应
+    FixedHeight,
+    /// 固定宽度，高度自适应
+    FixedWidth,
+    /// 不做任何缩放
+    Unknown,
+}
+
 #[derive(Debug)]
 pub struct Director {
     running_scene: RefPtr<Scene>,
     next_scene: Option<RefPtr<Scene>>,
+    /// 场景栈（用于 push/pop 场景切换）
+    scene_stack: Vec<RefPtr<Scene>>,
     scheduler: RefPtr<Scheduler>,
     event_dispatcher: RefPtr<EventDispatcher>,
     renderer: RefPtr<Renderer>,
@@ -19,6 +49,34 @@ pub struct Director {
     last_update_time: std::time::Instant,
     is_paused: bool,
     is_cleanup: bool,
+    // === 新增：投影和分辨率 ===
+    /// 当前投影类型
+    projection: Projection,
+    /// 投影矩阵
+    projection_matrix: crate::math::Mat4,
+    /// 窗口实际大小（像素）
+    win_size_in_pixels: Size,
+    /// 窗口逻辑大小
+    win_size: Size,
+    /// 设计分辨率
+    design_resolution_size: Size,
+    /// 分辨率适配策略
+    resolution_policy: ResolutionPolicy,
+    /// 可见区域大小（考虑适配后）
+    visible_size: Size,
+    /// 可见区域原点
+    visible_origin: crate::math::Vec2,
+    /// 缩放因子
+    scale_x: f32,
+    scale_y: f32,
+    /// 帧率
+    animation_interval: f64,
+    /// 当前帧数
+    total_frames: u64,
+    /// 内容缩放因子（Retina屏幕等）
+    content_scale_factor: f32,
+    /// 通知暂停时是否也暂停渲染
+    send_cleanup_to_scene: bool,
 }
 
 impl Default for Director {
@@ -42,6 +100,7 @@ impl Director {
         Director {
             running_scene: RefPtr::new(Scene::new()),
             next_scene: None,
+            scene_stack: Vec::new(),
             scheduler: RefPtr::new(Scheduler::new()),
             event_dispatcher: RefPtr::new(EventDispatcher::new()),
             renderer: RefPtr::new(Renderer::new()),
@@ -50,6 +109,20 @@ impl Director {
             last_update_time: std::time::Instant::now(),
             is_paused: false,
             is_cleanup: false,
+            projection: Projection::Projection2D,
+            projection_matrix: crate::math::Mat4::IDENTITY,
+            win_size_in_pixels: Size::new(960.0, 640.0),
+            win_size: Size::new(960.0, 640.0),
+            design_resolution_size: Size::new(960.0, 640.0),
+            resolution_policy: ResolutionPolicy::ShowAll,
+            visible_size: Size::new(960.0, 640.0),
+            visible_origin: crate::math::Vec2::ZERO,
+            scale_x: 1.0,
+            scale_y: 1.0,
+            animation_interval: 1.0 / 60.0,
+            total_frames: 0,
+            content_scale_factor: 1.0,
+            send_cleanup_to_scene: false,
         }
     }
 
@@ -89,12 +162,30 @@ impl Director {
         self.next_scene = Some(scene);
     }
 
+    /// 压入场景（保留当前场景在栈中）
     pub fn push_scene(&mut self, scene: RefPtr<Scene>) {
+        self.scene_stack.push(self.running_scene.clone());
         self.next_scene = Some(scene);
     }
 
-    /// Pops the running scene
+    /// 弹出场景（恢复上一个场景）
     pub fn pop_scene(&mut self) {
+        if let Some(prev_scene) = self.scene_stack.pop() {
+            self.next_scene = Some(prev_scene);
+        }
+    }
+
+    /// 弹出到根场景（清空栈）
+    pub fn pop_to_root_scene(&mut self) {
+        if let Some(root) = self.scene_stack.first().cloned() {
+            self.scene_stack.clear();
+            self.next_scene = Some(root);
+        }
+    }
+
+    /// 获取场景栈深度
+    pub fn scene_stack_depth(&self) -> usize {
+        self.scene_stack.len()
     }
 
     pub fn replace_scene(&mut self, scene: RefPtr<Scene>) {
@@ -108,6 +199,7 @@ impl Director {
 
         self.delta_time = elapsed.as_secs_f32();
         self.total_time += self.delta_time;
+        self.total_frames += 1;
 
         if !self.is_paused {
             self.scheduler.borrow_mut().update(self.delta_time);
@@ -117,10 +209,10 @@ impl Director {
             self.running_scene = scene;
         }
 
-        // Render the current scene
+        // Render the current scene (使用投影矩阵)
         self.running_scene.borrow().visit(
             &mut self.renderer.borrow_mut(),
-            &crate::math::Mat4::IDENTITY,
+            &self.projection_matrix,
             0,
         );
         self.renderer.borrow_mut().render();
@@ -141,15 +233,215 @@ impl Director {
     }
 
     pub fn get_win_size(&self) -> Size {
-        Size::new(960.0, 640.0)
+        self.win_size
+    }
+
+    /// 获取窗口像素大小
+    pub fn get_win_size_in_pixels(&self) -> Size {
+        self.win_size_in_pixels
+    }
+
+    /// 设置窗口大小（通常由平台层调用）
+    pub fn set_win_size(&mut self, width: f32, height: f32) {
+        self.win_size = Size::new(width, height);
+        self.win_size_in_pixels = Size::new(
+            width * self.content_scale_factor,
+            height * self.content_scale_factor,
+        );
+        self.update_design_resolution();
     }
 
     pub fn get_visible_size(&self) -> Size {
-        self.get_win_size()
+        self.visible_size
     }
 
     pub fn get_visible_origin(&self) -> crate::math::Vec2 {
-        crate::math::Vec2::ZERO
+        self.visible_origin
+    }
+
+    // ========== 设计分辨率 ==========
+
+    /// 设置设计分辨率和适配策略
+    pub fn set_design_resolution_size(&mut self, width: f32, height: f32, policy: ResolutionPolicy) {
+        if width <= 0.0 || height <= 0.0 {
+            return;
+        }
+        self.design_resolution_size = Size::new(width, height);
+        self.resolution_policy = policy;
+        self.update_design_resolution();
+    }
+
+    /// 获取设计分辨率
+    pub fn get_design_resolution_size(&self) -> Size {
+        self.design_resolution_size
+    }
+
+    /// 获取分辨率策略
+    pub fn get_resolution_policy(&self) -> ResolutionPolicy {
+        self.resolution_policy
+    }
+
+    /// 更新设计分辨率的内部计算
+    fn update_design_resolution(&mut self) {
+        let frame_w = self.win_size_in_pixels.width;
+        let frame_h = self.win_size_in_pixels.height;
+        let design_w = self.design_resolution_size.width;
+        let design_h = self.design_resolution_size.height;
+
+        if design_w <= 0.0 || design_h <= 0.0 || frame_w <= 0.0 || frame_h <= 0.0 {
+            return;
+        }
+
+        let (sx, sy) = match self.resolution_policy {
+            ResolutionPolicy::ExactFit => {
+                (frame_w / design_w, frame_h / design_h)
+            }
+            ResolutionPolicy::NoBorder => {
+                let s = (frame_w / design_w).max(frame_h / design_h);
+                (s, s)
+            }
+            ResolutionPolicy::ShowAll => {
+                let s = (frame_w / design_w).min(frame_h / design_h);
+                (s, s)
+            }
+            ResolutionPolicy::FixedHeight => {
+                let s = frame_h / design_h;
+                (s, s)
+            }
+            ResolutionPolicy::FixedWidth => {
+                let s = frame_w / design_w;
+                (s, s)
+            }
+            ResolutionPolicy::Unknown => {
+                (1.0, 1.0)
+            }
+        };
+
+        self.scale_x = sx;
+        self.scale_y = sy;
+
+        // 计算可见区域
+        self.visible_size = Size::new(frame_w / sx, frame_h / sy);
+        self.visible_origin = crate::math::Vec2::new(
+            (design_w - self.visible_size.width) / 2.0,
+            (design_h - self.visible_size.height) / 2.0,
+        );
+
+        self.update_projection();
+    }
+
+    // ========== 投影矩阵 ==========
+
+    /// 设置投影类型
+    pub fn set_projection(&mut self, projection: Projection) {
+        self.projection = projection;
+        self.update_projection();
+    }
+
+    /// 获取投影类型
+    pub fn get_projection(&self) -> Projection {
+        self.projection
+    }
+
+    /// 获取投影矩阵
+    pub fn get_projection_matrix(&self) -> &crate::math::Mat4 {
+        &self.projection_matrix
+    }
+
+    /// 更新投影矩阵
+    fn update_projection(&mut self) {
+        let size = self.visible_size;
+        match self.projection {
+            Projection::Projection2D => {
+                // 正交投影（off-center 形式，原点在左下角）
+                self.projection_matrix = crate::math::Mat4::create_orthographic_off_center(
+                    0.0,
+                    size.width,
+                    0.0,
+                    size.height,
+                    -1024.0,
+                    1024.0,
+                );
+            }
+            Projection::Projection3D => {
+                // 透视投影（field_of_view 传度数，方法内部会转弧度）
+                let aspect = size.width / size.height.max(1.0);
+                let fov_deg = 60.0f32; // 度数
+                let near = 0.1;
+                let far = (size.height / 1.1566) * 2.0; // 类似 cocos2d-x 默认 eye 距离
+                self.projection_matrix = crate::math::Mat4::create_perspective(
+                    fov_deg, aspect, near, far,
+                );
+            }
+            Projection::Custom => {
+                // 自定义投影，保持当前矩阵不变
+            }
+        }
+    }
+
+    /// 设置自定义投影矩阵
+    pub fn set_projection_matrix(&mut self, matrix: crate::math::Mat4) {
+        self.projection = Projection::Custom;
+        self.projection_matrix = matrix;
+    }
+
+    // ========== 内容缩放 ==========
+
+    /// 设置内容缩放因子（Retina 屏幕为 2.0）
+    pub fn set_content_scale_factor(&mut self, factor: f32) {
+        self.content_scale_factor = factor.max(0.1);
+        self.win_size_in_pixels = Size::new(
+            self.win_size.width * self.content_scale_factor,
+            self.win_size.height * self.content_scale_factor,
+        );
+        self.update_design_resolution();
+    }
+
+    /// 获取内容缩放因子
+    pub fn get_content_scale_factor(&self) -> f32 {
+        self.content_scale_factor
+    }
+
+    /// 获取缩放因子 X/Y
+    pub fn get_scale_x(&self) -> f32 {
+        self.scale_x
+    }
+
+    pub fn get_scale_y(&self) -> f32 {
+        self.scale_y
+    }
+
+    // ========== 帧率 ==========
+
+    /// 设置动画间隔（秒）
+    pub fn set_animation_interval(&mut self, interval: f64) {
+        self.animation_interval = interval.max(0.001);
+    }
+
+    /// 获取动画间隔
+    pub fn get_animation_interval(&self) -> f64 {
+        self.animation_interval
+    }
+
+    /// 获取总帧数
+    pub fn get_total_frames(&self) -> u64 {
+        self.total_frames
+    }
+
+    /// 将 GL 坐标（像素）转换为设计分辨率坐标
+    pub fn convert_to_gl(&self, ui_point: &crate::math::Vec2) -> crate::math::Vec2 {
+        crate::math::Vec2::new(
+            ui_point.x / self.scale_x + self.visible_origin.x,
+            ui_point.y / self.scale_y + self.visible_origin.y,
+        )
+    }
+
+    /// 将设计分辨率坐标转换为 GL 坐标（像素）
+    pub fn convert_to_ui(&self, gl_point: &crate::math::Vec2) -> crate::math::Vec2 {
+        crate::math::Vec2::new(
+            (gl_point.x - self.visible_origin.x) * self.scale_x,
+            (gl_point.y - self.visible_origin.y) * self.scale_y,
+        )
     }
 }
 
@@ -767,5 +1059,145 @@ mod tests {
         let mut director = Director::new();
         let scene = RefPtr::new(Scene::new());
         director.push_scene(scene);
+    }
+
+    // ========== 新增：场景栈 / 投影 / 分辨率 测试 ==========
+
+    #[test]
+    fn test_director_push_pop_scene() {
+        let mut director = Director::new();
+        assert_eq!(director.scene_stack_depth(), 0);
+
+        let scene1 = RefPtr::new(Scene::new());
+        let scene2 = RefPtr::new(Scene::new());
+        director.run_scene(scene1);
+        director.push_scene(scene2);
+        assert_eq!(director.scene_stack_depth(), 1);
+
+        director.pop_scene();
+        // 场景栈减少
+        assert_eq!(director.scene_stack_depth(), 0);
+    }
+
+    #[test]
+    fn test_director_pop_to_root_scene() {
+        let mut director = Director::new();
+        let root = RefPtr::new(Scene::new());
+        director.run_scene(root.clone());
+
+        let s1 = RefPtr::new(Scene::new());
+        let s2 = RefPtr::new(Scene::new());
+        director.push_scene(s1);
+        director.push_scene(s2);
+        assert_eq!(director.scene_stack_depth(), 2);
+
+        director.pop_to_root_scene();
+        // 清空后栈深为 0
+        assert_eq!(director.scene_stack_depth(), 0);
+    }
+
+    #[test]
+    fn test_director_design_resolution_show_all() {
+        let mut director = Director::new();
+        director.set_win_size(1280.0, 720.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::ShowAll);
+        let vis = director.get_visible_size();
+        // ShowAll 情况下，设计分辨率等比缩放，可见区域不超过窗口
+        assert!(vis.width <= 1280.0 / director.get_scale_x() + 1.0);
+        assert!(vis.height <= 720.0 / director.get_scale_y() + 1.0);
+    }
+
+    #[test]
+    fn test_director_design_resolution_exact_fit() {
+        let mut director = Director::new();
+        director.set_win_size(1280.0, 720.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::ExactFit);
+        // ExactFit：sx = 1280/960, sy = 720/640
+        let sx = director.get_scale_x();
+        let sy = director.get_scale_y();
+        assert!((sx - 1280.0 / 960.0).abs() < 0.01);
+        assert!((sy - 720.0 / 640.0).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_director_design_resolution_no_border() {
+        let mut director = Director::new();
+        director.set_win_size(1280.0, 720.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::NoBorder);
+        // NoBorder：取较大缩放
+        let sx = director.get_scale_x();
+        let sy = director.get_scale_y();
+        assert!((sx - sy).abs() < 0.01); // 等比
+        let expected = (1280.0f32 / 960.0).max(720.0 / 640.0);
+        assert!((sx - expected).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_director_projection_2d() {
+        let mut director = Director::new();
+        director.set_win_size(960.0, 640.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::ShowAll);
+        director.set_projection(Projection::Projection2D);
+        assert_eq!(director.get_projection(), Projection::Projection2D);
+        // 投影矩阵不应该是全零
+        let m = director.get_projection_matrix();
+        let is_nonzero = m.m.iter().any(|&v| v.abs() > 1e-6);
+        assert!(is_nonzero, "2D projection matrix should be non-zero");
+    }
+
+    #[test]
+    fn test_director_projection_3d() {
+        let mut director = Director::new();
+        director.set_win_size(960.0, 640.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::ShowAll);
+        director.set_projection(Projection::Projection3D);
+        assert_eq!(director.get_projection(), Projection::Projection3D);
+        let m = director.get_projection_matrix();
+        let is_nonzero = m.m.iter().any(|&v| v.abs() > 1e-6);
+        assert!(is_nonzero, "3D projection matrix should be non-zero");
+    }
+
+    #[test]
+    fn test_director_custom_projection() {
+        let mut director = Director::new();
+        let custom = crate::math::Mat4::IDENTITY;
+        director.set_projection_matrix(custom);
+        assert_eq!(director.get_projection(), Projection::Custom);
+    }
+
+    #[test]
+    fn test_director_content_scale_factor() {
+        let mut director = Director::new();
+        director.set_win_size(960.0, 640.0);
+        director.set_content_scale_factor(2.0);
+        assert!((director.get_content_scale_factor() - 2.0).abs() < 1e-5);
+        let pixels = director.get_win_size_in_pixels();
+        assert!((pixels.width - 1920.0).abs() < 1.0);
+        assert!((pixels.height - 1280.0).abs() < 1.0);
+    }
+
+    #[test]
+    fn test_director_animation_interval() {
+        let mut director = Director::new();
+        director.set_animation_interval(1.0 / 30.0);
+        assert!((director.get_animation_interval() - 1.0 / 30.0).abs() < 1e-10);
+    }
+
+    #[test]
+    fn test_director_convert_to_gl_ui() {
+        let mut director = Director::new();
+        director.set_win_size(960.0, 640.0);
+        director.set_design_resolution_size(960.0, 640.0, ResolutionPolicy::ExactFit);
+        let pt = crate::math::Vec2::new(100.0, 200.0);
+        let gl = director.convert_to_gl(&pt);
+        let back = director.convert_to_ui(&gl);
+        assert!((back.x - pt.x).abs() < 0.01);
+        assert!((back.y - pt.y).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_director_total_frames() {
+        let director = Director::new();
+        assert_eq!(director.get_total_frames(), 0);
     }
 }

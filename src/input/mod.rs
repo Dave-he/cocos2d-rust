@@ -1,9 +1,14 @@
+pub mod accelerometer;
 pub mod gamepad;
 pub mod keyboard;
 pub mod mouse;
 pub mod touch;
 pub mod touch_dispatcher;
 
+pub use accelerometer::{
+    Acceleration, AccelerometerConfig, AccelerometerEvent, AccelerometerStats,
+    AccelerometerAccuracy, Accelerometer, DeviceOrientation, FilterType,
+};
 pub use gamepad::{
     GamepadAxis, GamepadButton, GamepadEvent, GamepadIndex,
     GamepadManager, GamepadState, GamepadVibration, ButtonState,
