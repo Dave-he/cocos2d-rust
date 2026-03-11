@@ -99,6 +99,11 @@ impl Animation {
         self.update_duration();
     }
 
+    /// 添加精灵帧（别名方法，兼容 cocos2d-x API）
+    pub fn add_sprite_frame(&mut self, frame: Rc<RefCell<SpriteFrame>>) {
+        self.add_frame(frame);
+    }
+
     /// 添加多个帧
     pub fn add_frames(&mut self, frames: Vec<Rc<RefCell<SpriteFrame>>>) {
         self.frames.extend(frames);

@@ -436,6 +436,42 @@ impl TextField {
         self.on_text_changed = Some(Box::new(callback));
     }
 
+    // ===== cocos2d-x API 兼容方法 =====
+
+    /// 获取字符串（别名 text()）
+    pub fn get_string(&self) -> &str {
+        &self.text
+    }
+
+    /// 设置占位符文本（别名 set_placeholder()）
+    pub fn set_placeholder_text(&mut self, placeholder: impl Into<String>) {
+        self.placeholder = placeholder.into();
+    }
+
+    /// 获取占位符文本（别名 placeholder()）
+    pub fn get_placeholder_text(&self) -> &str {
+        &self.placeholder
+    }
+
+    /// 获取最大长度（别名 max_length()）
+    pub fn get_max_length(&self) -> usize {
+        self.max_length
+    }
+
+    /// 设置密码模式
+    pub fn set_password_enabled(&mut self, enabled: bool) {
+        if enabled {
+            self.input_type = TextInputType::Password;
+        } else {
+            self.input_type = TextInputType::Text;
+        }
+    }
+
+    /// 是否是密码模式
+    pub fn is_password_enabled(&self) -> bool {
+        self.input_type == TextInputType::Password
+    }
+
     /// 设置编辑开始回调
     pub fn set_on_editing_began<F>(&mut self, callback: F)
     where

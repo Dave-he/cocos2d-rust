@@ -173,15 +173,15 @@ impl Default for ParticleEmitterConfig {
 
 #[derive(Debug)]
 pub struct ParticleSystem {
-    config: ParticleEmitterConfig,
-    particles: Vec<Particle>,
-    emission_count: u32,
-    elapsed: f32,
-    duration: f32,
-    is_active: bool,
-    is_visible: bool,
-    auto_remove: bool,
-    texture: Option<()>,
+    pub config: ParticleEmitterConfig,
+    pub particles: Vec<Particle>,
+    pub emission_count: u32,
+    pub elapsed: f32,
+    pub duration: f32,
+    pub is_active: bool,
+    pub is_visible: bool,
+    pub auto_remove: bool,
+    pub texture: Option<()>,
 }
 
 impl Default for ParticleSystem {
@@ -211,6 +211,11 @@ impl ParticleSystem {
 
     pub fn create_with_file(file: &str) -> Option<ParticleSystem> {
         Some(ParticleSystem::new())
+    }
+
+    /// 设置粒子配置
+    pub fn set_config(&mut self, config: ParticleEmitterConfig) {
+        self.config = config;
     }
 
     pub fn init(&mut self) {

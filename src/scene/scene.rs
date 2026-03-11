@@ -55,6 +55,11 @@ impl Scene {
         Node::add_child_to_parent(&self.node, child, z_order, None);
     }
 
+    /// 获取子节点列表（别名方法）
+    pub fn children(&self) -> Vec<Rc<RefCell<Node>>> {
+        self.node.borrow().get_children().to_vec()
+    }
+
     pub fn get_child_by_tag(&self, tag: i32) -> Option<Rc<RefCell<Node>>> {
         self.node.borrow().get_child_by_tag(tag)
     }

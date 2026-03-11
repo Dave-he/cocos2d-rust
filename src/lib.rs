@@ -47,6 +47,21 @@ pub use animation::{
     Skeleton, SkeletonData, AnimationState, TrackEntry, SpineAnimation,
     Bone, BoneData, Skin, Slot, SlotData, SpineEventData,
 };
+pub use action::{
+    Action, FiniteTimeAction, Speed, Follow, INVALID_TAG,
+    ActionIntervalImpl,
+    MoveBy, MoveTo, RotateBy, RotateTo, ScaleBy, ScaleTo, SkewBy,
+    Blink, DelayTime, FadeTo, FadeIn, FadeOut,
+    BezierBy, BezierConfig, JumpBy,
+    CameraFollow, FollowAxis, FollowMode,
+    EasingFunction,
+    EaseIn, EaseOut, EaseInOut,
+    EaseSineIn, EaseSineOut, EaseSineInOut,
+    EaseExponentialIn, EaseExponentialOut, EaseExponentialInOut,
+    EaseElasticIn, EaseElasticOut, EaseElasticInOut,
+    EaseBounceIn, EaseBounceOut, EaseBounceInOut,
+    EaseBackIn, EaseBackOut, EaseBackInOut,
+};
 pub use input::{
     KeyCode, MouseButton, Touch, TouchDispatcher,
     GamepadButton, GamepadAxis, GamepadManager, GamepadState, GamepadVibration, ButtonState, GamepadEvent,
@@ -75,6 +90,8 @@ pub use ui::{
     WebView, LoadState, WebViewEvent, ZoomRange,
 };
 pub use particle::ParticleSystem;
+pub use particle::ParticlePresets;
+pub use particle::{ParticleEmitterConfig, EmitterType, BlendType};
 pub use shader::{BuiltInShaders, ShaderCache, ShaderProgram};
 pub use tilemap::tilemap_layer::TileMap;
 pub use tilemap::{

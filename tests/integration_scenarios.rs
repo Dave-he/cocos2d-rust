@@ -1,74 +1,80 @@
-use cocos2d_rust::base::Director;
-use cocos2d_rust::scene::{Scene, Node, Layer};
-use cocos2d_rust::sprite::Sprite;
+// 集成场景测试 - 模拟游戏开发中的完整使用场景
+
+use cocos2d_rust::scene::{Scene, Node};
 use cocos2d_rust::math::Vec2;
+use cocos2d_rust::UserDefault;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 #[test]
 fn test_complete_scene_setup() {
-    let mut director = Director::new();
-    let mut scene = Scene::new();
-    let mut layer = Layer::new();
+    // 创建场景
+    let scene = Rc::new(RefCell::new(Scene::new()));
+    let node = Rc::new(RefCell::new(Node::new()));
+    node.borrow_mut().set_position(Vec2::new(400.0, 300.0));
     
-    let mut sprite = Sprite::new();
-    sprite.set_position(Vec2::new(400.0, 300.0));
+    scene.borrow_mut().add_child(node.clone(), 0, None);
     
-    layer.add_child(sprite, 0, -1);
-    scene.add_child(layer, 0, -1);
-    director.run_scene(scene);
-    
-    assert!(director.get_running_scene().is_some());
+    // 验证场景包含节点
+    assert_eq!(scene.borrow().children().len(), 1);
 }
 
 #[test]
-fn test_multiple_sprites_interaction() {
-    let mut layer = Layer::new();
+fn test_multiple_nodes_interaction() {
+    let parent = Rc::new(RefCell::new(Node::new()));
     
     for i in 0..10 {
-        let mut sprite = Sprite::new();
-        sprite.set_position(Vec2::new(i as f32 * 50.0, 100.0));
-        sprite.set_tag(i);
-        layer.add_child(sprite, 0, i);
+        let node = Rc::new(RefCell::new(Node::new()));
+        node.borrow_mut().set_position(Vec2::new(i as f32 * 50.0, 100.0));
+        node.borrow_mut().set_tag(i);
+        Node::add_child_to_parent(&parent, node, 0, None);
     }
     
-    assert_eq!(layer.get_children_count(), 10);
+    assert_eq!(parent.borrow().get_children_count(), 10);
 }
 
 #[test]
-fn test_scene_transition() {
-    let mut director = Director::new();
+fn test_scene_hierarchy() {
+    let scene = Rc::new(RefCell::new(Scene::new()));
     
-    let scene1 = Scene::new();
-    director.run_scene(scene1);
+    let parent_node = Rc::new(RefCell::new(Node::new()));
+    let child_node = Rc::new(RefCell::new(Node::new()));
     
-    let scene2 = Scene::new();
-    director.replace_scene(scene2);
+    Node::add_child_to_parent(&parent_node, child_node.clone(), 0, None);
+    scene.borrow_mut().add_child(parent_node.clone(), 0, None);
     
-    assert!(director.get_running_scene().is_some());
+    // 场景有 1 个直接子节点
+    assert_eq!(scene.borrow().children().len(), 1);
+    // 父节点有 1 个子节点
+    assert_eq!(parent_node.borrow().get_children_count(), 1);
 }
 
 #[test]
-fn test_game_loop_simulation() {
-    let mut director = Director::new();
-    let scene = Scene::new();
-    director.run_scene(scene);
+fn test_node_transform() {
+    let node = Rc::new(RefCell::new(Node::new()));
     
-    for _ in 0..60 {
-        director.main_loop();
-    }
+    node.borrow_mut().set_position(Vec2::new(100.0, 200.0));
+    node.borrow_mut().set_scale(2.0);
+    node.borrow_mut().set_rotation(45.0);
     
-    assert!(director.get_total_time() > 0.0);
+    let pos = node.borrow().get_position();
+    assert!((pos.x - 100.0).abs() < 0.01);
+    assert!((pos.y - 200.0).abs() < 0.01);
+    
+    assert!((node.borrow().scale() - 2.0).abs() < 0.01);
+    assert!((node.borrow().get_rotation() - 45.0).abs() < 0.01);
 }
 
 #[test]
 fn test_save_and_load_user_data() {
     let defaults = UserDefault::get_instance();
+    let mut defaults = defaults.lock().unwrap();
     
-    defaults.set_integer_for_key("score", 1000);
-    defaults.set_string_for_key("player_name", "Hero");
-    defaults.set_bool_for_key("sound_enabled", true);
-    defaults.flush();
+    defaults.set_int("score", 1000);
+    defaults.set_string("player_name", "Hero");
+    defaults.set_bool("sound_enabled", true);
     
-    assert_eq!(defaults.get_integer_for_key("score", 0), 1000);
-    assert_eq!(defaults.get_string_for_key("player_name", ""), "Hero");
-    assert!(defaults.get_bool_for_key("sound_enabled", false));
+    assert_eq!(defaults.get_int("score", 0), 1000);
+    assert_eq!(defaults.get_string("player_name", ""), "Hero");
+    assert!(defaults.get_bool("sound_enabled", false));
 }

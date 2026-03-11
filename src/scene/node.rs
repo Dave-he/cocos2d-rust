@@ -116,6 +116,8 @@ pub struct Node {
     
     // 状态
     running: bool,
+    paused: bool,
+    user_data: i64,
     ignore_anchor_point_for_position: bool,
     ignore_anchor_point_for_rotation: bool,
     ignore_anchor_point_for_scale: bool,
@@ -181,6 +183,8 @@ impl Clone for Node {
             additional_transform_dirty: self.additional_transform_dirty,
             transform_flags: self.transform_flags,
             running: self.running,
+            paused: self.paused,
+            user_data: self.user_data,
             ignore_anchor_point_for_position: self.ignore_anchor_point_for_position,
             ignore_anchor_point_for_rotation: self.ignore_anchor_point_for_rotation,
             ignore_anchor_point_for_scale: self.ignore_anchor_point_for_scale,
@@ -233,6 +237,8 @@ impl Node {
             additional_transform_dirty: false,
             transform_flags: TransformFlags::new(),
             running: false,
+            paused: false,
+            user_data: 0,
             ignore_anchor_point_for_position: false,
             ignore_anchor_point_for_rotation: false,
             ignore_anchor_point_for_scale: false,
@@ -891,6 +897,29 @@ impl Node {
         self.additional_transform
     }
 
+    // ===== 暂停/恢复 =====
+    
+    /// 是否已暂停
+    pub fn is_paused(&self) -> bool {
+        self.paused
+    }
+
+    /// 暂停节点（停止运行但不隐藏）
+    pub fn pause(&mut self) {
+        self.paused = true;
+        for child in &self.children {
+            child.borrow_mut().pause();
+        }
+    }
+
+    /// 恢复节点
+    pub fn resume(&mut self) {
+        self.paused = false;
+        for child in &self.children {
+            child.borrow_mut().resume();
+        }
+    }
+    
     // ===== 运行状态 =====
     
     pub fn set_running(&mut self, running: bool) {
@@ -990,6 +1019,107 @@ impl Node {
         let transformed = transform * origin;
         
         Rect::new(transformed.x, transformed.y, bbox.size.width, bbox.size.height)
+    }
+
+    // ===== cocos2d-x API 兼容方法（别名方法）=====
+
+    /// 获取位置（别名方法，兼容 cocos2d-x API）
+    #[inline]
+    pub fn get_position(&self) -> Vec2 {
+        self.position
+    }
+
+    /// 设置 X 坐标
+    pub fn set_position_x(&mut self, x: f32) {
+        self.position.x = x;
+        self.transform_flags.position = true;
+        self.set_transform_dirty();
+    }
+
+    /// 设置 Y 坐标
+    pub fn set_position_y(&mut self, y: f32) {
+        self.position.y = y;
+        self.transform_flags.position = true;
+        self.set_transform_dirty();
+    }
+
+    /// 获取旋转角度（别名方法）
+    #[inline]
+    pub fn get_rotation(&self) -> f32 {
+        self.rotation_x
+    }
+
+    /// 获取 X 轴缩放（别名方法）
+    #[inline]
+    pub fn get_scale_x(&self) -> f32 {
+        self.scale_x
+    }
+
+    /// 获取 Y 轴缩放（别名方法）
+    #[inline]
+    pub fn get_scale_y(&self) -> f32 {
+        self.scale_y
+    }
+
+    /// 获取透明度（别名方法）
+    #[inline]
+    pub fn get_opacity(&self) -> u8 {
+        self.opacity
+    }
+
+    /// 获取锚点（别名方法）
+    #[inline]
+    pub fn get_anchor_point(&self) -> Vec2 {
+        self.anchor_point
+    }
+
+    /// 获取本地 Z-order（别名方法）
+    #[inline]
+    pub fn get_local_z_order(&self) -> i32 {
+        self.local_z_order
+    }
+
+    /// 获取全局 Z-order（别名方法）
+    #[inline]
+    pub fn get_global_z_order(&self) -> i32 {
+        self.global_z_order
+    }
+
+    /// 获取标签（别名方法）
+    #[inline]
+    pub fn get_tag(&self) -> i32 {
+        self.tag
+    }
+
+    /// 获取名称（别名方法，返回 String 克隆）
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
+
+    /// 获取内容尺寸（别名方法）
+    #[inline]
+    pub fn get_content_size(&self) -> Size {
+        self.content_size
+    }
+
+    /// 获取世界坐标
+    pub fn get_world_position(&self) -> Vec2 {
+        if let Some(ref parent) = self.parent {
+            let parent_pos = parent.borrow().get_world_position();
+            parent_pos + self.position
+        } else {
+            self.position
+        }
+    }
+
+    /// 设置用户数据（整数类型，简化版）
+    pub fn set_user_data(&mut self, data: i64) {
+        self.user_data = data;
+    }
+
+    /// 获取用户数据
+    pub fn get_user_data(&self) -> i64 {
+        self.user_data
     }
 }
 

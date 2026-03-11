@@ -24,8 +24,12 @@ pub struct Button {
     state: ButtonState,
     /// 是否可交互
     interactable: bool,
+    /// 是否开启触摸
+    touch_enabled: bool,
     /// 点击回调
     on_click: Option<ButtonCallback>,
+    /// 简单点击回调（无参数）
+    on_click_simple: Option<Box<dyn FnMut()>>,
     /// 正在触摸
     is_touching: bool,
     /// 触摸起始位置
@@ -47,7 +51,9 @@ impl Button {
             widget: Widget::new(),
             state: ButtonState::Normal,
             interactable: true,
+            touch_enabled: true,
             on_click: None,
+            on_click_simple: None,
             is_touching: false,
             touch_start_pos: Vec2::ZERO,
             title: String::new(),
@@ -209,7 +215,86 @@ impl Button {
     pub fn simulate_click(&mut self) {
         if self.interactable {
             self.trigger_click();
+            // 也触发简单回调
+            if let Some(mut callback) = self.on_click_simple.take() {
+                callback();
+                self.on_click_simple = Some(callback);
+            }
         }
+    }
+
+    // ===== cocos2d-x API 兼容方法 =====
+
+    /// 是否启用（别名 is_interactable）
+    pub fn is_enabled(&self) -> bool {
+        self.interactable
+    }
+
+    /// 设置启用状态（别名 set_interactable）
+    pub fn set_enabled(&mut self, enabled: bool) {
+        self.set_interactable(enabled);
+    }
+
+    /// 是否启用触摸
+    pub fn is_touch_enabled(&self) -> bool {
+        self.touch_enabled
+    }
+
+    /// 设置触摸启用
+    pub fn set_touch_enabled(&mut self, enabled: bool) {
+        self.touch_enabled = enabled;
+    }
+
+    /// 设置标题文本（cocos2d-x 风格 API）
+    pub fn set_title_text(&mut self, title: impl Into<String>) {
+        self.title = title.into();
+    }
+
+    /// 获取标题文本（cocos2d-x 风格 API）
+    pub fn title_text(&self) -> &str {
+        &self.title
+    }
+
+    /// 获取标题文本（别名）
+    pub fn get_title_text(&self) -> &str {
+        &self.title
+    }
+
+    /// 获取内容尺寸
+    pub fn get_content_size(&self) -> crate::math::geometry::Size {
+        let s = self.widget.get_size();
+        crate::math::geometry::Size::new(s.x, s.y)
+    }
+
+    /// 设置内容尺寸
+    pub fn set_content_size(&mut self, size: crate::math::geometry::Size) {
+        self.widget.set_size(Vec2::new(size.width, size.height));
+    }
+
+    /// 获取位置
+    pub fn get_position(&self) -> Vec2 {
+        self.widget.get_position()
+    }
+
+    /// 设置位置
+    pub fn set_position(&mut self, pos: Vec2) {
+        self.widget.set_position(pos);
+    }
+
+    /// 添加点击事件监听器（简单无参数回调）
+    pub fn add_click_event_listener<F>(&mut self, callback: F)
+    where
+        F: FnMut() + 'static,
+    {
+        self.on_click_simple = Some(Box::new(callback));
+    }
+
+    /// 设置回调（cocos2d-x 风格）
+    pub fn set_callback<F>(&mut self, callback: F)
+    where
+        F: FnMut(&Button) + 'static,
+    {
+        self.on_click = Some(Box::new(callback));
     }
 }
 

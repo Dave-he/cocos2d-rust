@@ -142,6 +142,21 @@ impl ScrollView {
         self.direction
     }
 
+    /// 获取滚动方向（别名方法）
+    pub fn direction(&self) -> ScrollDirection {
+        self.direction
+    }
+
+    /// 设置内容大小（别名方法，兼容 cocos2d-x API）
+    pub fn set_content_size(&mut self, size: crate::math::geometry::Size) {
+        self.content_size = Vec2::new(size.width, size.height);
+    }
+
+    /// 获取内容大小（别名方法）
+    pub fn get_content_size(&self) -> crate::math::geometry::Size {
+        crate::math::geometry::Size::new(self.content_size.x, self.content_size.y)
+    }
+
     /// 设置内容大小
     pub fn set_inner_container_size(&mut self, size: Vec2) {
         self.inner_size = size;

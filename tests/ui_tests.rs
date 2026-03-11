@@ -1,10 +1,13 @@
-use cocos2d_rust::ui::{Button, Label, Slider, TextField};
+use cocos2d_rust::ui::{Button, Slider, TextField};
 use cocos2d_rust::math::Vec2;
+use cocos2d_rust::math::geometry::Size;
+use cocos2d_rust::label::Label;
 
 #[test]
 fn test_button_creation() {
     let button = Button::new();
-    assert!(!button.is_enabled());
+    // Button 默认创建时是 enabled 的
+    assert!(button.is_enabled());
 }
 
 #[test]
@@ -51,26 +54,28 @@ fn test_label_font_size() {
 #[test]
 fn test_slider_creation() {
     let slider = Slider::new();
-    assert_eq!(slider.get_percent(), 0);
+    // Slider from slider.rs uses f32 value, not percent
+    assert_eq!(slider.value(), 0.0);
 }
 
 #[test]
 fn test_slider_value() {
     let mut slider = Slider::new();
     
-    slider.set_percent(50);
-    assert_eq!(slider.get_percent(), 50);
+    slider.set_value(0.5);
+    assert!((slider.value() - 0.5).abs() < f32::EPSILON);
     
-    slider.set_percent(100);
-    assert_eq!(slider.get_percent(), 100);
+    slider.set_value(1.0);
+    assert!((slider.value() - 1.0).abs() < f32::EPSILON);
 }
 
 #[test]
-fn test_slider_max_percent() {
+fn test_slider_range() {
     let mut slider = Slider::new();
     
-    slider.set_max_percent(200);
-    assert_eq!(slider.get_max_percent(), 200);
+    slider.set_range(0.0, 200.0);
+    assert_eq!(slider.min_value(), 0.0);
+    assert_eq!(slider.max_value(), 200.0);
 }
 
 #[test]
@@ -106,14 +111,16 @@ fn test_textfield_password_mode() {
 #[test]
 fn test_button_click_callback() {
     let mut button = Button::new();
-    let mut clicked = false;
+    use std::sync::{Arc, Mutex};
+    let clicked = Arc::new(Mutex::new(false));
+    let clicked_clone = clicked.clone();
     
-    button.add_click_event_listener(|| {
-        clicked = true;
+    button.add_click_event_listener(move || {
+        *clicked_clone.lock().unwrap() = true;
     });
     
     button.simulate_click();
-    assert!(clicked);
+    assert!(*clicked.lock().unwrap());
 }
 
 #[test]

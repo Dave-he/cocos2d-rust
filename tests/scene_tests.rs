@@ -1,6 +1,8 @@
 use cocos2d_rust::scene::Node;
 use cocos2d_rust::math::Vec2;
 use cocos2d_rust::math::geometry::Size;
+use std::rc::Rc;
+use std::cell::RefCell;
 
 #[test]
 fn test_node_creation() {
@@ -125,51 +127,53 @@ fn test_node_user_data() {
 
 #[test]
 fn test_node_parent_child_relationship() {
-    let mut parent = Node::new();
-    let child = Node::new();
+    let parent = Rc::new(RefCell::new(Node::new()));
+    let child = Rc::new(RefCell::new(Node::new()));
     
-    parent.add_child(child, 0, -1);
+    Node::add_child_to_parent(&parent, child, 0, None);
     
-    assert_eq!(parent.get_children_count(), 1);
+    assert_eq!(parent.borrow().get_children_count(), 1);
 }
 
 #[test]
 fn test_node_remove_child() {
-    let mut parent = Node::new();
-    let child = Node::new();
+    let parent = Rc::new(RefCell::new(Node::new()));
+    let child = Rc::new(RefCell::new(Node::new()));
+    child.borrow_mut().set_tag(42);
     
-    parent.add_child(child.clone(), 0, -1);
-    assert_eq!(parent.get_children_count(), 1);
+    Node::add_child_to_parent(&parent, child.clone(), 0, None);
+    assert_eq!(parent.borrow().get_children_count(), 1);
     
-    parent.remove_child(&child, true);
-    assert_eq!(parent.get_children_count(), 0);
+    parent.borrow_mut().remove_child(&child, true);
+    assert_eq!(parent.borrow().get_children_count(), 0);
 }
 
 #[test]
 fn test_node_remove_all_children() {
-    let mut parent = Node::new();
+    let parent = Rc::new(RefCell::new(Node::new()));
     
     for i in 0..5 {
-        let child = Node::new();
-        parent.add_child(child, i, -1);
+        let child = Rc::new(RefCell::new(Node::new()));
+        Node::add_child_to_parent(&parent, child, i, None);
     }
     
-    assert_eq!(parent.get_children_count(), 5);
+    assert_eq!(parent.borrow().get_children_count(), 5);
     
-    parent.remove_all_children(true);
-    assert_eq!(parent.get_children_count(), 0);
+    parent.borrow_mut().remove_all_children(true);
+    assert_eq!(parent.borrow().get_children_count(), 0);
 }
 
 #[test]
 fn test_node_get_child_by_tag() {
-    let mut parent = Node::new();
-    let mut child = Node::new();
-    child.set_tag(999);
+    let parent = Rc::new(RefCell::new(Node::new()));
+    let child = Rc::new(RefCell::new(Node::new()));
+    child.borrow_mut().set_tag(999);
     
-    parent.add_child(child, 0, -1);
+    Node::add_child_to_parent(&parent, child, 0, None);
     
-    if let Some(found) = parent.get_child_by_tag(999) {
-        assert_eq!(found.get_tag(), 999);
+    let found = parent.borrow().get_child_by_tag(999);
+    if let Some(found_node) = found {
+        assert_eq!(found_node.borrow().get_tag(), 999);
     } else {
         panic!("Child with tag 999 not found");
     }
@@ -177,14 +181,14 @@ fn test_node_get_child_by_tag() {
 
 #[test]
 fn test_node_get_child_by_name() {
-    let mut parent = Node::new();
-    let mut child = Node::new();
-    child.set_name("TestChild");
+    let parent = Rc::new(RefCell::new(Node::new()));
+    let child = Rc::new(RefCell::new(Node::new()));
     
-    parent.add_child(child, 0, -1);
+    Node::add_child_to_parent(&parent, child, 0, Some("TestChild"));
     
-    if let Some(found) = parent.get_child_by_name("TestChild") {
-        assert_eq!(found.get_name(), "TestChild");
+    let found = parent.borrow().get_child_by_name("TestChild");
+    if let Some(found_node) = found {
+        assert_eq!(found_node.borrow().get_name(), "TestChild");
     } else {
         panic!("Child with name 'TestChild' not found");
     }
@@ -192,15 +196,15 @@ fn test_node_get_child_by_name() {
 
 #[test]
 fn test_node_world_position() {
-    let mut parent = Node::new();
-    parent.set_position(Vec2::new(100.0, 100.0));
+    let parent = Rc::new(RefCell::new(Node::new()));
+    parent.borrow_mut().set_position(Vec2::new(100.0, 100.0));
     
-    let mut child = Node::new();
-    child.set_position(Vec2::new(50.0, 50.0));
+    let child = Rc::new(RefCell::new(Node::new()));
+    child.borrow_mut().set_position(Vec2::new(50.0, 50.0));
     
-    parent.add_child(child.clone(), 0, -1);
+    Node::add_child_to_parent(&parent, child.clone(), 0, None);
     
-    let world_pos = child.get_world_position();
+    let world_pos = child.borrow().get_world_position();
     assert_eq!(world_pos, Vec2::new(150.0, 150.0));
 }
 

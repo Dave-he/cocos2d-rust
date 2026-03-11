@@ -305,6 +305,41 @@ impl Slider {
     pub fn decrement(&mut self, amount: f32) {
         self.set_value(self.value - amount);
     }
+
+    // ===== cocos2d-x API 兼容方法 =====
+
+    /// 设置最小值（便捷方法）
+    pub fn set_min_value(&mut self, min: f32) {
+        self.min_value = min;
+        // 重新设置当前值以确保在范围内
+        let current = self.value;
+        self.set_value(current);
+    }
+
+    /// 设置最大值（便捷方法）
+    pub fn set_max_value(&mut self, max: f32) {
+        self.max_value = max;
+        // 重新设置当前值以确保在范围内
+        let current = self.value;
+        self.set_value(current);
+    }
+
+    /// 获取百分比（0.0 - 1.0）（别名 normalized_value）
+    pub fn percent(&self) -> f32 {
+        self.normalized_value()
+    }
+
+    /// 获取百分比（0 - 100 整数，用于 widget.rs 的兼容）
+    pub fn get_percent(&self) -> i32 {
+        (self.normalized_value() * 100.0).round() as i32
+    }
+
+    /// 设置百分比（0 - 100 整数）
+    pub fn set_percent(&mut self, percent: i32) {
+        let normalized = (percent as f32 / 100.0).clamp(0.0, 1.0);
+        let value = self.min_value + normalized * (self.max_value - self.min_value);
+        self.set_value(value);
+    }
 }
 
 impl Default for Slider {
