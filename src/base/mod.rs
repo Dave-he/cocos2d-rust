@@ -9,6 +9,7 @@ pub mod error;
 pub mod event;
 pub mod notification_center;
 pub mod ref_count;
+pub mod resource_manager;
 pub mod scheduler;
 pub mod types;
 
@@ -31,4 +32,8 @@ pub use notification_center::{
     NotificationPriority,
 };
 pub use ref_count::{Clonable, Ref, RefPtr};
+pub use resource_manager::{
+    ObjectPool, Poolable, PoolGuard, Resource, ResourceMeta, ResourceManager,
+    ResourceState, ResourceStats, ResourceType,
+};
 pub use types::{Color3B, Color4B, Color4F, Point, Rect, Size};

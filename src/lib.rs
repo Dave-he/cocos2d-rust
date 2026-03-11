@@ -32,7 +32,9 @@ pub use base::{
     NotificationCenter, Notification, DefaultNotification,
     NotificationObserver, NotificationPriority,
     AsyncTask, AsyncTaskResult, AsyncTaskHandler,
-    TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager, ThreadPool
+    TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager, ThreadPool,
+    ResourceManager, ResourceType, ResourceState, ResourceMeta, ResourceStats,
+    ObjectPool, Poolable,
 };
 pub use base::director::{Director, Scene};
 pub use scene::node::Node;
@@ -41,10 +43,21 @@ pub use scene::{Layer, LayerColor};
 pub use renderer::{Renderer, Texture, Material, RenderTexture};
 pub use audio::AudioEngine;
 pub use animation::{Animate, Animation, AnimationCache, SpriteFrame, SpriteFrameCache};
-pub use input::{KeyCode, MouseButton, Touch, TouchDispatcher};
+pub use animation::{
+    Skeleton, SkeletonData, AnimationState, TrackEntry, SpineAnimation,
+    Bone, BoneData, Skin, Slot, SlotData, SpineEventData,
+};
+pub use input::{
+    KeyCode, MouseButton, Touch, TouchDispatcher,
+    GamepadButton, GamepadAxis, GamepadManager, GamepadState, GamepadVibration, ButtonState, GamepadEvent,
+};
 pub use label::{Label, LabelAtlas, LabelTTF};
 pub use menu::{Menu, MenuItem, MenuItemImage, MenuItemLabel};
 pub use network::network::HttpClient;
+pub use network::{
+    WebSocket, WebSocketConfig, WebSocketDelegate, WebSocketEvent,
+    WebSocketManager, WebSocketMessage, WebSocketState, WebSocketStats,
+};
 pub use platform::{UserDefault, UserDefaultStats};
 pub use physics::{
     PhysicsWorld, PhysicsBody, PhysicsShape, PhysicsJoint, PhysicsContact,
@@ -64,6 +77,9 @@ pub use ui::{
 pub use particle::ParticleSystem;
 pub use shader::{BuiltInShaders, ShaderCache, ShaderProgram};
 pub use tilemap::tilemap_layer::TileMap;
+pub use tilemap::{
+    TmxParser, TmxMap, TmxMapBuilder, TmxTileset, TmxLayerRaw, TmxObject, TmxError,
+};
 pub use transition::{
     FadeTransition, FlipTransition, RotateTransition, SlideTransition, TransitionScene,
     ZoomTransition,
