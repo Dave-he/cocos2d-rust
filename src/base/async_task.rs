@@ -8,15 +8,22 @@
 /// - 任务取消
 /// - 任务依赖
 /// - 任务组
-/// - 线程池支持
+/// - 真实线程池支持
 
 use std::sync::{Arc, Mutex, atomic::{AtomicBool, AtomicUsize, Ordering}};
 use std::thread;
 use std::time::{Duration, Instant};
 use std::collections::{VecDeque, HashMap, HashSet};
-use std::boxed::Box;
-use std::result::Result;
+use std::sync::mpsc;
 
+/// 任务 ID 生成器（线程安全）
+static TASK_ID_COUNTER: AtomicUsize = AtomicUsize::new(1);
+
+fn new_task_id() -> usize {
+    TASK_ID_COUNTER.fetch_add(1, Ordering::SeqCst)
+}
+
+/// 任务状态
 #[derive(Debug)]
 pub enum TaskStatus {
     Pending,
@@ -40,6 +47,7 @@ impl Clone for TaskStatus {
     }
 }
 
+/// 任务进度
 #[derive(Clone, Debug)]
 pub struct TaskProgress {
     pub progress: f32,
@@ -85,7 +93,7 @@ impl TaskProgress {
     }
 }
 
-#[derive(Clone, Debug)]
+/// 任务执行结果
 pub struct AsyncTaskResult<T> {
     pub status: TaskStatus,
     pub data: Option<T>,
@@ -93,6 +101,19 @@ pub struct AsyncTaskResult<T> {
     pub progress: TaskProgress,
     pub start_time: Instant,
     pub end_time: Option<Instant>,
+}
+
+impl<T: Clone> Clone for AsyncTaskResult<T> {
+    fn clone(&self) -> Self {
+        Self {
+            status: self.status.clone(),
+            data: self.data.clone(),
+            error: self.error.clone(),
+            progress: self.progress.clone(),
+            start_time: self.start_time,
+            end_time: self.end_time,
+        }
+    }
 }
 
 impl<T> Default for AsyncTaskResult<T> {
@@ -139,6 +160,18 @@ impl<T> AsyncTaskResult<T> {
     }
 }
 
+impl<T: std::fmt::Debug> std::fmt::Debug for AsyncTaskResult<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AsyncTaskResult")
+            .field("status", &self.status)
+            .field("data", &self.data)
+            .field("error", &self.error)
+            .field("progress", &self.progress)
+            .finish()
+    }
+}
+
+/// 异步任务处理器 trait
 pub trait AsyncTaskHandler<T>: Send {
     fn on_progress(&self, progress: &TaskProgress);
     fn on_complete(&self, result: &AsyncTaskResult<T>);
@@ -146,6 +179,7 @@ pub trait AsyncTaskHandler<T>: Send {
     fn on_cancelled(&self);
 }
 
+/// 默认任务处理器（基于回调闭包）
 struct DefaultTaskHandler<T> {
     on_progress: Option<Arc<dyn Fn(&TaskProgress) + Send + Sync>>,
     on_complete: Option<Arc<dyn Fn(&AsyncTaskResult<T>) + Send + Sync>>,
@@ -164,7 +198,7 @@ impl<T> DefaultTaskHandler<T> {
     }
 }
 
-impl<T> AsyncTaskHandler<T> for DefaultTaskHandler<T> {
+impl<T: Send> AsyncTaskHandler<T> for DefaultTaskHandler<T> {
     fn on_progress(&self, progress: &TaskProgress) {
         if let Some(cb) = &self.on_progress {
             cb(progress);
@@ -190,6 +224,7 @@ impl<T> AsyncTaskHandler<T> for DefaultTaskHandler<T> {
     }
 }
 
+/// 异步任务
 pub struct AsyncTask<T> {
     id: usize,
     name: String,
@@ -204,14 +239,9 @@ pub struct AsyncTask<T> {
 }
 
 impl<T: Send + 'static> AsyncTask<T> {
-    pub fn new<F>(name: &str, task_fn: F) -> Self
-    where
-        F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
-            + Send
-            + 'static,
-    {
+    pub fn new(name: &str) -> Self {
         Self {
-            id: rand::random(),
+            id: new_task_id(),
             name: name.to_string(),
             status: Arc::new(Mutex::new(TaskStatus::Pending)),
             progress: Arc::new(Mutex::new(TaskProgress::default())),
@@ -222,6 +252,16 @@ impl<T: Send + 'static> AsyncTask<T> {
             priority: Arc::new(Mutex::new(0)),
             created_at: Instant::now(),
         }
+    }
+
+    /// 创建带任务函数的 AsyncTask（兼容旧接口）
+    pub fn with_fn<F>(name: &str, _task_fn: F) -> Self
+    where
+        F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
+            + Send
+            + 'static,
+    {
+        Self::new(name)
     }
 
     pub fn id(&self) -> usize {
@@ -240,9 +280,9 @@ impl<T: Send + 'static> AsyncTask<T> {
         self.progress.lock().unwrap().clone()
     }
 
-    pub fn get_result(&self) -> AsyncTaskResult<T> 
-    where 
-        T: Clone 
+    pub fn get_result(&self) -> AsyncTaskResult<T>
+    where
+        T: Clone
     {
         self.result.lock().unwrap().clone()
     }
@@ -274,14 +314,16 @@ impl<T: Send + 'static> AsyncTask<T> {
     pub fn cancel(&self) {
         self.is_cancelled.store(true, Ordering::Relaxed);
         *self.status.lock().unwrap() = TaskStatus::Cancelled;
-        self.result.lock().unwrap().status = TaskStatus::Cancelled;
-        self.result.lock().unwrap().end_time = Some(Instant::now());
+        let mut result = self.result.lock().unwrap();
+        result.status = TaskStatus::Cancelled;
+        result.end_time = Some(Instant::now());
+        drop(result);
+        self.notify_cancelled();
     }
 
     pub fn update_progress(&self, progress: TaskProgress) {
         *self.progress.lock().unwrap() = progress.clone();
         self.result.lock().unwrap().progress = progress.clone();
-
         let handler = self.handler.lock().unwrap();
         handler.on_progress(&progress);
     }
@@ -306,79 +348,89 @@ impl<T: Send + 'static> AsyncTask<T> {
         handler.on_cancelled();
     }
 
-    pub fn execute<F>(self, task_fn: F) -> Self
+    /// 在新线程中执行任务函数
+    pub fn execute<F>(&self, task_fn: F)
     where
         F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
             + Send
             + 'static,
     {
-        let self_clone = Arc::new(self);
-        let task = self_clone.clone();
-        
-        let progress_callback = Arc::new({
-            let task = task.clone();
-            move |p: TaskProgress| {
-                task.update_progress(p);
-            }
-        });
-
-        let cancel_callback = Arc::new({
-            let is_cancelled = task.is_cancelled.clone();
-            move || {
-                is_cancelled.store(true, Ordering::Relaxed);
-            }
-        });
+        let status = self.status.clone();
+        let result = self.result.clone();
+        let progress = self.progress.clone();
+        let handler = self.handler.clone();
+        let is_cancelled = self.is_cancelled.clone();
 
         thread::spawn(move || {
-            if task.get_dependencies().is_empty() {
-                task.run_internal(task_fn, progress_callback, cancel_callback);
+            // 标记为 Running
+            *status.lock().unwrap() = TaskStatus::Running;
+            {
+                let mut r = result.lock().unwrap();
+                r.status = TaskStatus::Running;
+                r.start_time = Instant::now();
+            }
+
+            let progress_clone = progress.clone();
+            let result_clone = result.clone();
+
+            let progress_callback: Arc<dyn Fn(TaskProgress) + Send + Sync> = Arc::new(move |p: TaskProgress| {
+                *progress_clone.lock().unwrap() = p.clone();
+                result_clone.lock().unwrap().progress = p.clone();
+                let h = handler.lock().unwrap();
+                h.on_progress(&p);
+            });
+
+            let cancel_callback: Arc<dyn Fn() + Send + Sync> = Arc::new(move || {
+                is_cancelled.store(true, Ordering::Relaxed);
+            });
+
+            match task_fn(progress_callback, cancel_callback) {
+                Ok(data) => {
+                    let mut r = result.lock().unwrap();
+                    r.status = TaskStatus::Completed;
+                    r.data = Some(data);
+                    r.end_time = Some(Instant::now());
+                    *status.lock().unwrap() = TaskStatus::Completed;
+                }
+                Err(err) => {
+                    let mut r = result.lock().unwrap();
+                    r.status = TaskStatus::Failed(err.clone());
+                    r.error = Some(err.clone());
+                    r.end_time = Some(Instant::now());
+                    *status.lock().unwrap() = TaskStatus::Failed(err);
+                }
             }
         });
-
-        Arc::into_inner(self_clone).unwrap()
     }
 
-    fn run_internal<F>(
-        &self,
-        task_fn: F,
-        progress_callback: Arc<dyn Fn(TaskProgress) + Send + Sync>,
-        cancel_callback: Arc<dyn Fn() + Send + Sync>,
-    ) where
-        F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
-            + Send
-            + 'static,
-    {
-        *self.status.lock().unwrap() = TaskStatus::Running;
-        self.result.lock().unwrap().status = TaskStatus::Running;
-        self.result.lock().unwrap().start_time = Instant::now();
-
-        let result = task_fn(progress_callback, cancel_callback);
-
-        let mut result_guard = self.result.lock().unwrap();
-        match result {
-            Ok(data) => {
-                result_guard.status = TaskStatus::Completed;
-                result_guard.data = Some(data);
-                result_guard.end_time = Some(Instant::now());
-                
-                // 创建一个临时result用于通知,不需要Clone T
-                let temp_result = AsyncTaskResult {
-                    status: result_guard.status.clone(),
-                    data: None,  // 不传递data,避免Clone约束
-                    error: None,
-                    progress: self.progress.lock().unwrap().clone(),
-                    start_time: result_guard.start_time,
-                    end_time: result_guard.end_time,
-                };
-                drop(result_guard);
-                self.notify_complete(&temp_result);
+    /// 等待任务完成（阻塞当前线程）
+    pub fn wait(&self) {
+        loop {
+            let status = self.status.lock().unwrap().clone();
+            match status {
+                TaskStatus::Pending | TaskStatus::Running => {
+                    drop(status);
+                    thread::sleep(Duration::from_millis(5));
+                }
+                _ => break,
             }
-            Err(error) => {
-                result_guard.status = TaskStatus::Failed(error.clone());
-                result_guard.error = Some(error.clone());
-                result_guard.end_time = Some(Instant::now());
-                drop(result_guard);
-                self.notify_error(&error);
+        }
+    }
+
+    /// 等待任务完成（超时版本）
+    pub fn wait_timeout(&self, timeout: Duration) -> bool {
+        let start = Instant::now();
+        loop {
+            let status = self.status.lock().unwrap().clone();
+            match status {
+                TaskStatus::Pending | TaskStatus::Running => {
+                    drop(status);
+                    if start.elapsed() > timeout {
+                        return false;
+                    }
+                    thread::sleep(Duration::from_millis(5));
+                }
+                _ => return true,
             }
         }
     }
@@ -401,12 +453,24 @@ impl<T> Clone for AsyncTask<T> {
     }
 }
 
+impl<T: std::fmt::Debug> std::fmt::Debug for AsyncTask<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AsyncTask")
+            .field("id", &self.id)
+            .field("name", &self.name)
+            .field("priority", &self.priority.lock().unwrap())
+            .field("is_cancelled", &self.is_cancelled.load(Ordering::Relaxed))
+            .finish()
+    }
+}
+
+/// 任务组 —— 管理一组相关任务
 pub struct TaskGroup<T> {
     tasks: Arc<Mutex<Vec<AsyncTask<T>>>>,
     name: String,
-    completed_count: Arc<AtomicUsize>,
-    failed_count: Arc<AtomicUsize>,
-    cancelled_count: Arc<AtomicUsize>,
+    pub completed_count: Arc<AtomicUsize>,
+    pub failed_count: Arc<AtomicUsize>,
+    pub cancelled_count: Arc<AtomicUsize>,
     on_all_complete: Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>,
     on_progress: Arc<Mutex<Option<Box<dyn Fn(f32, usize, usize) + Send + Sync>>>>,
 }
@@ -493,6 +557,19 @@ impl<T: Send + 'static> TaskGroup<T> {
         }
     }
 
+    pub fn wait_all_timeout(&self, timeout: Duration) -> bool {
+        let start = Instant::now();
+        loop {
+            if self.is_all_complete() {
+                return true;
+            }
+            if start.elapsed() > timeout {
+                return false;
+            }
+            thread::sleep(Duration::from_millis(10));
+        }
+    }
+
     pub fn generate_report(&self) -> String {
         format!(
             "=== TaskGroup Report ===\n\
@@ -512,12 +589,95 @@ impl<T: Send + 'static> TaskGroup<T> {
     }
 }
 
+/// 线程池工作消息
+enum WorkerMessage {
+    Job(Box<dyn FnOnce() + Send + 'static>),
+    Shutdown,
+}
+
+/// 简单线程池实现
+pub struct ThreadPool {
+    workers: Vec<thread::JoinHandle<()>>,
+    sender: mpsc::Sender<WorkerMessage>,
+    size: usize,
+    active_count: Arc<AtomicUsize>,
+}
+
+impl ThreadPool {
+    /// 创建指定大小的线程池
+    pub fn new(size: usize) -> Self {
+        let size = size.max(1);
+        let (sender, receiver) = mpsc::channel::<WorkerMessage>();
+        let receiver = Arc::new(Mutex::new(receiver));
+        let active_count = Arc::new(AtomicUsize::new(0));
+
+        let mut workers = Vec::with_capacity(size);
+        for _i in 0..size {
+            let rx = receiver.clone();
+            let active = active_count.clone();
+            let handle = thread::spawn(move || {
+                loop {
+                    let msg = {
+                        let lock = rx.lock().unwrap();
+                        lock.recv()
+                    };
+                    match msg {
+                        Ok(WorkerMessage::Job(job)) => {
+                            active.fetch_add(1, Ordering::Relaxed);
+                            job();
+                            active.fetch_sub(1, Ordering::Relaxed);
+                        }
+                        Ok(WorkerMessage::Shutdown) | Err(_) => break,
+                    }
+                }
+            });
+            workers.push(handle);
+        }
+
+        Self {
+            workers,
+            sender,
+            size,
+            active_count,
+        }
+    }
+
+    /// 提交任务到线程池
+    pub fn execute<F>(&self, f: F) -> bool
+    where
+        F: FnOnce() + Send + 'static,
+    {
+        self.sender.send(WorkerMessage::Job(Box::new(f))).is_ok()
+    }
+
+    /// 获取线程池大小
+    pub fn size(&self) -> usize {
+        self.size
+    }
+
+    /// 获取当前活跃任务数
+    pub fn active_count(&self) -> usize {
+        self.active_count.load(Ordering::Relaxed)
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        for _ in &self.workers {
+            let _ = self.sender.send(WorkerMessage::Shutdown);
+        }
+    }
+}
+
+/// 异步任务管理器 —— 基于线程池
 pub struct AsyncTaskManager {
-    running_tasks: Arc<Mutex<HashMap<usize, AsyncTask<()>>>>,
+    thread_pool: Arc<ThreadPool>,
+    running_tasks: Arc<Mutex<HashMap<usize, String>>>,
     completed_tasks: Arc<Mutex<VecDeque<(usize, Instant)>>>,
-    max_concurrent: usize,
     active_count: Arc<AtomicUsize>,
     completed_count: Arc<AtomicUsize>,
+    failed_count: Arc<AtomicUsize>,
+    pending_queue: Arc<Mutex<VecDeque<usize>>>,
 }
 
 impl Default for AsyncTaskManager {
@@ -528,31 +688,111 @@ impl Default for AsyncTaskManager {
 
 impl AsyncTaskManager {
     pub fn new() -> Self {
-        Self {
-            running_tasks: Arc::new(Mutex::new(HashMap::new())),
-            completed_tasks: Arc::new(Mutex::new(VecDeque::new())),
-            max_concurrent: 4,
-            active_count: Arc::new(AtomicUsize::new(0)),
-            completed_count: Arc::new(AtomicUsize::new(0)),
-        }
+        Self::with_max_concurrent(4)
     }
 
     pub fn with_max_concurrent(max: usize) -> Self {
         Self {
+            thread_pool: Arc::new(ThreadPool::new(max)),
             running_tasks: Arc::new(Mutex::new(HashMap::new())),
             completed_tasks: Arc::new(Mutex::new(VecDeque::new())),
-            max_concurrent: max.max(1),
             active_count: Arc::new(AtomicUsize::new(0)),
             completed_count: Arc::new(AtomicUsize::new(0)),
+            failed_count: Arc::new(AtomicUsize::new(0)),
+            pending_queue: Arc::new(Mutex::new(VecDeque::new())),
         }
     }
 
-    pub fn submit_task<T: Send + 'static>(&mut self, task: AsyncTask<T>) {
+    /// 提交任务到线程池执行
+    pub fn submit<T, F>(&self, task: &AsyncTask<T>, task_fn: F) -> bool
+    where
+        T: Send + 'static,
+        F: FnOnce(Arc<dyn Fn(TaskProgress) + Send + Sync>, Arc<dyn Fn() + Send + Sync>) -> Result<T, String>
+            + Send
+            + 'static,
+    {
         let task_id = task.id();
+        let task_name = task.name().to_string();
+        let running_tasks = self.running_tasks.clone();
+        let active_count = self.active_count.clone();
+        let completed_count = self.completed_count.clone();
+        let failed_count = self.failed_count.clone();
+        let completed_tasks = self.completed_tasks.clone();
 
-        self.running_tasks.lock().unwrap().insert(task_id, unsafe {
-            std::mem::transmute(task)
-        });
+        // 注册任务
+        running_tasks.lock().unwrap().insert(task_id, task_name);
+        active_count.fetch_add(1, Ordering::Relaxed);
+
+        let status = task.status.clone();
+        let result = task.result.clone();
+        let progress = task.progress.clone();
+        let handler = task.handler.clone();
+        let is_cancelled = task.is_cancelled.clone();
+
+        self.thread_pool.execute(move || {
+            *status.lock().unwrap() = TaskStatus::Running;
+            {
+                let mut r = result.lock().unwrap();
+                r.status = TaskStatus::Running;
+                r.start_time = Instant::now();
+            }
+
+            let progress_clone = progress.clone();
+            let result_clone = result.clone();
+            let handler_clone = handler.clone();
+
+            let progress_callback: Arc<dyn Fn(TaskProgress) + Send + Sync> = Arc::new(move |p: TaskProgress| {
+                *progress_clone.lock().unwrap() = p.clone();
+                result_clone.lock().unwrap().progress = p.clone();
+                let h = handler_clone.lock().unwrap();
+                h.on_progress(&p);
+            });
+
+            let cancel_callback: Arc<dyn Fn() + Send + Sync> = Arc::new(move || {
+                is_cancelled.store(true, Ordering::Relaxed);
+            });
+
+            match task_fn(progress_callback, cancel_callback) {
+                Ok(data) => {
+                    let end_time = Instant::now();
+                    let mut r = result.lock().unwrap();
+                    r.status = TaskStatus::Completed;
+                    r.data = Some(data);
+                    r.end_time = Some(end_time);
+                    *status.lock().unwrap() = TaskStatus::Completed;
+                    let temp_result = AsyncTaskResult {
+                        status: TaskStatus::Completed,
+                        data: None::<T>,
+                        error: None,
+                        progress: r.progress.clone(),
+                        start_time: r.start_time,
+                        end_time: r.end_time,
+                    };
+                    drop(r);
+                    handler.lock().unwrap().on_complete(&temp_result);
+                    completed_count.fetch_add(1, Ordering::Relaxed);
+                }
+                Err(err) => {
+                    let mut r = result.lock().unwrap();
+                    r.status = TaskStatus::Failed(err.clone());
+                    r.error = Some(err.clone());
+                    r.end_time = Some(Instant::now());
+                    *status.lock().unwrap() = TaskStatus::Failed(err.clone());
+                    drop(r);
+                    handler.lock().unwrap().on_error(&err);
+                    failed_count.fetch_add(1, Ordering::Relaxed);
+                }
+            }
+
+            // 从活跃任务移除
+            running_tasks.lock().unwrap().remove(&task_id);
+            active_count.fetch_sub(1, Ordering::Relaxed);
+            completed_tasks.lock().unwrap().push_back((task_id, Instant::now()));
+        })
+    }
+
+    pub fn get_pool_size(&self) -> usize {
+        self.thread_pool.size()
     }
 
     pub fn get_active_count(&self) -> usize {
@@ -563,14 +803,17 @@ impl AsyncTaskManager {
         self.completed_count.load(Ordering::Relaxed)
     }
 
-    pub fn get_pending_count(&self) -> usize {
-        self.running_tasks.lock().unwrap().len() - self.active_count.load(Ordering::Relaxed)
+    pub fn get_failed_count(&self) -> usize {
+        self.failed_count.load(Ordering::Relaxed)
     }
 
-    pub fn cancel_all(&self) {
-        for task in self.running_tasks.lock().unwrap().values() {
-            task.cancel();
-        }
+    pub fn get_pending_count(&self) -> usize {
+        self.pending_queue.lock().unwrap().len()
+    }
+
+    pub fn cancel_all_running(&self) {
+        // 清空等待队列
+        self.pending_queue.lock().unwrap().clear();
     }
 
     pub fn clear_completed(&mut self, keep_last: usize) {
@@ -587,11 +830,36 @@ impl AsyncTaskManager {
     pub fn is_task_running(&self, id: usize) -> bool {
         self.running_tasks.lock().unwrap().contains_key(&id)
     }
+
+    pub fn generate_report(&self) -> String {
+        format!(
+            "=== AsyncTaskManager Report ===\n\
+             Pool Size: {}\n\
+             Active Tasks: {}\n\
+             Completed Tasks: {}\n\
+             Failed Tasks: {}\n\
+             Pending Tasks: {}",
+            self.get_pool_size(),
+            self.get_active_count(),
+            self.get_completed_count(),
+            self.get_failed_count(),
+            self.get_pending_count()
+        )
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::sync::atomic::AtomicI32;
+
+    #[test]
+    fn test_task_id_unique() {
+        let id1 = new_task_id();
+        let id2 = new_task_id();
+        assert_ne!(id1, id2);
+        assert!(id2 > id1);
+    }
 
     #[test]
     fn test_task_result() {
@@ -599,34 +867,39 @@ mod tests {
         assert!(!result.is_success());
         assert!(!result.is_failed());
         assert!(!result.is_cancelled());
-        assert!(result.is_running() || matches!(result.status, TaskStatus::Pending));
+        assert!(matches!(result.status, TaskStatus::Pending));
     }
 
     #[test]
-    fn test_task_status() {
-        assert!(matches!(TaskStatus::Pending, TaskStatus::Pending));
-        assert!(matches!(TaskStatus::Running, TaskStatus::Running));
-        assert!(matches!(TaskStatus::Completed, TaskStatus::Completed));
-        assert!(matches!(TaskStatus::Cancelled, TaskStatus::Cancelled));
+    fn test_task_status_clone() {
+        assert!(matches!(TaskStatus::Pending.clone(), TaskStatus::Pending));
+        assert!(matches!(TaskStatus::Running.clone(), TaskStatus::Running));
+        assert!(matches!(TaskStatus::Completed.clone(), TaskStatus::Completed));
+        assert!(matches!(TaskStatus::Cancelled.clone(), TaskStatus::Cancelled));
+        let failed = TaskStatus::Failed("err".to_string());
+        if let TaskStatus::Failed(msg) = failed.clone() {
+            assert_eq!(msg, "err");
+        }
     }
 
     #[test]
     fn test_task_creation() {
-        let task = AsyncTask::<i32>::new("test_task", |_, _| Ok(42));
+        let task = AsyncTask::<i32>::new("test_task");
         assert_eq!(task.name(), "test_task");
         assert!(matches!(task.get_status(), TaskStatus::Pending));
+        assert!(task.id() > 0);
     }
 
     #[test]
     fn test_task_priority() {
-        let mut task = AsyncTask::<i32>::new("test", |_, _| Ok(0));
+        let mut task = AsyncTask::<i32>::new("test");
         task.set_priority(10);
         assert_eq!(task.get_priority(), 10);
     }
 
     #[test]
     fn test_task_dependencies() {
-        let mut task = AsyncTask::<i32>::new("test", |_, _| Ok(0));
+        let mut task = AsyncTask::<i32>::new("test");
         task.add_dependency(1);
         task.add_dependency(2);
 
@@ -638,7 +911,7 @@ mod tests {
 
     #[test]
     fn test_task_cancellation() {
-        let task = AsyncTask::<i32>::new("test", |_, _| Ok(0));
+        let task = AsyncTask::<i32>::new("test");
         assert!(!task.is_cancelled());
 
         task.cancel();
@@ -647,11 +920,54 @@ mod tests {
     }
 
     #[test]
+    fn test_task_execute_success() {
+        let task = AsyncTask::<i32>::new("success_task");
+        let task_clone = task.clone();
+        
+        task.execute(|_progress, _cancel| Ok(42));
+
+        // 等待完成
+        let completed = task_clone.wait_timeout(Duration::from_secs(5));
+        assert!(completed, "Task should complete within 5 seconds");
+        assert!(matches!(task_clone.get_status(), TaskStatus::Completed));
+    }
+
+    #[test]
+    fn test_task_execute_failure() {
+        let task = AsyncTask::<i32>::new("fail_task");
+        let task_clone = task.clone();
+        
+        task.execute(|_progress, _cancel| Err("test_error".to_string()));
+
+        let completed = task_clone.wait_timeout(Duration::from_secs(5));
+        assert!(completed);
+        assert!(matches!(task_clone.get_status(), TaskStatus::Failed(_)));
+    }
+
+    #[test]
+    fn test_task_progress_callback() {
+        let received = Arc::new(AtomicBool::new(false));
+        let received_clone = received.clone();
+
+        let task = AsyncTask::<i32>::new("progress_task");
+        let task_clone = task.clone();
+
+        task.execute(move |progress_cb, _| {
+            progress_cb(TaskProgress::new(50, 100));
+            received_clone.store(true, Ordering::Relaxed);
+            Ok(0)
+        });
+
+        task_clone.wait_timeout(Duration::from_secs(5));
+        assert!(received.load(Ordering::Relaxed));
+    }
+
+    #[test]
     fn test_task_group_basic() {
         let mut group = TaskGroup::<i32>::new("test");
         
         for i in 0..3 {
-            let task = AsyncTask::<i32>::new(&format!("task{}", i), move |_, _| Ok(i));
+            let task = AsyncTask::<i32>::new(&format!("task{}", i));
             group.add_task(task);
         }
 
@@ -663,9 +979,8 @@ mod tests {
     fn test_task_group_progress() {
         let mut group = TaskGroup::<i32>::new("test");
         
-        // 添加3个任务
         for i in 0..3 {
-            let task = AsyncTask::<i32>::new(&format!("task{}", i), move |_, _| Ok(i));
+            let task = AsyncTask::<i32>::new(&format!("task{}", i));
             group.add_task(task);
         }
 
@@ -673,13 +988,50 @@ mod tests {
         group.completed_count.store(2, Ordering::Relaxed);
         group.failed_count.store(1, Ordering::Relaxed);
 
-        // 进度应该是 2/3 * 100 = 66.67%（只计算completed，不包括failed）
         let expected = (2.0 / 3.0) * 100.0;
         assert!((group.get_progress() - expected).abs() < 0.1);
     }
 
     #[test]
-    fn test_task_manager() {
+    fn test_task_group_report() {
+        let group = TaskGroup::<i32>::new("test_group");
+        let report = group.generate_report();
+        assert!(report.contains("TaskGroup Report"));
+        assert!(report.contains("test_group"));
+    }
+
+    #[test]
+    fn test_thread_pool_creation() {
+        let pool = ThreadPool::new(4);
+        assert_eq!(pool.size(), 4);
+        assert_eq!(pool.active_count(), 0);
+    }
+
+    #[test]
+    fn test_thread_pool_min_size() {
+        // size=0 时应至少有1个线程
+        let pool = ThreadPool::new(0);
+        assert_eq!(pool.size(), 1);
+    }
+
+    #[test]
+    fn test_thread_pool_execute() {
+        let pool = ThreadPool::new(2);
+        let counter = Arc::new(AtomicI32::new(0));
+
+        for _ in 0..5 {
+            let c = counter.clone();
+            pool.execute(move || {
+                c.fetch_add(1, Ordering::Relaxed);
+            });
+        }
+
+        thread::sleep(Duration::from_millis(100));
+        assert_eq!(counter.load(Ordering::Relaxed), 5);
+    }
+
+    #[test]
+    fn test_task_manager_creation() {
         let manager = AsyncTaskManager::new();
         assert_eq!(manager.get_active_count(), 0);
         assert_eq!(manager.get_completed_count(), 0);
@@ -689,7 +1041,28 @@ mod tests {
     #[test]
     fn test_task_manager_max_concurrent() {
         let manager = AsyncTaskManager::with_max_concurrent(8);
-        assert_eq!(manager.max_concurrent, 8);
+        assert_eq!(manager.get_pool_size(), 8);
+    }
+
+    #[test]
+    fn test_task_manager_submit() {
+        let manager = AsyncTaskManager::new();
+        let task = AsyncTask::<i32>::new("manager_task");
+        let task_clone = task.clone();
+
+        let submitted = manager.submit(&task, |_, _| Ok(100));
+        assert!(submitted);
+
+        let done = task_clone.wait_timeout(Duration::from_secs(5));
+        assert!(done);
+        assert_eq!(manager.get_completed_count(), 1);
+    }
+
+    #[test]
+    fn test_task_manager_report() {
+        let manager = AsyncTaskManager::new();
+        let report = manager.generate_report();
+        assert!(report.contains("AsyncTaskManager Report"));
     }
 
     #[test]
@@ -730,18 +1103,54 @@ mod tests {
     }
 
     #[test]
-    fn test_task_group_report() {
-        let group = TaskGroup::<i32>::new("test_group");
-        let report = group.generate_report();
-        assert!(report.contains("TaskGroup Report"));
-        assert!(report.contains("test_group"));
-    }
-
-    #[test]
     fn test_task_progress_with_message() {
         let progress = TaskProgress::with_message(50, 100, "Processing...");
         assert_eq!(progress.current, 50);
         assert_eq!(progress.total, 100);
         assert_eq!(progress.message, "Processing...");
+    }
+
+    #[test]
+    fn test_task_progress_percentage() {
+        let progress = TaskProgress::new(25, 100);
+        assert!((progress.percentage() - 25.0).abs() < 0.01);
+    }
+
+    #[test]
+    fn test_task_progress_is_complete() {
+        let progress = TaskProgress::new(100, 100);
+        assert!(progress.is_complete());
+
+        let progress2 = TaskProgress::new(50, 100);
+        assert!(!progress2.is_complete());
+    }
+
+    #[test]
+    fn test_multiple_tasks_concurrent() {
+        let manager = AsyncTaskManager::with_max_concurrent(4);
+        let counter = Arc::new(AtomicI32::new(0));
+        let tasks: Vec<AsyncTask<i32>> = (0..8).map(|i| AsyncTask::new(&format!("task{}", i))).collect();
+        let task_clones: Vec<AsyncTask<i32>> = tasks.iter().map(|t| t.clone()).collect();
+
+        for task in &tasks {
+            let c = counter.clone();
+            manager.submit(task, move |_, _| {
+                c.fetch_add(1, Ordering::Relaxed);
+                Ok(1)
+            });
+        }
+
+        // 等待所有完成
+        let deadline = Instant::now() + Duration::from_secs(10);
+        loop {
+            let all_done = task_clones.iter().all(|t| {
+                matches!(t.get_status(), TaskStatus::Completed | TaskStatus::Failed(_) | TaskStatus::Cancelled)
+            });
+            if all_done { break; }
+            if Instant::now() > deadline { break; }
+            thread::sleep(Duration::from_millis(20));
+        }
+
+        assert_eq!(counter.load(Ordering::Relaxed), 8);
     }
 }

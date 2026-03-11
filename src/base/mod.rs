@@ -14,7 +14,7 @@ pub mod types;
 
 pub use async_task::{
     AsyncTask, AsyncTaskHandler, AsyncTaskManager, AsyncTaskResult, TaskGroup, TaskProgress,
-    TaskStatus,
+    TaskStatus, ThreadPool,
 };
 pub use debug_console::{ConsoleCommand, ConsoleHandler, DebugConsole, LogEntry, LogLevel};
 pub use debug_layer::{DebugLayer, DebugPanel, DebugPanelConfig};

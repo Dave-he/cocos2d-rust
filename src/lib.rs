@@ -32,7 +32,7 @@ pub use base::{
     NotificationCenter, Notification, DefaultNotification,
     NotificationObserver, NotificationPriority,
     AsyncTask, AsyncTaskResult, AsyncTaskHandler,
-    TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager
+    TaskStatus, TaskProgress, TaskGroup, AsyncTaskManager, ThreadPool
 };
 pub use base::director::{Director, Scene};
 pub use scene::node::Node;
