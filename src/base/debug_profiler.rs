@@ -212,7 +212,7 @@ impl DebugProfiler {
         }
     }
 
-    pub fn scope(&mut self, name: &str) -> ProfilerScope {
+    pub fn scope(&mut self, name: &str) -> ProfilerScope<'_> {
         self.begin(name);
         ProfilerScope {
             profiler: self,
