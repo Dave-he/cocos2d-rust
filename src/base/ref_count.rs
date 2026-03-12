@@ -77,11 +77,11 @@ impl<T> RefPtr<T> {
         Rc::ptr_eq(&a.ptr, &b.ptr)
     }
 
-    pub fn borrow(&self) -> std::cell::Ref<T> {
+    pub fn borrow(&self) -> std::cell::Ref<'_, T> {
         self.ptr.borrow()
     }
 
-    pub fn borrow_mut(&self) -> std::cell::RefMut<T> {
+    pub fn borrow_mut(&self) -> std::cell::RefMut<'_, T> {
         self.ptr.borrow_mut()
     }
 
