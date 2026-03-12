@@ -1,21 +1,26 @@
 /// 类型安全的事件总线系统
 ///
-/// 提供发布/订阅模式，支持强类型事件，不依赖 Any 进行类型擦除。
+/// 提供发布/订阅模式，支持强类型事件，不依赖字符串进行类型识别。
 ///
 /// # 用法
 /// ```rust
+/// use cocos2d_rust::EventBus;
+///
+/// #[derive(Debug, Clone)]
+/// struct PlayerDieEvent { player_id: u32 }
+///
 /// let mut bus = EventBus::new();
 ///
 /// // 订阅事件
-/// let id = bus.subscribe("player_die", |evt: &PlayerDieEvent| {
-///     println!("Player {} died at {:?}", evt.player_id, evt.position);
+/// let id = bus.subscribe::<PlayerDieEvent, _>(|evt| {
+///     println!("Player {} died", evt.player_id);
 /// });
 ///
 /// // 发布事件
-/// bus.publish("player_die", PlayerDieEvent { player_id: 1, position: Vec2::ZERO });
+/// bus.publish(&PlayerDieEvent { player_id: 1 });
 ///
 /// // 取消订阅
-/// bus.unsubscribe("player_die", id);
+/// bus.unsubscribe::<PlayerDieEvent>(id);
 /// ```
 
 use std::any::{Any, TypeId};
@@ -236,7 +241,6 @@ impl std::fmt::Debug for DeferredEventQueue {
 // ─── 常用内置游戏事件 ────────────────────────────────────────────
 
 use crate::math::Vec2;
-use crate::base::types::Color4F;
 
 /// 场景切换事件
 #[derive(Debug, Clone)]

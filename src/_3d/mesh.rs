@@ -379,8 +379,8 @@ pub struct BillBoard {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BillBoardMode {
-    VIEW_POINT_ORIENTED,
-    VIEW_PLANE_ORIENTED,
+    ViewPointOriented,
+    ViewPlaneOriented,
 }
 
 impl Default for BillBoard {
@@ -392,7 +392,7 @@ impl Default for BillBoard {
 impl BillBoard {
     pub fn new() -> BillBoard {
         BillBoard {
-            mode: BillBoardMode::VIEW_POINT_ORIENTED,
+            mode: BillBoardMode::ViewPointOriented,
             eye_vector: Vec3::ZERO,
         }
     }
@@ -472,13 +472,13 @@ mod tests {
     #[test]
     fn test_billboard_new() {
         let billboard = BillBoard::new();
-        assert_eq!(billboard.get_mode(), BillBoardMode::VIEW_POINT_ORIENTED);
+        assert_eq!(billboard.get_mode(), BillBoardMode::ViewPointOriented);
     }
 
     #[test]
     fn test_billboard_mode() {
         let mut billboard = BillBoard::new();
-        billboard.set_mode(BillBoardMode::VIEW_PLANE_ORIENTED);
-        assert_eq!(billboard.get_mode(), BillBoardMode::VIEW_PLANE_ORIENTED);
+        billboard.set_mode(BillBoardMode::ViewPlaneOriented);
+        assert_eq!(billboard.get_mode(), BillBoardMode::ViewPlaneOriented);
     }
 }

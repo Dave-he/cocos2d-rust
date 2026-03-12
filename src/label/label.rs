@@ -6,26 +6,26 @@ use crate::renderer::Texture2D;
 /// Text horizontal alignment
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextHAlignment {
-    LEFT,
-    CENTER,
-    RIGHT,
+    Left,
+    Center,
+    Right,
 }
 
 /// Text vertical alignment
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextVAlignment {
-    TOP,
-    CENTER,
-    BOTTOM,
+    Top,
+    Center,
+    Bottom,
 }
 
 /// Overflow type for labels
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum LabelOverflow {
-    NONE,
-    CLAMP,
-    SHRINK,
-    RESIZE_HEIGHT,
+    None,
+    Clamp,
+    Shrink,
+    ResizeHeight,
 }
 
 /// Label is a text display component
@@ -63,10 +63,10 @@ impl Label {
             font_name: String::from("Arial"),
             font_size: 12.0,
             dimensions: Vec2::ZERO,
-            h_alignment: TextHAlignment::LEFT,
-            v_alignment: TextVAlignment::TOP,
+            h_alignment: TextHAlignment::Left,
+            v_alignment: TextVAlignment::Top,
             color: Color3B::WHITE,
-            overflow_type: LabelOverflow::NONE,
+            overflow_type: LabelOverflow::None,
             line_height: 0.0,
             line_spacing: 0.0,
             enable_wrap: false,

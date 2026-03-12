@@ -29,14 +29,14 @@ impl PhysicsMaterial {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PhysicsShapeType {
-    UNKNOWN,
-    CIRCLE,
-    BOX,
-    POLYGON,
-    EDGE_SEGMENT,
-    EDGE_BOX,
-    EDGE_POLYGON,
-    EDGE_CHAIN,
+    Unknown,
+    Circle,
+    Box,
+    Polygon,
+    EdgeSegment,
+    EdgeBox,
+    EdgePolygon,
+    EdgeChain,
 }
 
 #[derive(Debug)]
@@ -75,7 +75,7 @@ impl PhysicsShape {
         let moment = material.density * area * radius * radius / 2.0;
         
         PhysicsShape {
-            shape_type: PhysicsShapeType::CIRCLE,
+            shape_type: PhysicsShapeType::Circle,
             area,
             moment,
             tag: 0,
@@ -94,7 +94,7 @@ impl PhysicsShape {
         let moment = material.density * area * (size.x * size.x + size.y * size.y) / 12.0;
         
         PhysicsShape {
-            shape_type: PhysicsShapeType::BOX,
+            shape_type: PhysicsShapeType::Box,
             area,
             moment,
             tag: 0,
@@ -114,7 +114,7 @@ impl PhysicsShape {
         let moment = material.density * area * 100.0; // Simplified moment calculation
         
         PhysicsShape {
-            shape_type: PhysicsShapeType::POLYGON,
+            shape_type: PhysicsShapeType::Polygon,
             area,
             moment,
             tag: 0,
@@ -130,7 +130,7 @@ impl PhysicsShape {
     /// Create an edge segment shape
     pub fn create_edge_segment(a: Vec2, b: Vec2, material: PhysicsMaterial, border: f32) -> Self {
         PhysicsShape {
-            shape_type: PhysicsShapeType::EDGE_SEGMENT,
+            shape_type: PhysicsShapeType::EdgeSegment,
             area: 0.0,
             moment: f32::INFINITY,
             tag: 0,
@@ -224,9 +224,9 @@ impl PhysicsShape {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PhysicsBodyType {
-    STATIC,
-    DYNAMIC,
-    KINEMATIC,
+    Static,
+    Dynamic,
+    Kinematic,
 }
 
 #[derive(Debug)]
@@ -255,7 +255,7 @@ impl Default for PhysicsBody {
 impl PhysicsBody {
     pub fn new() -> PhysicsBody {
         PhysicsBody {
-            body_type: PhysicsBodyType::DYNAMIC,
+            body_type: PhysicsBodyType::Dynamic,
             mass: 0.0,
             moment: 0.0,
             linear_velocity: Vec2::ZERO,
@@ -273,7 +273,7 @@ impl PhysicsBody {
 
     pub fn create_static_body() -> PhysicsBody {
         PhysicsBody {
-            body_type: PhysicsBodyType::STATIC,
+            body_type: PhysicsBodyType::Static,
             mass: 0.0,
             moment: 0.0,
             linear_velocity: Vec2::ZERO,
@@ -291,7 +291,7 @@ impl PhysicsBody {
 
     pub fn create_dynamic_body(mass: f32, moment: f32) -> PhysicsBody {
         PhysicsBody {
-            body_type: PhysicsBodyType::DYNAMIC,
+            body_type: PhysicsBodyType::Dynamic,
             mass,
             moment,
             linear_velocity: Vec2::ZERO,
@@ -335,14 +335,14 @@ impl PhysicsBody {
     }
 
     pub fn is_dynamic(&self) -> bool {
-        self.body_type == PhysicsBodyType::DYNAMIC
+        self.body_type == PhysicsBodyType::Dynamic
     }
 
     pub fn set_dynamic(&mut self, dynamic: bool) {
         self.body_type = if dynamic {
-            PhysicsBodyType::DYNAMIC
+            PhysicsBodyType::Dynamic
         } else {
-            PhysicsBodyType::STATIC
+            PhysicsBodyType::Static
         };
     }
 
@@ -428,7 +428,7 @@ impl PhysicsBody {
 
     /// Apply an impulse to the body
     pub fn apply_impulse(&mut self, impulse: Vec2, offset: Vec2) {
-        if self.body_type == PhysicsBodyType::DYNAMIC {
+        if self.body_type == PhysicsBodyType::Dynamic {
             self.linear_velocity += impulse / self.mass;
             // Angular impulse calculation
             let r = offset;
@@ -439,7 +439,7 @@ impl PhysicsBody {
 
     /// Apply a force to the body
     pub fn apply_force(&mut self, force: Vec2, offset: Vec2, delta_time: f32) {
-        if self.body_type == PhysicsBodyType::DYNAMIC {
+        if self.body_type == PhysicsBodyType::Dynamic {
             let impulse = force * delta_time;
             self.apply_impulse(impulse, offset);
         }
@@ -462,14 +462,14 @@ impl PhysicsBody {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum JointType {
-    DISTANCE,
-    SPRING,
-    GEAR,
-    PULLEY,
-    WHEEL,
-    MOUSE,
-    FIXED,
-    WELD,
+    Distance,
+    Spring,
+    Gear,
+    Pulley,
+    Wheel,
+    Mouse,
+    Fixed,
+    Weld,
 }
 
 #[derive(Debug)]
@@ -633,7 +633,7 @@ impl PhysicsWorld {
         // Simple ray-circle intersection for demonstration
         // In real implementation, this would use Chipmunk or Box2D
         for (i, shape) in self.shapes.iter().enumerate() {
-            if shape.get_type() == PhysicsShapeType::CIRCLE {
+            if shape.get_type() == PhysicsShapeType::Circle {
                 // Simplified ray-circle intersection
                 if let Some(hit) = self.ray_circle_intersect(start, end, Vec2::ZERO, 10.0) {
                     results.push(RayCastInfo {
@@ -720,7 +720,7 @@ impl PhysicsWorld {
         for _ in 0..self.substeps {
             // Apply gravity
             for body in &mut self.bodies {
-                if body.is_gravity_enabled() && body.get_type() == PhysicsBodyType::DYNAMIC {
+                if body.is_gravity_enabled() && body.get_type() == PhysicsBodyType::Dynamic {
                     let force = self.gravity * body.get_mass();
                     body.apply_force(force, Vec2::ZERO, dt);
                 }
@@ -728,7 +728,7 @@ impl PhysicsWorld {
             
             // Update positions (simplified Euler integration)
             for body in &mut self.bodies {
-                if body.get_type() == PhysicsBodyType::DYNAMIC && body.is_enabled() {
+                if body.get_type() == PhysicsBodyType::Dynamic && body.is_enabled() {
                     let pos = body.get_position();
                     let vel = body.get_velocity();
                     body.set_position(pos + vel * dt);
@@ -837,12 +837,12 @@ mod tests {
     fn test_physics_shape_creation() {
         // Test circle shape
         let circle = PhysicsShape::create_circle(10.0, PhysicsMaterial::DEFAULT, Vec2::ZERO);
-        assert_eq!(circle.get_type(), PhysicsShapeType::CIRCLE);
+        assert_eq!(circle.get_type(), PhysicsShapeType::Circle);
         assert!(circle.get_area() > 0.0);
 
         // Test box shape
         let box_shape = PhysicsShape::create_box(Vec2::new(20.0, 30.0), PhysicsMaterial::DEFAULT, Vec2::ZERO);
-        assert_eq!(box_shape.get_type(), PhysicsShapeType::BOX);
+        assert_eq!(box_shape.get_type(), PhysicsShapeType::Box);
         assert_eq!(box_shape.get_area(), 600.0);
 
         // Test polygon shape
@@ -853,18 +853,18 @@ mod tests {
             Vec2::new(0.0, 10.0),
         ];
         let polygon = PhysicsShape::create_polygon(&points, PhysicsMaterial::DEFAULT, Vec2::ZERO);
-        assert_eq!(polygon.get_type(), PhysicsShapeType::POLYGON);
+        assert_eq!(polygon.get_type(), PhysicsShapeType::Polygon);
         assert_eq!(polygon.get_area(), 100.0);
     }
 
     #[test]
     fn test_physics_body_types() {
         let static_body = PhysicsBody::create_static_body();
-        assert_eq!(static_body.get_type(), PhysicsBodyType::STATIC);
+        assert_eq!(static_body.get_type(), PhysicsBodyType::Static);
         assert!(!static_body.is_gravity_enabled());
 
         let dynamic_body = PhysicsBody::create_dynamic_body(10.0, 5.0);
-        assert_eq!(dynamic_body.get_type(), PhysicsBodyType::DYNAMIC);
+        assert_eq!(dynamic_body.get_type(), PhysicsBodyType::Dynamic);
         assert_eq!(dynamic_body.get_mass(), 10.0);
         assert_eq!(dynamic_body.get_moment(), 5.0);
         assert!(dynamic_body.is_gravity_enabled());
@@ -913,8 +913,8 @@ mod tests {
 
     #[test]
     fn test_physics_joint() {
-        let joint = PhysicsJoint::new(JointType::DISTANCE);
-        assert_eq!(joint.get_type(), JointType::DISTANCE);
+        let joint = PhysicsJoint::new(JointType::Distance);
+        assert_eq!(joint.get_type(), JointType::Distance);
         assert!(joint.is_enabled());
         assert!(!joint.get_collide_connected());
     }
@@ -929,7 +929,7 @@ mod tests {
 
     #[test]
     fn test_shape_bitmasks() {
-        let mut shape = PhysicsShape::new(PhysicsShapeType::CIRCLE);
+        let mut shape = PhysicsShape::new(PhysicsShapeType::Circle);
         
         assert_eq!(shape.get_category_bitmask(), 0xFFFFFFFF);
         assert_eq!(shape.get_collision_bitmask(), 0xFFFFFFFF);
@@ -946,7 +946,7 @@ mod tests {
 
     #[test]
     fn test_shape_sensor() {
-        let mut shape = PhysicsShape::new(PhysicsShapeType::CIRCLE);
+        let mut shape = PhysicsShape::new(PhysicsShapeType::Circle);
         
         assert!(!shape.is_sensor());
         

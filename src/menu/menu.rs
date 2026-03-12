@@ -5,8 +5,8 @@ use crate::math::Vec2;
 /// Menu state
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MenuState {
-    WAITING,
-    TRACKING_TOUCH,
+    Waiting,
+    TrackingTouch,
 }
 
 /// Menu is a container for menu items
@@ -26,7 +26,7 @@ impl Menu {
             node: RefPtr::new(Node::new()),
             items: Vec::new(),
             selected_item: None,
-            state: MenuState::WAITING,
+            state: MenuState::Waiting,
             enabled: true,
         }
     }

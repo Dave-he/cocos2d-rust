@@ -225,9 +225,9 @@ pub enum Physics3DShapeType {
     CYLINDER,
     CAPSULE,
     CONE,
-    CONVEX_HULL,
+    ConvexHull,
     MESH,
-    HEIGHT_FIELD,
+    HeightField,
     COMPOUND,
 }
 
@@ -317,10 +317,10 @@ impl Physics3DShape {
 /// 3D Physics constraint types
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Physics3DConstraintType {
-    POINT_TO_POINT,
+    PointToPoint,
     HINGE,
     SLIDER,
-    CONE_TWIST,
+    ConeTwist,
     GENERIC_6DOF,
     FIXED,
 }
@@ -349,7 +349,7 @@ impl Physics3DConstraint {
     pub fn create_point_to_point(body_a: &Physics3DBody, body_b: &Physics3DBody, 
                                   _pivot_in_a: Vec3, _pivot_in_b: Vec3) -> Self {
         Physics3DConstraint {
-            constraint_type: Physics3DConstraintType::POINT_TO_POINT,
+            constraint_type: Physics3DConstraintType::PointToPoint,
             body_a: Some(body_a as *const Physics3DBody),
             body_b: Some(body_b as *const Physics3DBody),
             enabled: true,
@@ -381,7 +381,7 @@ impl Physics3DConstraint {
 
     pub fn create_cone_twist(body_a: &Physics3DBody, body_b: &Physics3DBody) -> Self {
         Physics3DConstraint {
-            constraint_type: Physics3DConstraintType::CONE_TWIST,
+            constraint_type: Physics3DConstraintType::ConeTwist,
             body_a: Some(body_a as *const Physics3DBody),
             body_b: Some(body_b as *const Physics3DBody),
             enabled: true,
@@ -716,7 +716,7 @@ mod tests {
         let body_b = Physics3DBody::new();
 
         let p2p = Physics3DConstraint::create_point_to_point(&body_a, &body_b, Vec3::ZERO, Vec3::ZERO);
-        assert_eq!(p2p.get_type(), Physics3DConstraintType::POINT_TO_POINT);
+        assert_eq!(p2p.get_type(), Physics3DConstraintType::PointToPoint);
         assert!(p2p.is_enabled());
 
         let hinge = Physics3DConstraint::create_hinge(&body_a, &body_b, 
