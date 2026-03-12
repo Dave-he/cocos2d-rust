@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// NotificationCenter - 通知中心
 ///
 /// 功能：
@@ -170,13 +173,8 @@ impl NotificationCenter {
     }
 
     pub fn default() -> Arc<Mutex<Self>> {
-        static mut DEFAULT_CENTER: Option<Arc<Mutex<NotificationCenter>>> = None;
-        unsafe {
-            if DEFAULT_CENTER.is_none() {
-                DEFAULT_CENTER = Some(Arc::new(Mutex::new(Self::new())));
-            }
-            DEFAULT_CENTER.as_ref().unwrap().clone()
-        }
+        static DEFAULT_CENTER: std::sync::OnceLock<Arc<Mutex<NotificationCenter>>> = std::sync::OnceLock::new();
+        DEFAULT_CENTER.get_or_init(|| Arc::new(Mutex::new(Self::new()))).clone()
     }
 
     pub fn add_observer(&mut self, observer: NotificationObserver) {

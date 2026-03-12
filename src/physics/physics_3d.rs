@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::math::{Vec3, Quaternion};
 
 /// Physics material for 3D objects
@@ -29,9 +32,9 @@ impl Physics3DMaterial {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Physics3DBodyType {
-    STATIC,
-    DYNAMIC,
-    KINEMATIC,
+    Static,
+    Dynamic,
+    Kinematic,
 }
 
 #[derive(Debug)]
@@ -58,7 +61,7 @@ impl Default for Physics3DBody {
 impl Physics3DBody {
     pub fn new() -> Physics3DBody {
         Physics3DBody {
-            body_type: Physics3DBodyType::DYNAMIC,
+            body_type: Physics3DBodyType::Dynamic,
             mass: 1.0,
             position: Vec3::ZERO,
             rotation: Quaternion::IDENTITY,
@@ -74,7 +77,7 @@ impl Physics3DBody {
 
     pub fn create_static() -> Self {
         Physics3DBody {
-            body_type: Physics3DBodyType::STATIC,
+            body_type: Physics3DBodyType::Static,
             mass: 0.0,
             position: Vec3::ZERO,
             rotation: Quaternion::IDENTITY,
@@ -90,7 +93,7 @@ impl Physics3DBody {
 
     pub fn create_dynamic(mass: f32) -> Self {
         Physics3DBody {
-            body_type: Physics3DBodyType::DYNAMIC,
+            body_type: Physics3DBodyType::Dynamic,
             mass,
             position: Vec3::ZERO,
             rotation: Quaternion::IDENTITY,
@@ -190,14 +193,14 @@ impl Physics3DBody {
 
     /// Apply a central impulse
     pub fn apply_central_impulse(&mut self, impulse: Vec3) {
-        if self.body_type == Physics3DBodyType::DYNAMIC {
+        if self.body_type == Physics3DBodyType::Dynamic {
             self.linear_velocity += impulse / self.mass;
         }
     }
 
     /// Apply an impulse at a point
     pub fn apply_impulse(&mut self, impulse: Vec3, rel_pos: Vec3) {
-        if self.body_type == Physics3DBodyType::DYNAMIC {
+        if self.body_type == Physics3DBodyType::Dynamic {
             self.apply_central_impulse(impulse);
             let torque_impulse = rel_pos.cross(&impulse);
             self.angular_velocity += torque_impulse;
@@ -211,7 +214,7 @@ impl Physics3DBody {
 
     /// Apply torque
     pub fn apply_torque(&mut self, torque: Vec3, delta_time: f32) {
-        if self.body_type == Physics3DBodyType::DYNAMIC {
+        if self.body_type == Physics3DBodyType::Dynamic {
             self.angular_velocity += torque * delta_time;
         }
     }
@@ -219,16 +222,16 @@ impl Physics3DBody {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Physics3DShapeType {
-    UNKNOWN,
-    BOX,
-    SPHERE,
-    CYLINDER,
-    CAPSULE,
-    CONE,
+    Unknown,
+    Box,
+    Sphere,
+    Cylinder,
+    Capsule,
+    Cone,
     ConvexHull,
-    MESH,
+    Mesh,
     HeightField,
-    COMPOUND,
+    Compound,
 }
 
 #[derive(Debug)]
@@ -253,7 +256,7 @@ impl Physics3DShape {
 
     pub fn create_box(size: Vec3) -> Physics3DShape {
         Physics3DShape {
-            shape_type: Physics3DShapeType::BOX,
+            shape_type: Physics3DShapeType::Box,
             size,
             radius: 0.0,
             height: 0.0,
@@ -263,7 +266,7 @@ impl Physics3DShape {
 
     pub fn create_sphere(radius: f32) -> Physics3DShape {
         Physics3DShape {
-            shape_type: Physics3DShapeType::SPHERE,
+            shape_type: Physics3DShapeType::Sphere,
             size: Vec3::ZERO,
             radius,
             height: 0.0,
@@ -273,7 +276,7 @@ impl Physics3DShape {
 
     pub fn create_cylinder(radius: f32, height: f32) -> Physics3DShape {
         Physics3DShape {
-            shape_type: Physics3DShapeType::CYLINDER,
+            shape_type: Physics3DShapeType::Cylinder,
             size: Vec3::ZERO,
             radius,
             height,
@@ -283,7 +286,7 @@ impl Physics3DShape {
 
     pub fn create_capsule(radius: f32, height: f32) -> Physics3DShape {
         Physics3DShape {
-            shape_type: Physics3DShapeType::CAPSULE,
+            shape_type: Physics3DShapeType::Capsule,
             size: Vec3::ZERO,
             radius,
             height,
@@ -293,7 +296,7 @@ impl Physics3DShape {
 
     pub fn create_cone(radius: f32, height: f32) -> Physics3DShape {
         Physics3DShape {
-            shape_type: Physics3DShapeType::CONE,
+            shape_type: Physics3DShapeType::Cone,
             size: Vec3::ZERO,
             radius,
             height,
@@ -318,11 +321,11 @@ impl Physics3DShape {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Physics3DConstraintType {
     PointToPoint,
-    HINGE,
-    SLIDER,
+    Hinge,
+    Slider,
     ConeTwist,
-    GENERIC_6DOF,
-    FIXED,
+    Generic6dof,
+    Fixed,
 }
 
 /// 3D Physics constraint
@@ -361,7 +364,7 @@ impl Physics3DConstraint {
                        _pivot_in_a: Vec3, _pivot_in_b: Vec3,
                        _axis_in_a: Vec3, _axis_in_b: Vec3) -> Self {
         Physics3DConstraint {
-            constraint_type: Physics3DConstraintType::HINGE,
+            constraint_type: Physics3DConstraintType::Hinge,
             body_a: Some(body_a as *const Physics3DBody),
             body_b: Some(body_b as *const Physics3DBody),
             enabled: true,
@@ -371,7 +374,7 @@ impl Physics3DConstraint {
 
     pub fn create_slider(body_a: &Physics3DBody, body_b: &Physics3DBody) -> Self {
         Physics3DConstraint {
-            constraint_type: Physics3DConstraintType::SLIDER,
+            constraint_type: Physics3DConstraintType::Slider,
             body_a: Some(body_a as *const Physics3DBody),
             body_b: Some(body_b as *const Physics3DBody),
             enabled: true,
@@ -391,7 +394,7 @@ impl Physics3DConstraint {
 
     pub fn create_generic_6dof(body_a: &Physics3DBody, body_b: &Physics3DBody) -> Self {
         Physics3DConstraint {
-            constraint_type: Physics3DConstraintType::GENERIC_6DOF,
+            constraint_type: Physics3DConstraintType::Generic6dof,
             body_a: Some(body_a as *const Physics3DBody),
             body_b: Some(body_b as *const Physics3DBody),
             enabled: true,
@@ -517,7 +520,7 @@ impl Physics3DWorld {
         for _ in 0..self.substeps {
             // Apply gravity
             for body in &mut self.bodies {
-                if body.is_gravity_enabled() && body.get_type() == Physics3DBodyType::DYNAMIC {
+                if body.is_gravity_enabled() && body.get_type() == Physics3DBodyType::Dynamic {
                     let force = self.gravity * body.get_mass();
                     body.apply_central_force(force, dt);
                 }
@@ -525,7 +528,7 @@ impl Physics3DWorld {
             
             // Apply damping
             for body in &mut self.bodies {
-                if body.get_type() == Physics3DBodyType::DYNAMIC {
+                if body.get_type() == Physics3DBodyType::Dynamic {
                     let linear_damping = 1.0 - body.get_linear_damping() * dt;
                     let angular_damping = 1.0 - body.get_angular_damping() * dt;
                     
@@ -539,7 +542,7 @@ impl Physics3DWorld {
             
             // Update positions (simplified Euler integration)
             for body in &mut self.bodies {
-                if body.get_type() == Physics3DBodyType::DYNAMIC && body.is_enabled() {
+                if body.get_type() == Physics3DBodyType::Dynamic && body.is_enabled() {
                     let pos = body.get_position();
                     let vel = body.get_linear_velocity();
                     body.set_position(pos + vel * dt);
@@ -574,12 +577,12 @@ impl Physics3DWorld {
     }
 }
 
-// Navigation Mesh support (NavMesh)
+/// NavMesh query result
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum NavMeshQueryResult {
-    FAILURE,
-    SUCCESS,
-    PARTIAL,
+    Failure,
+    Success,
+    Partial,
 }
 
 #[derive(Debug)]
@@ -627,30 +630,30 @@ mod tests {
     #[test]
     fn test_physics_3d_shape_creation() {
         let box_shape = Physics3DShape::create_box(Vec3::new(2.0, 3.0, 4.0));
-        assert_eq!(box_shape.get_type(), Physics3DShapeType::BOX);
+        assert_eq!(box_shape.get_type(), Physics3DShapeType::Box);
 
         let sphere = Physics3DShape::create_sphere(1.5);
-        assert_eq!(sphere.get_type(), Physics3DShapeType::SPHERE);
+        assert_eq!(sphere.get_type(), Physics3DShapeType::Sphere);
 
         let capsule = Physics3DShape::create_capsule(0.5, 2.0);
-        assert_eq!(capsule.get_type(), Physics3DShapeType::CAPSULE);
+        assert_eq!(capsule.get_type(), Physics3DShapeType::Capsule);
 
         let cylinder = Physics3DShape::create_cylinder(1.0, 3.0);
-        assert_eq!(cylinder.get_type(), Physics3DShapeType::CYLINDER);
+        assert_eq!(cylinder.get_type(), Physics3DShapeType::Cylinder);
 
         let cone = Physics3DShape::create_cone(1.0, 2.0);
-        assert_eq!(cone.get_type(), Physics3DShapeType::CONE);
+        assert_eq!(cone.get_type(), Physics3DShapeType::Cone);
     }
 
     #[test]
     fn test_physics_3d_body_types() {
         let static_body = Physics3DBody::create_static();
-        assert_eq!(static_body.get_type(), Physics3DBodyType::STATIC);
+        assert_eq!(static_body.get_type(), Physics3DBodyType::Static);
         assert_eq!(static_body.get_mass(), 0.0);
         assert!(!static_body.is_gravity_enabled());
 
         let dynamic_body = Physics3DBody::create_dynamic(50.0);
-        assert_eq!(dynamic_body.get_type(), Physics3DBodyType::DYNAMIC);
+        assert_eq!(dynamic_body.get_type(), Physics3DBodyType::Dynamic);
         assert_eq!(dynamic_body.get_mass(), 50.0);
         assert!(dynamic_body.is_gravity_enabled());
     }
@@ -721,15 +724,15 @@ mod tests {
 
         let hinge = Physics3DConstraint::create_hinge(&body_a, &body_b, 
             Vec3::ZERO, Vec3::ZERO, Vec3::UNIT_Y, Vec3::UNIT_Y);
-        assert_eq!(hinge.get_type(), Physics3DConstraintType::HINGE);
+        assert_eq!(hinge.get_type(), Physics3DConstraintType::Hinge);
 
         let slider = Physics3DConstraint::create_slider(&body_a, &body_b);
-        assert_eq!(slider.get_type(), Physics3DConstraintType::SLIDER);
+        assert_eq!(slider.get_type(), Physics3DConstraintType::Slider);
     }
 
     #[test]
     fn test_physics_3d_constraint_breaking_impulse() {
-        let mut constraint = Physics3DConstraint::new(Physics3DConstraintType::FIXED);
+        let mut constraint = Physics3DConstraint::new(Physics3DConstraintType::Fixed);
         
         assert_eq!(constraint.get_breaking_impulse(), f32::INFINITY);
         

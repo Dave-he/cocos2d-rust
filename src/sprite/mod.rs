@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// Sprite - 精灵类
 ///
 /// Sprite 是 Cocos2d-Rust 中用于渲染2D图像的核心类。

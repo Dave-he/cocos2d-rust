@@ -67,14 +67,14 @@ fn test_physics_body_rotation() {
 fn test_physics_shape_box() {
     let shape = PhysicsShape::create_box(Vec2::new(100.0, 100.0), PhysicsMaterial::DEFAULT, Vec2::ZERO);
     
-    assert_eq!(shape.get_type(), PhysicsShapeType::BOX);
+    assert_eq!(shape.get_type(), PhysicsShapeType::Box);
 }
 
 #[test]
 fn test_physics_shape_circle() {
     let shape = PhysicsShape::create_circle(50.0, PhysicsMaterial::DEFAULT, Vec2::ZERO);
     
-    assert_eq!(shape.get_type(), PhysicsShapeType::CIRCLE);
+    assert_eq!(shape.get_type(), PhysicsShapeType::Circle);
 }
 
 #[test]

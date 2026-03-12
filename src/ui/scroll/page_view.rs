@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use super::scroll_view::{ScrollDirection, ScrollView};
 use crate::base::Node;
 use crate::math::Vec2;

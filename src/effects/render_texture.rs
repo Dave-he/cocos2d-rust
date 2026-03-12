@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// RenderTexture - 离屏渲染目标
 ///
 /// 对应 cocos2d-x 的 `RenderTexture`，可将场景渲染到纹理，
@@ -20,7 +23,7 @@ pub enum RenderTextureFormat {
     /// 16-bit 浮点（HDR 准备）
     RGBA16F,
     /// 带深度缓冲（用于 3D 效果）
-    RGBA8_Depth,
+    Rgba8Depth,
 }
 
 impl Default for RenderTextureFormat {
@@ -66,7 +69,7 @@ impl OffscreenTarget {
         let bytes_per_pixel = match format {
             RenderTextureFormat::R8 => 1,
             RenderTextureFormat::RGB8 => 3,
-            RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+            RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
             RenderTextureFormat::RGBA16F => 8,
         };
         let pixel_count = (width * height) as usize * bytes_per_pixel;
@@ -194,7 +197,7 @@ impl OffscreenTarget {
         match self.format {
             RenderTextureFormat::R8 => 1,
             RenderTextureFormat::RGB8 => 3,
-            RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+            RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
             RenderTextureFormat::RGBA16F => 8,
         }
     }
@@ -205,7 +208,7 @@ impl OffscreenTarget {
 /// 将 RenderTexture 转换为灰度图像
 pub fn apply_grayscale(rt: &mut OffscreenTarget) {
     let bpp = match rt.get_format() {
-        RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+        RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
         RenderTextureFormat::RGB8 => 3,
         _ => return,
     };
@@ -225,7 +228,7 @@ pub fn apply_grayscale(rt: &mut OffscreenTarget) {
 /// 对 RenderTexture 应用亮度/对比度调整
 pub fn apply_brightness_contrast(rt: &mut OffscreenTarget, brightness: f32, contrast: f32) {
     let bpp = match rt.get_format() {
-        RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+        RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
         RenderTextureFormat::RGB8 => 3,
         _ => return,
     };
@@ -359,7 +362,7 @@ pub fn apply_bloom(rt: &mut OffscreenTarget, threshold: f32, intensity: f32) {
 /// 色调旋转（Hue Shift）
 pub fn apply_hue_shift(rt: &mut OffscreenTarget, degrees: f32) {
     let bpp = match rt.get_format() {
-        RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+        RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
         RenderTextureFormat::RGB8 => 3,
         _ => return,
     };
@@ -387,7 +390,7 @@ pub fn apply_hue_shift(rt: &mut OffscreenTarget, degrees: f32) {
 /// 色彩反转（Invert）
 pub fn apply_invert(rt: &mut OffscreenTarget) {
     let bpp = match rt.get_format() {
-        RenderTextureFormat::RGBA8 | RenderTextureFormat::RGBA8_Depth => 4,
+        RenderTextureFormat::RGBA8 | RenderTextureFormat::Rgba8Depth => 4,
         RenderTextureFormat::RGB8 => 3,
         _ => return,
     };

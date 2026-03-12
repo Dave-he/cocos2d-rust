@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// WebSocket - 基于线程的 WebSocket 客户端实现
 ///
 /// 特性：

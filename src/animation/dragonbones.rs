@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// DragonBones - 龙骨骨骼动画系统
 ///
 /// DragonBones 是由白鹭科技开发的骨骼动画系统，广泛用于 Cocos2d-x 游戏开发。

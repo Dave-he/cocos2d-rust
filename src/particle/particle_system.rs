@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::types::Color4F;
 use crate::math::Vec3;
 use std::f32::consts::PI;

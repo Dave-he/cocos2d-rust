@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use glow::HasContext;
 use std::collections::HashMap;
 use std::rc::Rc;

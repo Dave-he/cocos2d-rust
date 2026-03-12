@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// Node - 所有节点基类
 ///
 /// Node 是 Cocos2d-Rust 中所有可视元素的基础类。

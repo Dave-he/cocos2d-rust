@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// DebugProfiler - 性能分析器
 ///
 /// 功能：

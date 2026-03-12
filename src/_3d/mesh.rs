@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::_3d::Bone3D;
 use crate::base::RefPtr;
 use crate::math::{Mat4, Vec3};

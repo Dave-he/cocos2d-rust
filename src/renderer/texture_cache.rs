@@ -18,6 +18,7 @@ impl Default for TextureCache {
 
 impl TextureCache {
     /// Gets the singleton instance
+    #[allow(static_mut_refs)]
     pub fn get_instance() -> &'static mut TextureCache {
         static mut TEXTURE_CACHE: Option<TextureCache> = None;
         unsafe {

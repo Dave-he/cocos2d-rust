@@ -52,7 +52,7 @@ fn demo_list_view() {
     println!("✓ ListView created with VERTICAL direction");
 
     // Configure list view
-    list_view.set_gravity(ListViewGravity::CENTER_HORIZONTAL);
+    list_view.set_gravity(ListViewGravity::CenterHorizontal);
     list_view.set_item_spacing(10.0);
     println!("✓ ListView configured:");
     println!("  - Gravity: {:?}", list_view.get_gravity());

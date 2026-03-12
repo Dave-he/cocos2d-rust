@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// TMX 地图文件解析器
 ///
 /// 支持解析 Tiled Map Editor 导出的 TMX 格式文件
@@ -533,7 +536,7 @@ impl TmxParser {
                 layer_id_counter += 1;
                 let id = attrs.get("id").and_then(|v| v.parse().ok()).unwrap_or(layer_id_counter);
                 let name = attrs.get("name").cloned().unwrap_or_default();
-                let mut layer = TmxLayerRaw {
+                let layer = TmxLayerRaw {
                     id,
                     name,
                     layer_type: LayerType::ObjectGroup,

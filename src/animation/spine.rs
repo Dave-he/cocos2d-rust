@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// Spine 骨骼动画基础框架
 ///
 /// 对 Spine Runtime 的 Rust 端封装，支持：

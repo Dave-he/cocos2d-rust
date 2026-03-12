@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// AsyncTask - 异步任务模块
 ///
 /// 功能：

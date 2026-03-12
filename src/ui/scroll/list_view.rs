@@ -7,17 +7,17 @@ use crate::math::Vec2;
 pub enum ListViewGravity {
     LEFT,
     RIGHT,
-    CENTER_HORIZONTAL,
+    CenterHorizontal,
     TOP,
     BOTTOM,
-    CENTER_VERTICAL,
+    CenterVertical,
 }
 
 /// 列表视图事件类型
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ListViewEventType {
-    ON_SELECTED_ITEM_START,
-    ON_SELECTED_ITEM_END,
+    OnSelectedItemStart,
+    OnSelectedItemEnd,
 }
 
 /// 列表项回调类型
@@ -57,7 +57,7 @@ impl ListView {
         ListView {
             scroll_view: ScrollView::create(ScrollDirection::VERTICAL),
             items: Vec::new(),
-            item_gravity: ListViewGravity::CENTER_HORIZONTAL,
+            item_gravity: ListViewGravity::CenterHorizontal,
             item_spacing: 0.0,
             selected_index: None,
             event_callback: None,
@@ -170,7 +170,7 @@ impl ListView {
     pub fn set_current_selected_index(&mut self, index: usize) {
         if index < self.items.len() {
             self.selected_index = Some(index);
-            self.trigger_event(index, ListViewEventType::ON_SELECTED_ITEM_START);
+            self.trigger_event(index, ListViewEventType::OnSelectedItemStart);
         }
     }
 
@@ -228,7 +228,7 @@ impl ListView {
                             let container_width = self.scroll_view.get_widget().get_size().x;
                             container_width - item_size.x / 2.0
                         }
-                        ListViewGravity::CENTER_HORIZONTAL => {
+                        ListViewGravity::CenterHorizontal => {
                             let container_width = self.scroll_view.get_widget().get_size().x;
                             container_width / 2.0
                         }
@@ -267,7 +267,7 @@ impl ListView {
                             container_height - item_size.y / 2.0
                         }
                         ListViewGravity::BOTTOM => item_size.y / 2.0,
-                        ListViewGravity::CENTER_VERTICAL => {
+                        ListViewGravity::CenterVertical => {
                             let container_height = self.scroll_view.get_widget().get_size().y;
                             container_height / 2.0
                         }
@@ -362,7 +362,7 @@ mod tests {
     #[test]
     fn test_gravity() {
         let mut list_view = ListView::new();
-        list_view.set_gravity(ListViewGravity::CENTER_HORIZONTAL);
-        assert_eq!(list_view.get_gravity(), ListViewGravity::CENTER_HORIZONTAL);
+        list_view.set_gravity(ListViewGravity::CenterHorizontal);
+        assert_eq!(list_view.get_gravity(), ListViewGravity::CenterHorizontal);
     }
 }

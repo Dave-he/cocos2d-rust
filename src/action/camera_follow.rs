@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// CameraFollow - 相机跟随动作
 /// 
 /// 让相机跟随指定的目标节点，支持：

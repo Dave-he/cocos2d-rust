@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// ActionInterval - 间隔动作实现
 ///
 /// 持续一定时间的动作，如移动、旋转、缩放等。

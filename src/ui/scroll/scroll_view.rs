@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::Node;
 use crate::math::Vec2;
 use crate::ui::Widget;
@@ -15,16 +18,16 @@ pub enum ScrollDirection {
 /// 滚动视图事件类型
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ScrollViewEventType {
-    SCROLL_TO_TOP,
-    SCROLL_TO_BOTTOM,
-    SCROLL_TO_LEFT,
-    SCROLL_TO_RIGHT,
+    ScrollToTop,
+    ScrollToBottom,
+    ScrollToLeft,
+    ScrollToRight,
     SCROLLING,
-    SCROLL_ENDED,
-    BOUNCE_TOP,
-    BOUNCE_BOTTOM,
-    BOUNCE_LEFT,
-    BOUNCE_RIGHT,
+    ScrollEnded,
+    BounceTop,
+    BounceBottom,
+    BounceLeft,
+    BounceRight,
 }
 
 /// 滚动视图回调类型
@@ -223,27 +226,27 @@ impl ScrollView {
     /// 滚动到顶部
     pub fn scroll_to_top(&mut self, time_in_sec: f32, _attenuated: bool) {
         self.start_auto_scroll(Vec2::new(self.inner_position.x, 0.0), time_in_sec);
-        self.trigger_event(ScrollViewEventType::SCROLL_TO_TOP);
+        self.trigger_event(ScrollViewEventType::ScrollToTop);
     }
 
     /// 滚动到底部
     pub fn scroll_to_bottom(&mut self, time_in_sec: f32, _attenuated: bool) {
         let min_y = self.content_size.y - self.inner_size.y;
         self.start_auto_scroll(Vec2::new(self.inner_position.x, min_y), time_in_sec);
-        self.trigger_event(ScrollViewEventType::SCROLL_TO_BOTTOM);
+        self.trigger_event(ScrollViewEventType::ScrollToBottom);
     }
 
     /// 滚动到左侧
     pub fn scroll_to_left(&mut self, time_in_sec: f32, _attenuated: bool) {
         self.start_auto_scroll(Vec2::new(0.0, self.inner_position.y), time_in_sec);
-        self.trigger_event(ScrollViewEventType::SCROLL_TO_LEFT);
+        self.trigger_event(ScrollViewEventType::ScrollToLeft);
     }
 
     /// 滚动到右侧
     pub fn scroll_to_right(&mut self, time_in_sec: f32, _attenuated: bool) {
         let min_x = self.content_size.x - self.inner_size.x;
         self.start_auto_scroll(Vec2::new(min_x, self.inner_position.y), time_in_sec);
-        self.trigger_event(ScrollViewEventType::SCROLL_TO_RIGHT);
+        self.trigger_event(ScrollViewEventType::ScrollToRight);
     }
 
     /// 滚动到指定百分比位置
@@ -360,7 +363,7 @@ impl ScrollView {
             self.auto_scroll_elapsed += Duration::from_secs_f32(dt);
             if self.auto_scroll_elapsed >= self.auto_scroll_duration {
                 self.is_auto_scrolling = false;
-                self.trigger_event(ScrollViewEventType::SCROLL_ENDED);
+                self.trigger_event(ScrollViewEventType::ScrollEnded);
             }
         }
 

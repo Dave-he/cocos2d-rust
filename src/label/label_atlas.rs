@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::types::Color3B;
 use crate::base::{Node, RefPtr};
 use crate::renderer::Texture2D;

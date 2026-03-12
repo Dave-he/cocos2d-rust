@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// DebugLayer - 调试 UI 层
 ///
 /// 功能：

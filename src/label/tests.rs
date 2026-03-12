@@ -79,10 +79,10 @@ fn test_label_new_has_default_values() {
     assert_eq!(label.get_string(), "");
     assert_eq!(label.get_font_name(), "Arial");
     assert_eq!(label.get_font_size(), 12.0);
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::LEFT);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::TOP);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Left);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Top);
     assert_eq!(label.get_text_color(), Color3B::WHITE);
-    assert_eq!(label.get_overflow(), LabelOverflow::NONE);
+    assert_eq!(label.get_overflow(), LabelOverflow::None);
     assert!(!label.is_wrap_enabled());
 }
 
@@ -231,44 +231,44 @@ fn test_font_size_boundary_values() {
 fn test_horizontal_alignment() {
     let mut label = Label::new();
 
-    label.set_horizontal_alignment(TextHAlignment::CENTER);
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::CENTER);
+    label.set_horizontal_alignment(TextHAlignment::Center);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Center);
 
-    label.set_horizontal_alignment(TextHAlignment::RIGHT);
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::RIGHT);
+    label.set_horizontal_alignment(TextHAlignment::Right);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Right);
 }
 
 #[test]
 fn test_vertical_alignment() {
     let mut label = Label::new();
 
-    label.set_vertical_alignment(TextVAlignment::CENTER);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::CENTER);
+    label.set_vertical_alignment(TextVAlignment::Center);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Center);
 
-    label.set_vertical_alignment(TextVAlignment::BOTTOM);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::BOTTOM);
+    label.set_vertical_alignment(TextVAlignment::Bottom);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Bottom);
 }
 
 #[test]
 fn test_set_alignment_both() {
     let mut label = Label::new();
 
-    label.set_alignment(TextHAlignment::CENTER, TextVAlignment::CENTER);
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::CENTER);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::CENTER);
+    label.set_alignment(TextHAlignment::Center, TextVAlignment::Center);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Center);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Center);
 }
 
 #[test]
 fn test_all_alignment_combinations() {
     let h_alignments = [
-        TextHAlignment::LEFT,
-        TextHAlignment::CENTER,
-        TextHAlignment::RIGHT,
+        TextHAlignment::Left,
+        TextHAlignment::Center,
+        TextHAlignment::Right,
     ];
     let v_alignments = [
-        TextVAlignment::TOP,
-        TextVAlignment::CENTER,
-        TextVAlignment::BOTTOM,
+        TextVAlignment::Top,
+        TextVAlignment::Center,
+        TextVAlignment::Bottom,
     ];
 
     for &h_align in &h_alignments {
@@ -410,10 +410,10 @@ fn test_wrap_toggle() {
 #[test]
 fn test_overflow_types() {
     let overflow_types = [
-        LabelOverflow::NONE,
-        LabelOverflow::CLAMP,
-        LabelOverflow::SHRINK,
-        LabelOverflow::RESIZE_HEIGHT,
+        LabelOverflow::None,
+        LabelOverflow::Clamp,
+        LabelOverflow::Shrink,
+        LabelOverflow::ResizeHeight,
     ];
 
     for &overflow in &overflow_types {
@@ -525,14 +525,14 @@ fn test_builder_pattern_full() {
     let label = LabelTestBuilder::new()
         .with_text("Complete Label")
         .with_font("Arial", 24.0)
-        .with_alignment(TextHAlignment::CENTER, TextVAlignment::CENTER)
+        .with_alignment(TextHAlignment::Center, TextVAlignment::Center)
         .build();
 
     assert_eq!(label.get_string(), "Complete Label");
     assert_eq!(label.get_font_name(), "Arial");
     assert_eq!(label.get_font_size(), 24.0);
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::CENTER);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::CENTER);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Center);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Center);
 }
 
 #[test]
@@ -553,11 +553,11 @@ fn test_complex_label_configuration() {
     let mut label = Label::create_with_ttf("Complex Label", "CustomFont", 20.0);
 
     label.set_dimensions(300.0, 100.0);
-    label.set_alignment(TextHAlignment::CENTER, TextVAlignment::CENTER);
+    label.set_alignment(TextHAlignment::Center, TextVAlignment::Center);
     label.set_text_color(Color3B::BLUE);
     label.enable_wrap(true);
     label.set_line_spacing(5.0);
-    label.set_overflow(LabelOverflow::SHRINK);
+    label.set_overflow(LabelOverflow::Shrink);
     label.enable_shadow(Color3B::BLACK, Vec2::new(2.0, -2.0), 3.0);
     label.enable_outline(Color3B::WHITE, 1.5);
 
@@ -566,12 +566,12 @@ fn test_complex_label_configuration() {
     assert_eq!(label.get_font_name(), "CustomFont");
     assert_eq!(label.get_font_size(), 20.0);
     assert_eq!(label.get_dimensions(), Vec2::new(300.0, 100.0));
-    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::CENTER);
-    assert_eq!(label.get_vertical_alignment(), TextVAlignment::CENTER);
+    assert_eq!(label.get_horizontal_alignment(), TextHAlignment::Center);
+    assert_eq!(label.get_vertical_alignment(), TextVAlignment::Center);
     assert_eq!(label.get_text_color(), Color3B::BLUE);
     assert!(label.is_wrap_enabled());
     assert_eq!(label.get_line_spacing(), 5.0);
-    assert_eq!(label.get_overflow(), LabelOverflow::SHRINK);
+    assert_eq!(label.get_overflow(), LabelOverflow::Shrink);
 }
 
 // ============================================================================
@@ -580,7 +580,7 @@ fn test_complex_label_configuration() {
 
 #[test]
 fn test_text_halignment_traits() {
-    let align1 = TextHAlignment::CENTER;
+    let align1 = TextHAlignment::Center;
     let align2 = align1; // Copy
     let align3 = align1.clone(); // Clone
 
@@ -589,25 +589,25 @@ fn test_text_halignment_traits() {
 
     // Debug
     let debug_str = format!("{:?}", align1);
-    assert!(debug_str.contains("CENTER"));
+    assert!(debug_str.contains("Center"));
 }
 
 #[test]
 fn test_text_valignment_traits() {
-    let align1 = TextVAlignment::BOTTOM;
+    let align1 = TextVAlignment::Bottom;
     let align2 = align1;
 
     assert_eq!(align1, align2);
-    assert_ne!(align1, TextVAlignment::TOP);
+    assert_ne!(align1, TextVAlignment::Top);
 }
 
 #[test]
 fn test_label_overflow_traits() {
-    let overflow1 = LabelOverflow::SHRINK;
+    let overflow1 = LabelOverflow::Shrink;
     let overflow2 = overflow1;
 
     assert_eq!(overflow1, overflow2);
-    assert_ne!(overflow1, LabelOverflow::NONE);
+    assert_ne!(overflow1, LabelOverflow::None);
 }
 
 // ============================================================================
@@ -703,16 +703,16 @@ fn stress_test_rapid_updates() {
         label.set_font_size((i % 100) as f32);
         label.set_alignment(
             if i % 3 == 0 {
-                TextHAlignment::LEFT
+                TextHAlignment::Left
             } else if i % 3 == 1 {
-                TextHAlignment::CENTER
+                TextHAlignment::Center
             } else {
-                TextHAlignment::RIGHT
+                TextHAlignment::Right
             },
             if i % 2 == 0 {
-                TextVAlignment::TOP
+                TextVAlignment::Top
             } else {
-                TextVAlignment::BOTTOM
+                TextVAlignment::Bottom
             },
         );
     }

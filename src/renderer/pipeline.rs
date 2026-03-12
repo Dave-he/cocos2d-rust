@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 
 #[derive(Debug, Clone)]
 pub struct PipelineState {
@@ -101,10 +104,10 @@ impl PipelineState {
 pub enum PrimitiveType {
     POINTS,
     LINES,
-    LINE_STRIP,
+    LineStrip,
     TRIANGLES,
-    TRIANGLE_STRIP,
-    TRIANGLE_FAN,
+    TriangleStrip,
+    TriangleFan,
 }
 
 #[derive(Debug, Clone)]
@@ -418,9 +421,9 @@ pub enum StencilOp {
     ZERO,
     REPLACE,
     INCR,
-    INCR_WRAP,
+    IncrWrap,
     DECR,
-    DECR_WRAP,
+    DecrWrap,
     INV,
 }
 
@@ -552,10 +555,10 @@ mod tests {
         let types = [
             PrimitiveType::POINTS,
             PrimitiveType::LINES,
-            PrimitiveType::LINE_STRIP,
+            PrimitiveType::LineStrip,
             PrimitiveType::TRIANGLES,
-            PrimitiveType::TRIANGLE_STRIP,
-            PrimitiveType::TRIANGLE_FAN,
+            PrimitiveType::TriangleStrip,
+            PrimitiveType::TriangleFan,
         ];
         assert_eq!(types.len(), 6);
     }
@@ -688,9 +691,9 @@ mod tests {
             StencilOp::ZERO,
             StencilOp::REPLACE,
             StencilOp::INCR,
-            StencilOp::INCR_WRAP,
+            StencilOp::IncrWrap,
             StencilOp::DECR,
-            StencilOp::DECR_WRAP,
+            StencilOp::DecrWrap,
             StencilOp::INV,
         ];
         assert_eq!(ops.len(), 8);

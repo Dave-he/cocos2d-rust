@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::types::Color3B;
 use crate::base::RefPtr;
 use crate::math::Vec2;
@@ -454,16 +457,16 @@ pub struct Text {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextHAlignment {
-    LEFT,
-    CENTER,
-    RIGHT,
+    Left,
+    Center,
+    Right,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextVAlignment {
-    TOP,
-    CENTER,
-    BOTTOM,
+    Top,
+    Center,
+    Bottom,
 }
 
 impl Default for Text {
@@ -480,8 +483,8 @@ impl Text {
             font_size: 24.0,
             font_name: String::from("Arial"),
             color: Color3B::WHITE,
-            horizontal_alignment: TextHAlignment::CENTER,
-            vertical_alignment: TextVAlignment::CENTER,
+            horizontal_alignment: TextHAlignment::Center,
+            vertical_alignment: TextVAlignment::Center,
             shadow_enabled: false,
             shadow_color: Color3B::BLACK,
             shadow_offset: Vec2::new(2.0, -2.0),

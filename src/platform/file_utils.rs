@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
@@ -40,6 +43,7 @@ impl FileUtils {
     }
 
     /// Gets the singleton instance
+    #[allow(static_mut_refs)]
     pub fn get_instance() -> &'static mut FileUtils {
         static mut FILE_UTILS: Option<FileUtils> = None;
         unsafe {

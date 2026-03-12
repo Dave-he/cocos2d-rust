@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::RefPtr;
 
 pub trait Texture {
@@ -36,9 +39,9 @@ pub enum PixelFormat {
     RGBA32F,
     RGB32F,
     SRGB8,
-    SRGB8_A8,
+    Srgb8A8,
     DEPTH,
-    DEPTH_STENCIL,
+    DepthStencil,
 }
 
 impl PixelFormat {
@@ -58,7 +61,7 @@ impl PixelFormat {
             PixelFormat::RGBA32F => 16,
             PixelFormat::RGB32F => 12,
             PixelFormat::SRGB8 => 3,
-            PixelFormat::SRGB8_A8 => 4,
+            PixelFormat::Srgb8A8 => 4,
             _ => 0,
         }
     }
@@ -85,7 +88,7 @@ impl PixelFormat {
                 | PixelFormat::RGBA4444
                 | PixelFormat::RGB5A1
                 | PixelFormat::AI88
-                | PixelFormat::SRGB8_A8
+                | PixelFormat::Srgb8A8
                 | PixelFormat::RGBA16F
                 | PixelFormat::RGBA32F
         )
@@ -118,8 +121,8 @@ impl TextureDescriptor {
             pixel_format: PixelFormat::RGBA8888,
             min_filter: TextureFilter::LINEAR,
             mag_filter: TextureFilter::LINEAR,
-            wrap_s: TextureWrap::CLAMP_TO_EDGE,
-            wrap_t: TextureWrap::CLAMP_TO_EDGE,
+            wrap_s: TextureWrap::ClampToEdge,
+            wrap_t: TextureWrap::ClampToEdge,
             mipmap_level: 1,
         }
     }
@@ -129,17 +132,17 @@ impl TextureDescriptor {
 pub enum TextureFilter {
     NEAREST,
     LINEAR,
-    NEAREST_MIPMAP_NEAREST,
-    LINEAR_MIPMAP_NEAREST,
-    NEAREST_MIPMAP_LINEAR,
-    LINEAR_MIPMAP_LINEAR,
+    NearestMipmapNearest,
+    LinearMipmapNearest,
+    NearestMipmapLinear,
+    LinearMipmapLinear,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum TextureWrap {
     REPEAT,
-    CLAMP_TO_EDGE,
-    MIRRORED_REPEAT,
+    ClampToEdge,
+    MirroredRepeat,
 }
 
 #[derive(Debug)]
@@ -390,8 +393,8 @@ impl Sampler {
         Sampler {
             min_filter: TextureFilter::LINEAR,
             mag_filter: TextureFilter::LINEAR,
-            wrap_s: TextureWrap::CLAMP_TO_EDGE,
-            wrap_t: TextureWrap::CLAMP_TO_EDGE,
+            wrap_s: TextureWrap::ClampToEdge,
+            wrap_t: TextureWrap::ClampToEdge,
             compare_mode: false,
             compare_func: CompareFunc::LEQUAL,
         }
@@ -486,7 +489,7 @@ mod tests {
     #[test]
     fn test_texture_wrap_variants() {
         assert_eq!(TextureWrap::REPEAT, TextureWrap::REPEAT);
-        assert_eq!(TextureWrap::CLAMP_TO_EDGE, TextureWrap::CLAMP_TO_EDGE);
+        assert_eq!(TextureWrap::ClampToEdge, TextureWrap::ClampToEdge);
     }
 
     #[test]
@@ -577,8 +580,8 @@ mod tests {
         let sampler = Sampler::new();
         assert_eq!(sampler.min_filter, TextureFilter::LINEAR);
         assert_eq!(sampler.mag_filter, TextureFilter::LINEAR);
-        assert_eq!(sampler.wrap_s, TextureWrap::CLAMP_TO_EDGE);
-        assert_eq!(sampler.wrap_t, TextureWrap::CLAMP_TO_EDGE);
+        assert_eq!(sampler.wrap_s, TextureWrap::ClampToEdge);
+        assert_eq!(sampler.wrap_t, TextureWrap::ClampToEdge);
         assert!(!sampler.compare_mode);
     }
 

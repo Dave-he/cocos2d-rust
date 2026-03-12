@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use super::{Renderer, Texture2D};
 use crate::base::types::Color4F;
 use crate::base::RefPtr;

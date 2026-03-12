@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// 批量渲染系统
 ///
 /// 通过合并相同材质和纹理的渲染对象，减少 draw call，提升渲染性能

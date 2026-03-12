@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::event::EventDispatcher;
 use crate::base::scheduler::Scheduler;
 use crate::base::{Ref, RefPtr, Size};
@@ -86,6 +89,7 @@ impl Default for Director {
 }
 
 impl Director {
+    #[allow(static_mut_refs)]
     pub fn get_instance() -> RefPtr<Director> {
         static mut DIRECTOR: Option<RefCell<RefPtr<Director>>> = None;
         unsafe {

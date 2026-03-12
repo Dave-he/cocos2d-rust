@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::renderer::shader::{Shader, ShaderProgram, ShaderType};
 use crate::renderer::RenderTexture;
 use crate::math::Vec2;

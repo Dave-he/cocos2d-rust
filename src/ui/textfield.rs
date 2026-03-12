@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::input::{KeyCode, KeyEventType, KeyboardEvent, Touch};
 use crate::ui::Widget;
 

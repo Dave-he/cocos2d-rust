@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use super::{TextHAlignment, TextVAlignment};
 use crate::base::types::Color3B;
 use crate::base::{Node, RefPtr};
@@ -27,8 +30,8 @@ impl LabelTTF {
             font_name: String::from("Arial"),
             font_size: 12.0,
             dimensions: Vec2::ZERO,
-            h_alignment: TextHAlignment::LEFT,
-            v_alignment: TextVAlignment::TOP,
+            h_alignment: TextHAlignment::Left,
+            v_alignment: TextVAlignment::Top,
             color: Color3B::WHITE,
             texture: None,
         }

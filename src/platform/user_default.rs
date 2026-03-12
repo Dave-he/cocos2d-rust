@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::{File, OpenOptions};
@@ -48,15 +51,11 @@ impl UserDefault {
     
     /// 获取全局单例（默认路径）
     pub fn get_instance() -> Arc<Mutex<UserDefault>> {
-        static mut INSTANCE: Option<Arc<Mutex<UserDefault>>> = None;
-        
-        unsafe {
-            if INSTANCE.is_none() {
-                let path = Self::get_default_path();
-                INSTANCE = Some(Arc::new(Mutex::new(UserDefault::new(path))));
-            }
-            INSTANCE.as_ref().unwrap().clone()
-        }
+        static INSTANCE: std::sync::OnceLock<Arc<Mutex<UserDefault>>> = std::sync::OnceLock::new();
+        INSTANCE.get_or_init(|| {
+            let path = Self::get_default_path();
+            Arc::new(Mutex::new(UserDefault::new(path)))
+        }).clone()
     }
     
     /// 创建自定义路径的实例

@@ -148,6 +148,8 @@ impl HttpClient {
         }
     }
 
+    #[allow(static_mut_refs)]
+
     pub fn get_instance() -> &'static mut HttpClient {
         static mut HTTP_CLIENT: Option<HttpClient> = None;
         unsafe {
@@ -212,6 +214,8 @@ impl Network {
             reachability: NetworkReachability::NONE,
         }
     }
+
+    #[allow(static_mut_refs)]
 
     pub fn get_instance() -> &'static mut Network {
         static mut NETWORK: Option<Network> = None;

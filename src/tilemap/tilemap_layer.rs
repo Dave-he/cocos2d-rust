@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use super::tilemap_info::{LayerInfo, TileMapInfo, TileSet};
 use crate::base::RefPtr;
 use crate::sprite::Sprite;

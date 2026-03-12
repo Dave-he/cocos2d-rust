@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use super::menu_item::MenuItem;
 use crate::base::{Node, RefPtr};
 use crate::math::Vec2;

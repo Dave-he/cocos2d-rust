@@ -80,10 +80,10 @@ pub struct AudioPlayer {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum AudioState {
-    INITIALIZING,
-    PLAYING,
-    PAUSED,
-    STOPPED,
+    Initializing,
+    Playing,
+    Paused,
+    Stopped,
 }
 
 impl Default for AudioPlayer {
@@ -97,7 +97,7 @@ impl AudioPlayer {
         AudioPlayer {
             id: 0,
             source: None,
-            state: AudioState::INITIALIZING,
+            state: AudioState::Initializing,
             volume: 1.0,
             current_time: Duration::ZERO,
             duration: Duration::ZERO,
@@ -141,27 +141,27 @@ impl AudioPlayer {
     }
 
     pub fn play(&mut self) {
-        self.state = AudioState::PLAYING;
+        self.state = AudioState::Playing;
     }
 
     pub fn pause(&mut self) {
-        self.state = AudioState::PAUSED;
+        self.state = AudioState::Paused;
     }
 
     pub fn stop(&mut self) {
-        self.state = AudioState::STOPPED;
+        self.state = AudioState::Stopped;
     }
 
     pub fn is_playing(&self) -> bool {
-        self.state == AudioState::PLAYING
+        self.state == AudioState::Playing
     }
 
     pub fn is_paused(&self) -> bool {
-        self.state == AudioState::PAUSED
+        self.state == AudioState::Paused
     }
 
     pub fn is_stopped(&self) -> bool {
-        self.state == AudioState::STOPPED
+        self.state == AudioState::Stopped
     }
 }
 
@@ -293,14 +293,14 @@ mod tests {
     fn test_audio_player_creation() {
         let player = AudioPlayer::new();
         assert_eq!(player.get_id(), 0);
-        assert_eq!(player.get_state(), AudioState::INITIALIZING);
+        assert_eq!(player.get_state(), AudioState::Initializing);
         assert_eq!(player.get_volume(), 1.0);
     }
 
     #[test]
     fn test_audio_player_state() {
         let mut player = AudioPlayer::new();
-        assert_eq!(player.get_state(), AudioState::INITIALIZING);
+        assert_eq!(player.get_state(), AudioState::Initializing);
         assert!(!player.is_playing());
         assert!(!player.is_paused());
         

@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// 着色器系统
 ///
 /// 管理和编译 GLSL 着色器程序，支持顶点着色器、片段着色器和统一变量

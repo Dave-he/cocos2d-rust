@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::{Ref, RefPtr};
 use std::collections::LinkedList;
 
@@ -51,6 +54,7 @@ impl Default for PoolManager {
 }
 
 impl PoolManager {
+    #[allow(static_mut_refs)]
     pub fn get_instance() -> &'static mut PoolManager {
         static mut POOL_MANAGER: Option<PoolManager> = None;
         unsafe {

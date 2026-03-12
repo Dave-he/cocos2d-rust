@@ -1,3 +1,7 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
+#![allow(non_snake_case)]
 use crate::backend::opengl::OpenGLBackend;
 use crate::base::RefPtr;
 use crate::math::Mat4;

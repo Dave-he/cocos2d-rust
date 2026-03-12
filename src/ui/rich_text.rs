@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::base::types::Color3B;
 use crate::base::Node;
 use crate::label::Label;
@@ -8,7 +11,7 @@ use crate::math::Vec2;
 pub enum RichElementType {
     TEXT,
     IMAGE,
-    CUSTOM_NODE,
+    CustomNode,
 }
 
 /// 富文本元素
@@ -396,7 +399,7 @@ impl RichText {
                     line_height = line_height.max(element.height);
                 }
 
-                RichElementType::CUSTOM_NODE => {
+                RichElementType::CustomNode => {
                     // 自定义节点处理
                 }
             }

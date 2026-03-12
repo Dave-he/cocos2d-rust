@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 use crate::platform::file_utils::FileUtils;
 use image::GenericImageView;
 
@@ -12,7 +15,7 @@ pub enum ImageFormat {
     S3TC,
     ATITC,
     TGA,
-    RAW_DATA,
+    RawData,
     UNKNOWN,
 }
 

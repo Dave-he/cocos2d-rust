@@ -1,3 +1,6 @@
+#![allow(unused_variables)]
+#![allow(dead_code)]
+#![allow(unused_imports)]
 /// 类型安全的事件总线系统
 ///
 /// 提供发布/订阅模式，支持强类型事件，不依赖字符串进行类型识别。

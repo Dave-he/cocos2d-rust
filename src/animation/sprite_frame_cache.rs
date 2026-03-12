@@ -223,6 +223,7 @@ impl SpriteFrameCache {
     }
 
     /// 获取共享实例（单例模式）
+    #[allow(static_mut_refs)]
     pub fn shared() -> &'static RefCell<SpriteFrameCache> {
         static mut INSTANCE: Option<RefCell<SpriteFrameCache>> = None;
         unsafe {
