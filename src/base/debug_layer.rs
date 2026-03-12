@@ -319,7 +319,7 @@ impl DebugLayer {
         self.console.log(crate::base::debug_console::LogLevel::Warning, message);
     }
 
-    pub fn profile_scope(&mut self, name: &str) -> crate::base::debug_profiler::ProfilerScope {
+    pub fn profile_scope(&mut self, name: &str) -> crate::base::debug_profiler::ProfilerScope<'_> {
         self.profiler.scope(name)
     }
 
